@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ujian Olimpiade Matematika</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+/* =====================================================================
+   CSS HALAMAN UJIAN Matematika
+   ===================================================================== */
+
+:root {
+  --bg: #fdf8ec;
+  --card: #fffaf0;
+  --ink: #6a4126;
+  --ink-soft: #8f6f52;
+  --line: #fbe1a0;
+  --accent: #fdb95a;
+  --accent-hover: #f9ab3f;
+  --accent-deep: #d9821a;
+  --on-accent: #4a2a12;
+  --sun: #ffd45c;
+  --green: #6cb04a;
+  --green-dark: #3f7a2a;
+  --green-soft: #eef5df;
+  --green-line: #bddc9b;
+  --blob-a: #fdeec4;
+  --blob-b: #dbe5b8;
+  --danger: #b83a26;
+  --danger-bg: #fde6df;
+  --shadow-soft: 0 10px 30px rgba(224, 170, 70, 0.15);
+  --shadow: 0 18px 50px rgba(224, 170, 70, 0.22);
+
+  --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { height: 100%; }
+body {
+  min-height: 100%;
+  margin: 0;
+  padding: clamp(10px, 2.5vw, 28px);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; }
+button:focus-visible, label:focus-visible, input:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* ---- LATAR ---- */
+.bg { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.blob { position: absolute; border-radius: 50%; }
+.blob.a { width: 46vmax; height: 40vmax; left: -14vmax; top: -16vmax; background: var(--blob-a); border-radius: 40% 60% 55% 45% / 50% 40% 60% 50%; }
+.blob.c { width: 30vmax; height: 30vmax; right: -12vmax; bottom: -14vmax; background: var(--blob-b); border-radius: 55% 45% 40% 60% / 60% 50% 50% 40%; }
+.blob.d { width: 22vmax; height: 22vmax; right: -9vmax; top: 10%; background: var(--blob-a); }
+.spark { position: absolute; width: 26px; height: 26px; fill: var(--sun); }
+.spark.s1 { right: 6%; top: 5%; }
+.spark.s2 { left: 3%; top: 48%; width: 20px; height: 20px; }
+
+/* ---- KERANGKA ---- */
+.shell {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 34px;
+  box-shadow: var(--shadow);
+}
+.hdr {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 16px clamp(16px, 3vw, 30px);
+  border-bottom: 2px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand svg { width: 42px; height: 42px; flex: none; }
+.brand h1 { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.15rem, 3vw, 1.6rem); line-height: 1.15; }
+.hdr-timer {
+  display: none; align-items: center; gap: 8px; flex: none;
+  padding: 6px 14px; border-radius: 999px;
+  background: color-mix(in srgb, var(--sun) 35%, var(--card));
+  font-weight: 800; font-variant-numeric: tabular-nums;
+}
+.hdr-timer svg { width: 20px; height: 20px; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 22px;
+  padding: clamp(14px, 2.5vw, 24px);
+}
+.side { display: grid; gap: 16px; align-content: start; }
+
+.box {
+  padding: 16px 20px 18px;
+  background: color-mix(in srgb, var(--sun) 16%, var(--card));
+  border: 2px solid var(--line);
+  border-radius: 22px;
+}
+.box-head { display: flex; align-items: center; gap: 12px; margin: 0 0 8px; font-weight: 800; font-size: 1.05rem; }
+.box-head svg { width: 30px; height: 30px; flex: none; fill: none; stroke: var(--accent-deep); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.box p { margin: 0; }
+.muted { color: var(--ink-soft); font-size: 0.92rem; font-weight: 600; }
+
+.timer { margin: 4px 0 0; font-family: var(--font-display); font-weight: 800; font-size: 2rem; line-height: 1.2; font-variant-numeric: tabular-nums; letter-spacing: 0.03em; }
+.timer.warn, .hdr-timer.warn { color: var(--danger); }
+.hdr-timer.warn { background: var(--danger-bg); }
+
+/* Daftar nomor soal */
+.qgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 12px; }
+.qbtn {
+  height: 40px; padding: 0;
+  border: 2px solid transparent; border-radius: 12px;
+  background: color-mix(in srgb, var(--sun) 38%, var(--card));
+  font-weight: 800; font-size: 0.95rem; cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.qbtn:hover { border-color: var(--accent); }
+.qbtn.answered { background: var(--green-soft); border-color: var(--green-line); color: var(--green-dark); }
+.qbtn.current { border-color: var(--green); box-shadow: 0 0 0 2px color-mix(in srgb, var(--green) 25%, transparent); }
+.legend { display: flex; gap: 16px; margin-top: 12px; font-size: 0.82rem; font-weight: 700; color: var(--ink-soft); }
+.legend i { display: inline-block; width: 12px; height: 12px; margin-right: 6px; border-radius: 4px; vertical-align: -1px; }
+.legend .l-ans { background: var(--green-soft); border: 2px solid var(--green-line); }
+.legend .l-no { background: color-mix(in srgb, var(--sun) 38%, var(--card)); }
+
+.who dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0; font-size: 0.9rem; }
+.who dt { color: var(--ink-soft); font-weight: 700; }
+.who dd { margin: 0; font-weight: 800; overflow-wrap: anywhere; }
+
+/* ---- PANEL SOAL ---- */
+.main {
+  min-width: 0;
+  padding: clamp(16px, 2.5vw, 26px);
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 26px;
+  display: flex; flex-direction: column;
+}
+.qnav { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
+.qnav .prev { justify-self: start; }
+.qnav .next { justify-self: end; }
+.pill-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px;
+  border: 0; border-radius: 999px;
+  background: color-mix(in srgb, var(--sun) 28%, var(--card));
+  color: var(--ink);
+  font-weight: 700; font-size: 0.95rem;
+  cursor: pointer;
+}
+.pill-btn:hover:not(:disabled) { background: color-mix(in srgb, var(--sun) 50%, var(--card)); }
+.pill-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.pill-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.qnum {
+  padding: 10px 28px; border-radius: 999px;
+  background: color-mix(in srgb, var(--sun) 50%, var(--card));
+  font-weight: 800; font-size: 1.15rem; white-space: nowrap;
+}
+
+.tag { display: inline-block; margin: 20px 0 0; padding: 3px 16px; border-radius: 999px; background: color-mix(in srgb, var(--sun) 35%, var(--card)); font-weight: 800; font-size: 0.82rem; }
+.qtext { margin: 12px 0 20px; font-size: 1.08rem; line-height: 1.75; overflow-wrap: anywhere; }
+
+.opts { display: grid; gap: 10px; border: 0; margin: 0; padding: 0; min-width: 0; }
+.opt {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px;
+  border: 2px solid transparent; border-radius: 16px;
+  background: color-mix(in srgb, var(--sun) 12%, var(--card));
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.opt:hover { border-color: var(--line); }
+.opt { -webkit-user-select: none; user-select: none; }   /* seluruh box jawaban bisa diklik tanpa memunculkan seleksi teks */
+.opt input { width: 22px; height: 22px; flex: none; margin: 0; accent-color: var(--green); cursor: pointer; }
+.opt b { flex: none; width: 1.4em; color: var(--ink-soft); }
+.opt span { min-width: 0; overflow-wrap: anywhere; }
+.opt:has(input:checked) { background: var(--green-soft); border-color: var(--green-line); }
+.clear-pick { align-self: flex-start; margin-top: 10px; padding: 4px 2px; border: 0; background: none; color: var(--ink-soft); font-weight: 700; font-size: 0.88rem; text-decoration: underline; cursor: pointer; }
+
+.foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-top: auto; padding-top: 24px; }
+.progress { font-weight: 700; color: var(--ink-soft); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 52px; padding: 0 30px;
+  border: 0; border-radius: 999px;
+  background: var(--accent); color: var(--on-accent);
+  font-weight: 800; font-size: 1.1rem; cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn:hover { background: var(--accent-hover); }
+.btn:active { transform: scale(0.985); }
+.btn.quiet { background: transparent; border: 2px solid var(--line); color: var(--ink); }
+.btn.quiet:hover { background: color-mix(in srgb, var(--sun) 25%, transparent); }
+.btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---- KOTAK KONFIRMASI ---- */
+dialog {
+  width: min(440px, calc(100vw - 32px));
+  padding: 26px 26px 22px;
+  border: 2px solid var(--line); border-radius: 26px;
+  background: var(--card); color: var(--ink);
+  box-shadow: var(--shadow);
+}
+dialog::backdrop { background: rgba(74, 42, 18, 0.45); }
+dialog { -webkit-user-select: none; user-select: none; }
+dialog h2 { margin: 0 0 8px; font-family: var(--font-display); font-size: 1.4rem; }
+dialog p { margin: 0 0 6px; }
+dialog .warn-text { color: var(--danger); font-weight: 800; }
+.dlg-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.dlg-actions .btn { height: 46px; padding: 0 22px; font-size: 1rem; }
+
+/* ---- POP UP PELANGGARAN / PERINGATAN ---- */
+#dlg-alert { text-align: center; }
+#dlg-alert .alert-icon {
+  display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto 12px;
+  border-radius: 50%; font-family: var(--font-display); font-weight: 800; font-size: 2rem; line-height: 1;
+  background: color-mix(in srgb, var(--sun) 45%, var(--card)); color: var(--accent-deep);
+  border: 3px solid var(--accent);
+}
+#dlg-alert.vio .alert-icon { background: var(--danger-bg); color: var(--danger); border-color: var(--danger); }
+#dlg-alert.vio h2 { color: var(--danger); }
+#dlg-alert .vio-meter { display: flex; justify-content: center; gap: 8px; margin: 14px 0 8px; }
+#dlg-alert .vio-meter i { width: 28px; height: 10px; border-radius: 99px; background: var(--line); }
+#dlg-alert .vio-meter i.on { background: var(--danger); }
+#dlg-alert .vio-count { font-weight: 800; }
+#dlg-alert .dlg-actions { justify-content: center; }
+
+/* ---- POP UP LAYAR PENUH ---- */
+#dlg-fs { text-align: center; }
+#dlg-fs::backdrop { background: rgba(74, 42, 18, 0.94); }
+#dlg-fs .alert-icon {
+  display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto 12px;
+  border-radius: 50%; border: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--sun) 45%, var(--card)); color: var(--accent-deep);
+}
+#dlg-fs .alert-icon svg { width: 32px; height: 32px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+#dlg-fs.warn .alert-icon { background: var(--danger-bg); color: var(--danger); border-color: var(--danger); }
+#dlg-fs.warn h2 { color: var(--danger); }
+#dlg-fs .fs-count { margin: 10px 0 2px; font-family: var(--font-display); font-weight: 800; font-size: 3rem; line-height: 1; color: var(--danger); font-variant-numeric: tabular-nums; }
+#dlg-fs .dlg-actions { justify-content: center; }
+
+/* ---- LAYAR SELESAI ---- */
+.done { text-align: center; padding: clamp(36px, 8vw, 80px) 20px; }
+.done .ok { display: grid; place-items: center; width: 84px; height: 84px; margin: 0 auto 18px; border-radius: 50%; background: var(--green-soft); border: 3px solid var(--green-line); }
+.done .ok svg { width: 44px; height: 44px; fill: none; stroke: var(--green); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+.done h2 { margin: 0 0 8px; font-family: var(--font-display); font-size: clamp(1.6rem, 5vw, 2.2rem); }
+.done p { max-width: 520px; margin: 6px auto; }
+.done .status { font-weight: 800; }
+.done .status.bad { color: var(--danger); }
+.done .btn { margin-top: 22px; }
+
+/* ---- RESPONSIF ---- */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .main { order: -1; }
+  .hdr-timer { display: inline-flex; }
+  .side-timer { display: none; }
+}
+@media (max-width: 560px) {
+  .qnav { grid-template-columns: 1fr 1fr; }
+  .qnum { grid-column: 1 / -1; grid-row: 1; justify-self: center; }
+  .pill-btn { padding: 10px 14px; }
+  .qgrid { grid-template-columns: repeat(5, 1fr); }
+  .foot { flex-direction: column; align-items: stretch; }
+  .btn { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+  .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.25}
+.frac>span{padding:0 .2em}.frac>span:first-child{border-bottom:2px solid currentColor}
+</style>
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-spark" viewBox="0 0 24 24">
+      <path d="M12 0c.8 6.6 4.2 10.2 12 12-7.8 1.8-11.2 5.4-12 12-.8-6.6-4.2-10.2-12-12C7.8 10.2 11.2 6.6 12 0z"/>
+    </symbol>
+    <symbol id="i-lemon" viewBox="0 0 120 120">
+      <path d="M70 26c14-12 34-12 40-4-6 14-24 20-40 4z" fill="#a9cf85"/>
+      <ellipse cx="52" cy="76" rx="44" ry="40" fill="#ffd45c"/>
+      <ellipse cx="38" cy="58" rx="9" ry="14" fill="#fff" opacity="0.4" transform="rotate(25 38 58)"/>
+    </symbol>
+  </svg>
+
+  <div class="bg" aria-hidden="true">
+    <div class="blob a"></div><div class="blob c"></div><div class="blob d"></div>
+    <svg class="spark s1"><use href="#i-spark"/></svg>
+    <svg class="spark s2"><use href="#i-spark"/></svg>
+  </div>
+
+  <div class="shell">
+
+    <header class="hdr">
+      <div class="brand">
+        <svg aria-hidden="true"><use href="#i-lemon"/></svg>
+        <h1>Ujian Olimpiade Matematika</h1>
+      </div>
+      <div class="hdr-timer" id="timer-hdr" role="timer" aria-label="Sisa waktu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg>
+        <span id="timer-hdr-text">01:00:00</span>
+      </div>
+    </header>
+
+    <!-- ============ LAYAR UJIAN ============ -->
+    <div class="layout" id="exam">
+
+      <aside class="side" aria-label="Informasi ujian">
+        <section class="box">
+          <h2 class="box-head">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg>
+            Ujian
+          </h2>
+          <p class="muted" id="exam-name">Olimpiade Matematika</p>
+        </section>
+
+        <section class="box side-timer">
+          <h2 class="box-head">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M9.5 2.5h5M12 2.5v3"/></svg>
+            Sisa Waktu
+          </h2>
+          <p class="timer" id="timer-side" role="timer" aria-label="Sisa waktu">01 : 00 : 00</p>
+        </section>
+
+        <section class="box" aria-labelledby="soal-judul">
+          <h2 class="box-head" id="soal-judul">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>
+            Soal
+          </h2>
+          <div class="qgrid" id="qgrid"></div>
+          <div class="legend"><span><i class="l-ans"></i>Terjawab</span><span><i class="l-no"></i>Belum</span></div>
+        </section>
+
+        <section class="box who">
+          <dl>
+            <dt>Nama</dt><dd id="who-nama">-</dd>
+            <dt>Sekolah</dt><dd id="who-sekolah">-</dd>
+          </dl>
+        </section>
+      </aside>
+
+      <main class="main">
+        <div class="qnav">
+          <button class="pill-btn prev" id="btn-prev" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Sebelumnya
+          </button>
+          <div class="qnum" id="qnum" aria-live="polite">Pertanyaan 1</div>
+          <button class="pill-btn next" id="btn-next" type="button">
+            Selanjutnya<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+
+        <div><span class="tag" id="qtag"></span></div>
+        <p class="qtext" id="qtext"></p>
+
+        <fieldset class="opts" id="opts">
+          <legend class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Pilihan jawaban</legend>
+        </fieldset>
+        <button class="clear-pick" id="btn-clear" type="button" hidden>Hapus pilihan</button>
+
+        <div class="foot">
+          <span class="progress" id="progress"></span>
+          <button class="btn" id="btn-submit" type="button" hidden>
+            Submit Jawaban
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </main>
+    </div>
+
+    <!-- ============ LAYAR SELESAI ============ -->
+    <section class="done" id="done" hidden>
+      <div class="ok" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5"/></svg></div>
+      <h2 id="done-title">Ujian selesai</h2>
+      <p>Terima kasih telah mengikuti ujian. Hasil dan penilaian tidak ditampilkan di sini, panitia yang akan mengumumkannya.</p>
+      <p class="status" id="done-status"></p>
+      <button class="btn quiet" id="btn-resend" type="button" hidden>Coba Kirim Lagi</button>
+      <button class="btn" id="btn-logout" type="button">Keluar</button>
+    </section>
+  </div>
+
+  <!-- Konfirmasi kirim -->
+  <dialog id="dlg-submit" aria-labelledby="dlg-title">
+    <h2 id="dlg-title">Kirim jawaban?</h2>
+    <p id="dlg-info"></p>
+    <p class="warn-text">Setelah dikirim, jawaban tidak dapat diubah.</p>
+    <div class="dlg-actions">
+      <button class="btn quiet" id="dlg-cancel" type="button">Kembali</button>
+      <button class="btn" id="dlg-ok" type="button">Ya, Kirim</button>
+    </div>
+  </dialog>
+
+  <!-- Pop up pelanggaran / peringatan -->
+  <dialog id="dlg-alert" aria-labelledby="alert-title">
+    <div class="alert-icon" aria-hidden="true">!</div>
+    <h2 id="alert-title"></h2>
+    <p id="alert-msg"></p>
+    <div class="vio-meter" id="alert-meter" hidden></div>
+    <p class="vio-count" id="alert-count" hidden></p>
+    <p class="warn-text" id="alert-sub" hidden></p>
+    <div class="dlg-actions">
+      <button class="btn" id="alert-ok" type="button">Saya Mengerti</button>
+    </div>
+  </dialog>
+
+  <!-- Pop up wajib layar penuh -->
+  <dialog id="dlg-fs" aria-labelledby="fs-title">
+    <div class="alert-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+    </div>
+    <h2 id="fs-title"></h2>
+    <p id="fs-msg"></p>
+    <div id="fs-count-wrap" hidden>
+      <div class="fs-count" id="fs-count" aria-live="polite">10</div>
+      <p class="warn-text">Jika waktu habis, dihitung 1 pelanggaran.</p>
+    </div>
+    <div class="dlg-actions">
+      <button class="btn" id="fs-ok" type="button">Masuk Layar Penuh</button>
+    </div>
+  </dialog>
+
+  <script>
+/* =====================================================================
+   JS HALAMAN UJIAN Matematika
+   Daftar isi: 1 Pengaturan | 2 Soal | 3 Penjaga & data peserta
+               4 Status ujian | 5 Tampilan | 6 Timer | 7 Kirim | 8 Pasang
+   ===================================================================== */
+
+/* ---------- 1. PENGATURAN ---------- */
+var CONFIG = {
+  loginPageUrl: "index.html",
+  berandaUrl: "beranda-matematika.html",   // halaman sebelum ujian (cek foto & pakta)
+  verifikasiUrl: "verifikasi-matematika.html", // halaman setelah submit (pernyataan, foto bukti, nama)
+  sessionKey: "peserta_login",      // HARUS sama dengan index.html & beranda-matematika.html
+  lomba: "MATEMATIKA",
+  namaUjian: "Olimpiade Matematika (30 soal pilihan ganda)",
+  durasiMenit: 60,                  // lama ujian
+  warnMenit: 5,                     // angka waktu jadi merah di menit terakhir
+  fsKeluarLangsung: 2,              // keluar layar penuh ke-N dst. langsung dihitung pelanggaran
+  fsBatasDetik: 10,                 // waktu untuk kembali ke layar penuh sebelum dihitung pelanggaran
+  maxPelanggaran: 5,                // batas pelanggaran (pindah tab / screenshot) sebelum ujian otomatis dikirim
+
+  // Alamat untuk menerima hasil jawaban peserta (mis. Google Apps Script / API sendiri).
+  // Kosong = jawaban hanya tersimpan di browser peserta.
+  // Data dikirim dengan POST berupa JSON (lihat fungsi buildPayload).
+  submitUrl: ""
+};
+
+/* ---------- 2. SOAL ----------
+   Kunci jawaban SENGAJA tidak ada di halaman ini.
+   Penilaian dilakukan panitia memakai file kunci_jawaban_matematika.csv (jangan diunggah). */
+var SOAL = [
+ {
+  "n": 1,
+  "mapel": "Bilangan dan Aritmetika",
+  "q": "Hasil dari {1/2} + {1/6} + {1/12} + {1/20} + {1/30} adalah ...",
+  "o": [
+   "{1/2}",
+   "{2/3}",
+   "{3/4}",
+   "{5/6}",
+   "1"
+  ]
+ },
+ {
+  "n": 2,
+  "mapel": "Bilangan dan Aritmetika",
+  "q": "Bilangan positif terkecil yang habis dibagi 12, 18, dan 30 serta merupakan kuadrat sempurna adalah ...",
+  "o": [
+   "180",
+   "360",
+   "720",
+   "900",
+   "1.800"
+  ]
+ },
+ {
+  "n": 3,
+  "mapel": "Bilangan dan Aritmetika",
+  "q": "Jika a dan b merupakan bilangan bulat positif dengan FPB(a, b) = 6 dan KPK(a, b) = 180, banyak pasangan terurut (a, b) yang mungkin adalah ...",
+  "o": [
+   "2",
+   "4",
+   "6",
+   "8",
+   "10"
+  ]
+ },
+ {
+  "n": 4,
+  "mapel": "Bilangan dan Aritmetika",
+  "q": "Jumlah semua bilangan bulat positif kurang dari 100 yang habis dibagi 3 atau 5 adalah ...",
+  "o": [
+   "2.115",
+   "2.315",
+   "2.415",
+   "2.515",
+   "2.715"
+  ]
+ },
+ {
+  "n": 5,
+  "mapel": "Bilangan dan Aritmetika",
+  "q": "Suatu bilangan terdiri atas tiga angka. Jumlah ketiga angkanya adalah 15. Jika angka ratusan dan satuan ditukar, bilangan baru menjadi 396 lebih kecil daripada bilangan semula. Selisih angka ratusan dan satuannya adalah ...",
+  "o": [
+   "3",
+   "4",
+   "5",
+   "6",
+   "7"
+  ]
+ },
+ {
+  "n": 6,
+  "mapel": "Bilangan dan Aritmetika",
+  "q": "Jika 2^(x+1) + 2^(x) + 2^(x−1) = 56, maka nilai x adalah ...",
+  "o": [
+   "2",
+   "3",
+   "4",
+   "5",
+   "6"
+  ]
+ },
+ {
+  "n": 7,
+  "mapel": "Aljabar",
+  "q": "Jika x + y = 10 dan xy = 21, nilai x² + y² adalah ...",
+  "o": [
+   "42",
+   "48",
+   "52",
+   "58",
+   "64"
+  ]
+ },
+ {
+  "n": 8,
+  "mapel": "Aljabar",
+  "q": "Diketahui {x − 2/3} + {x + 1/2} = 7. Nilai x adalah ...",
+  "o": [
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ]
+ },
+ {
+  "n": 9,
+  "mapel": "Aljabar",
+  "q": "Jika a + b = 8 dan a² + b² = 34, nilai ab adalah ...",
+  "o": [
+   "12",
+   "14",
+   "15",
+   "16",
+   "18"
+  ]
+ },
+ {
+  "n": 10,
+  "mapel": "Aljabar",
+  "q": "Himpunan penyelesaian dari persamaan x² − 7x + 12 = 0 adalah ...",
+  "o": [
+   "12",
+   "6",
+   "4",
+   "−4",
+   "−6"
+  ]
+ },
+ {
+  "n": 11,
+  "mapel": "Aljabar",
+  "q": "Jika x + {1/x} = 3, maka nilai x² + {1/x²} adalah ...",
+  "o": [
+   "5",
+   "6",
+   "7",
+   "8",
+   "9"
+  ]
+ },
+ {
+  "n": 12,
+  "mapel": "Aljabar",
+  "q": "Sebuah bilangan jika dikalikan dengan bilangan berikutnya menghasilkan 156. Bilangan tersebut adalah ...",
+  "o": [
+   "10",
+   "11",
+   "12",
+   "13",
+   "14"
+  ]
+ },
+ {
+  "n": 13,
+  "mapel": "Geometri",
+  "q": "Sebuah segitiga memiliki panjang sisi 13 cm, 14 cm, dan 15 cm. Luas segitiga tersebut adalah ...",
+  "o": [
+   "72 cm²",
+   "78 cm²",
+   "84 cm²",
+   "90 cm²",
+   "96 cm²"
+  ]
+ },
+ {
+  "n": 14,
+  "mapel": "Geometri",
+  "q": "Sebuah lingkaran memiliki jari-jari 14 cm. Luas juring dengan sudut pusat 90° adalah ... (gunakan π = {22/7}).",
+  "o": [
+   "77 cm²",
+   "154 cm²",
+   "196 cm²",
+   "308 cm²",
+   "616 cm²"
+  ]
+ },
+ {
+  "n": 15,
+  "mapel": "Geometri",
+  "q": "Sebuah persegi memiliki diagonal sepanjang 10√2 cm. Luas persegi tersebut adalah ...",
+  "o": [
+   "25 cm²",
+   "50 cm²",
+   "75 cm²",
+   "100 cm²",
+   "200 cm²"
+  ]
+ },
+ {
+  "n": 16,
+  "mapel": "Geometri",
+  "q": "Sebuah segitiga siku-siku memiliki sisi tegak 9 cm dan sisi alas 12 cm. Jari-jari lingkaran dalam segitiga tersebut adalah ...",
+  "o": [
+   "2 cm",
+   "3 cm",
+   "4 cm",
+   "5 cm",
+   "6 cm"
+  ]
+ },
+ {
+  "n": 17,
+  "mapel": "Geometri",
+  "q": "Sebuah kubus memiliki luas permukaan 384 cm². Volume kubus tersebut adalah ...",
+  "o": [
+   "216 cm³",
+   "343 cm³",
+   "512 cm³",
+   "729 cm³",
+   "1.000 cm³"
+  ]
+ },
+ {
+  "n": 18,
+  "mapel": "Geometri",
+  "q": "Pada sebuah segitiga ABC, besar sudut A = 2 kali sudut B dan sudut C = 3 kali sudut B. Besar sudut terbesar segitiga tersebut adalah ...",
+  "o": [
+   "60°",
+   "72°",
+   "90°",
+   "108°",
+   "120°"
+  ]
+ },
+ {
+  "n": 19,
+  "mapel": "Kombinatorika dan Peluang",
+  "q": "Terdapat 5 siswa yang akan duduk berjajar. Banyak susunan berbeda jika dua siswa tertentu harus selalu berdampingan adalah ...",
+  "o": [
+   "24",
+   "36",
+   "48",
+   "60",
+   "120"
+  ]
+ },
+ {
+  "n": 20,
+  "mapel": "Kombinatorika dan Peluang",
+  "q": "Sebuah dadu dilempar dua kali. Peluang jumlah kedua mata dadu sama dengan 8 adalah ...",
+  "o": [
+   "{1/12}",
+   "{5/36}",
+   "{1/6}",
+   "{7/36}",
+   "{1/4}"
+  ]
+ },
+ {
+  "n": 21,
+  "mapel": "Kombinatorika dan Peluang",
+  "q": "Dari angka 1, 2, 3, 4, dan 5 akan dibentuk bilangan tiga angka tanpa pengulangan digit. Banyak bilangan yang lebih besar dari 300 adalah ...",
+  "o": [
+   "24",
+   "30",
+   "36",
+   "48",
+   "60"
+  ]
+ },
+ {
+  "n": 22,
+  "mapel": "Kombinatorika dan Peluang",
+  "q": "Dalam sebuah kelas terdapat 20 siswa. Setiap siswa berjabat tangan tepat satu kali dengan setiap siswa lainnya. Jumlah jabat tangan yang terjadi adalah ...",
+  "o": [
+   "100",
+   "160",
+   "180",
+   "190",
+   "200"
+  ]
+ },
+ {
+  "n": 23,
+  "mapel": "Kombinatorika dan Peluang",
+  "q": "Banyak cara memilih 3 orang dari 8 orang untuk menjadi sebuah tim adalah ...",
+  "o": [
+   "24",
+   "36",
+   "48",
+   "56",
+   "64"
+  ]
+ },
+ {
+  "n": 24,
+  "mapel": "Kombinatorika dan Peluang",
+  "q": "Sebuah kotak berisi 4 bola merah, 3 bola biru, dan 2 bola hijau. Jika diambil dua bola secara acak tanpa pengembalian, peluang kedua bola memiliki warna yang sama adalah ...",
+  "o": [
+   "{1/6}",
+   "{5/18}",
+   "{1/3}",
+   "{7/18}",
+   "{1/2}"
+  ]
+ },
+ {
+  "n": 25,
+  "mapel": "Teori Bilangan dan Logika",
+  "q": "Banyak faktor positif dari 360 adalah ...",
+  "o": [
+   "18",
+   "20",
+   "24",
+   "30",
+   "36"
+  ]
+ },
+ {
+  "n": 26,
+  "mapel": "Teori Bilangan dan Logika",
+  "q": "Jika suatu bilangan dibagi 5 bersisa 3 dan dibagi 7 bersisa 4, bilangan positif terkecil yang memenuhi adalah ...",
+  "o": [
+   "18",
+   "23",
+   "28",
+   "33",
+   "38"
+  ]
+ },
+ {
+  "n": 27,
+  "mapel": "Teori Bilangan dan Logika",
+  "q": "Bilangan prima terkecil yang dapat dinyatakan sebagai jumlah dua bilangan prima berbeda adalah ...",
+  "o": [
+   "5",
+   "7",
+   "9",
+   "11",
+   "13"
+  ]
+ },
+ {
+  "n": 28,
+  "mapel": "Teori Bilangan dan Logika",
+  "q": "Jumlah 100 bilangan asli pertama adalah ...",
+  "o": [
+   "4.950",
+   "5.000",
+   "5.050",
+   "5.100",
+   "5.500"
+  ]
+ },
+ {
+  "n": 29,
+  "mapel": "Teori Bilangan dan Logika",
+  "q": "Suatu barisan bilangan memiliki pola 2, 6, 12, 20, 30, 42, ... Suku ke-10 barisan tersebut adalah ...",
+  "o": [
+   "90",
+   "100",
+   "110",
+   "120",
+   "132"
+  ]
+ },
+ {
+  "n": 30,
+  "mapel": "Teori Bilangan dan Logika",
+  "q": "Terdapat tiga kotak. Kotak pertama berisi 2 bola merah dan 3 bola putih, kotak kedua berisi 4 bola merah dan 1 bola putih, sedangkan kotak ketiga berisi 3 bola merah dan 2 bola putih. Satu kotak dipilih secara acak, kemudian diambil satu bola secara acak. Peluang terambil bola merah adalah ...",
+  "o": [
+   "{1/3}",
+   "{2/5}",
+   "{3/5}",
+   "{2/3}",
+   "{4/5}"
+  ]
+ }
+];
+
+/* ---------- 3. PENJAGA & DATA PESERTA ---------- */
+var peserta = (function () {
+  function read(name) {
+    try { return sessionStorage.getItem(CONFIG.sessionKey + "_" + name); } catch (e) { return null; }
+  }
+  function go(url) { location.replace(url); return null; }
+
+  if (!read("user")) return go(CONFIG.loginPageUrl);
+
+  var profile = null;
+  try { profile = JSON.parse(read("profil")); } catch (e) {}
+  if (!profile || profile.lomba !== CONFIG.lomba) return go(CONFIG.loginPageUrl);
+
+  // Foto & pakta harus sudah diisi di beranda (mencegah membuka halaman ujian lewat alamat langsung)
+  var fin = false;
+  try { var sv = JSON.parse(localStorage.getItem("lemon2026_ujian_matematika_" + String(profile.nama).toLowerCase().replace(/[^a-z0-9]+/g, "_"))); fin = !!(sv && sv.selesai); } catch (e) {}
+  if (!fin && (!read("foto") || read("pakta") !== "1")) return go(CONFIG.berandaUrl);
+
+  return profile;
+})();
+
+/* ---------- 4. STATUS UJIAN ----------
+   Disimpan di localStorage per peserta, jadi waktu TIDAK mulai ulang bila halaman
+   dimuat ulang, tab ditutup, atau peserta keluar lalu masuk lagi. */
+var state = null;
+var STORE_KEY = peserta ? "lemon2026_ujian_matematika_" + String(peserta.nama).toLowerCase().replace(/[^a-z0-9]+/g, "_") : "";
+
+function loadState() {
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem(STORE_KEY)); } catch (e) {}
+  if (!saved || typeof saved !== "object") saved = {};
+  saved.mulai = saved.mulai || Date.now();
+  saved.jawaban = saved.jawaban || {};
+  saved.idx = saved.idx || 0;
+  saved.pindahTab = saved.pindahTab || 0;
+  saved.pelanggaran = saved.pelanggaran || 0;
+  saved.fsDeadline = saved.fsDeadline || 0;
+  saved.fsKeluar = saved.fsKeluar || 0;
+  saved.logPelanggaran = saved.logPelanggaran || [];
+  return saved;
+}
+function saveState() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+/* ---------- 5. TAMPILAN ---------- */
+function $(id) { return document.getElementById(id); }
+var LETTERS = ["A", "B", "C", "D", "E"];
+
+function answeredCount() { return Object.keys(state.jawaban).length; }
+
+function buildGrid() {
+  var html = "";
+  for (var i = 0; i < SOAL.length; i++) {
+    html += '<button type="button" class="qbtn" data-i="' + i + '" aria-label="Soal ' + (i + 1) + '">' + (i + 1) + "</button>";
+  }
+  $("qgrid").innerHTML = html;
+}
+
+function renderGrid() {
+  var buttons = $("qgrid").children;
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].classList.toggle("answered", !!state.jawaban[i + 1]);
+    buttons[i].classList.toggle("current", i === state.idx);
+    if (i === state.idx) buttons[i].setAttribute("aria-current", "true");
+    else buttons[i].removeAttribute("aria-current");
+  }
+}
+
+function mh(t) {   // teks soal -> HTML aman: {a/b} = pecahan, ^(n) = pangkat
+  t = String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  t = t.replace(/\{([^{}\/]+)\/([^{}\/]+)\}/g, '<span class="frac"><span>$1</span><span>$2</span></span>');
+  return t.replace(/\^\(([^()]+)\)/g, "<sup>$1</sup>");
+}
+
+function renderQuestion() {
+  var q = SOAL[state.idx];
+  var picked = state.jawaban[q.n] || "";
+
+  $("qnum").textContent = "Pertanyaan " + q.n;
+  $("qtag").textContent = q.mapel;
+  $("qtext").innerHTML = mh(q.q);
+
+  var html = "";
+  for (var i = 0; i < q.o.length; i++) {
+    var L = LETTERS[i];
+    html += '<label class="opt"><input type="radio" name="jawab" value="' + L + '"' + (picked === L ? " checked" : "") + '>' +
+            "<b>" + L + ".</b><span></span></label>";
+  }
+  var fieldset = $("opts");
+  // pertahankan <legend>, ganti sisanya
+  while (fieldset.children.length > 1) fieldset.removeChild(fieldset.lastChild);
+  fieldset.insertAdjacentHTML("beforeend", html);
+  var spans = fieldset.querySelectorAll(".opt span");
+  for (var j = 0; j < spans.length; j++) spans[j].innerHTML = mh(q.o[j]);
+
+  $("btn-clear").hidden = !picked;
+  $("btn-prev").disabled = state.idx === 0;
+  $("btn-next").disabled = state.idx === SOAL.length - 1;
+  $("btn-submit").hidden = state.idx !== SOAL.length - 1;   // tombol Submit hanya di soal terakhir
+  renderProgress();
+  renderGrid();
+}
+
+function renderProgress() {
+  $("progress").textContent = "Terjawab " + answeredCount() + " dari " + SOAL.length + " soal";
+}
+
+function goTo(i) {
+  if (i < 0 || i >= SOAL.length) return;
+  state.idx = i;
+  saveState();
+  renderQuestion();
+}
+
+function pick(letter) {
+  var q = SOAL[state.idx];
+  if (letter) state.jawaban[q.n] = letter; else delete state.jawaban[q.n];
+  saveState();
+  $("btn-clear").hidden = !letter;
+  renderProgress();
+  renderGrid();
+}
+
+/* ---------- 6. TIMER ---------- */
+var timerId = null;
+
+function pad(n) { return (n < 10 ? "0" : "") + n; }
+
+function tick() {
+  var total = CONFIG.durasiMenit * 60;
+  var left = Math.ceil((state.mulai + total * 1000 - Date.now()) / 1000);
+  if (left < 0) left = 0;
+
+  var h = Math.floor(left / 3600), m = Math.floor((left % 3600) / 60), s = left % 60;
+  $("timer-side").textContent = pad(h) + " : " + pad(m) + " : " + pad(s);
+  $("timer-hdr-text").textContent = pad(h) + ":" + pad(m) + ":" + pad(s);
+
+  var warn = left <= CONFIG.warnMenit * 60;
+  $("timer-side").classList.toggle("warn", warn);
+  $("timer-hdr").classList.toggle("warn", warn);
+
+  if (left === 0) {
+    clearInterval(timerId);
+    finish("waktu");
+  }
+}
+
+/* ---------- 7. KIRIM JAWABAN ---------- */
+
+// Data yang dikirim ke panitia. Tidak ada nilai atau kunci di dalamnya.
+function buildPayload() {
+  var jawaban = {};
+  for (var i = 0; i < SOAL.length; i++) jawaban[SOAL[i].n] = state.jawaban[SOAL[i].n] || "";
+  return {
+    lomba: CONFIG.lomba,
+    nama: peserta.nama,
+    sekolah: peserta.sekolah,
+    mulai: new Date(state.mulai).toISOString(),
+    selesai: state.selesai.waktu,
+    sebab: state.selesai.sebab,          // "manual" atau "waktu"
+    pindahTab: state.pindahTab,          // berapa kali tab ditinggalkan selama ujian
+    pelanggaran: state.pelanggaran || 0,       // jumlah pelanggaran (pindah tab + screenshot), maks. 5
+    rincianPelanggaran: state.logPelanggaran || [], // [{waktu, alasan}]
+    verifikasi: state.verifikasi || null, // nama, pernyataan, foto bukti (thumbnail)
+    jawaban: jawaban                     // { "1": "B", "2": "", ... }
+  };
+}
+
+function send() {
+  if (!CONFIG.submitUrl) { showDone(); return; }
+  fetch(CONFIG.submitUrl, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(buildPayload())
+  }).then(function () {
+    state.terkirim = true; saveState(); showDone();
+  }).catch(function () {
+    state.terkirim = false; saveState(); showDone();
+  });
+}
+
+function finish(sebab) {
+  if (state.selesai) return;
+  state.selesai = { waktu: new Date().toISOString(), sebab: sebab };
+  saveState();
+  // Submit soal -> verifikasi dulu. Jawaban baru dikirim setelah verifikasi selesai.
+  location.replace(CONFIG.verifikasiUrl);
+}
+
+function showDone() {
+  $("exam").hidden = true;
+  $("done").hidden = false;
+  $("timer-hdr").hidden = true;
+
+  $("done-title").textContent = state.selesai && state.selesai.sebab === "waktu" ? "Waktu habis" : "Jawaban terkirim";
+
+  var status = $("done-status");
+  var resend = $("btn-resend");
+  status.className = "status";
+  resend.hidden = true;
+
+  if (!CONFIG.submitUrl) {
+    status.textContent = "Jawaban Anda telah tersimpan.";
+  } else if (state.terkirim) {
+    status.textContent = "Jawaban Anda sudah diterima panitia.";
+  } else if (state.terkirim === false) {
+    status.textContent = "Jawaban tersimpan di perangkat ini tetapi belum terkirim. Pastikan internet stabil lalu coba kirim lagi.";
+    status.className = "status bad";
+    resend.hidden = false;
+  } else {
+    status.textContent = "Mengirim jawaban...";
+  }
+}
+
+function openSubmitDialog() {
+  var done = answeredCount(), empty = SOAL.length - done;
+  $("dlg-info").textContent = "Anda menjawab " + done + " dari " + SOAL.length + " soal" +
+    (empty ? ", " + empty + " soal belum dijawab." : ".");
+  $("dlg-submit").showModal();
+}
+
+/* ---------- 7b. PELANGGARAN & PENJAGA UJIAN ----------
+   Dihitung (maks. CONFIG.maxPelanggaran kali):
+     - pindah / keluar dari tab ujian
+     - screenshot (tombol PrintScreen, Win+Shift+S, Cmd+Shift+3/4/5)
+   Hanya peringatan (TIDAK dihitung): klik kanan, select / salin teks.
+   Setelah batas tercapai: jawaban otomatis terkirim lalu kembali ke beranda. */
+var siapKeluar = { kirim: false, klik: false, jalan: false };
+// status deteksi keluar jendela (lihat bagian 7f)
+var aktif = false, lepas = false, kecil = false, tanpaFokus = 0, basis = 0, ignoreSampai = 0, resizeT = 0, tSiap = 0;
+var lastHit = {};
+
+function boleh(kunci, ms) {            // cegah satu kejadian terhitung berkali-kali
+  var now = Date.now();
+  if (lastHit[kunci] && now - lastHit[kunci] < ms) return false;
+  lastHit[kunci] = now;
+  return true;
+}
+
+function kirimLalu(cb) {
+  if (!CONFIG.submitUrl) { cb(); return; }
+  var sudah = false;
+  function sekali() { if (!sudah) { sudah = true; cb(); } }
+  setTimeout(sekali, 8000);
+  fetch(CONFIG.submitUrl, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(buildPayload())
+  }).then(function () {
+    state.terkirim = true; saveState(); sekali();
+  }).catch(function () {
+    state.terkirim = false; saveState(); sekali();
+  });
+}
+
+function kembaliKeBeranda() {
+  if (CONFIG.submitUrl && !state.terkirim) kirimLalu(function () { location.replace(CONFIG.berandaUrl); });
+  else location.replace(CONFIG.berandaUrl);
+}
+
+function cekKeluar() {
+  if (siapKeluar.jalan || !siapKeluar.kirim || !siapKeluar.klik) return;
+  siapKeluar.jalan = true;
+  location.replace(CONFIG.berandaUrl);
+}
+
+// mode: "vio" (pelanggaran, ada hitungan) atau "info" (peringatan biasa)
+function tampilPopup(o) {
+  var dlg = $("dlg-alert");
+  dlg.className = o.mode === "vio" ? "vio" : "";
+  dlg.dataset.mode = o.mode;
+  dlg.dataset.final = o.final ? "1" : "";
+  $("alert-title").textContent = o.judul;
+  $("alert-msg").textContent = o.pesan;
+
+  var meter = $("alert-meter"), count = $("alert-count"), sub = $("alert-sub");
+  if (o.mode === "vio") {
+    var max = CONFIG.maxPelanggaran, html = "";
+    for (var i = 0; i < max; i++) html += '<i class="' + (i < o.jumlah ? "on" : "") + '"></i>';
+    meter.innerHTML = html;
+    count.textContent = "Pelanggaran " + o.jumlah + " dari " + max;
+    meter.hidden = false; count.hidden = false;
+  } else {
+    meter.hidden = true; count.hidden = true;
+  }
+  sub.textContent = o.sub || "";
+  sub.hidden = !o.sub;
+  $("alert-ok").textContent = o.tombol || "Saya Mengerti";
+  if (!dlg.open) dlg.showModal();
+}
+
+function tampilInfo(pesan) {
+  if (!aktif) return;                                  // belum masuk layar penuh: jangan munculkan peringatan
+  if ($("dlg-fs").open || $("dlg-submit").open) return;
+  var dlg = $("dlg-alert");
+  if (dlg.open && dlg.dataset.mode === "vio") return;   // pop up pelanggaran lebih penting
+  if (dlg.open) return;
+  tampilPopup({ mode: "info", judul: "Peringatan", pesan: pesan + " Ini hanya peringatan dan tidak dihitung sebagai pelanggaran.", tombol: "Saya Mengerti" });
+}
+
+function catatPelanggaran(alasan) {
+  if (!state || state.selesai) return;
+  var max = CONFIG.maxPelanggaran;
+  state.pelanggaran = (state.pelanggaran || 0) + 1;
+  state.logPelanggaran = state.logPelanggaran || [];
+  state.logPelanggaran.push({ waktu: new Date().toISOString(), alasan: alasan });
+
+  if (state.pelanggaran >= max) {
+    state.selesai = { waktu: new Date().toISOString(), sebab: "pelanggaran" };
+    state.verifikasi = state.verifikasi || { dilewati: true, alasan: "Ujian dihentikan otomatis: batas pelanggaran tercapai" };
+    saveState();
+    clearInterval(timerId);
+    fsBerhenti();
+    tampilPopup({
+      mode: "vio", final: true, jumlah: max,
+      judul: "Ujian Dihentikan",
+      pesan: alasan + ".",
+      sub: "Batas pelanggaran tercapai. Jawaban Anda otomatis dikirim dan Anda akan dikembalikan ke beranda.",
+      tombol: "Kembali ke Beranda"
+    });
+    kirimLalu(function () { siapKeluar.kirim = true; cekKeluar(); });
+    setTimeout(function () { siapKeluar.kirim = true; siapKeluar.klik = true; cekKeluar(); }, 15000);
+    return;
+  }
+
+  saveState();
+  var sisa = max - state.pelanggaran;
+  tampilPopup({
+    mode: "vio", jumlah: state.pelanggaran,
+    judul: "Pelanggaran Terdeteksi",
+    pesan: alasan + ".",
+    sub: "Sisa kesempatan: " + sisa + "x. Jika mencapai " + max + "x, ujian otomatis dikirim dan Anda kembali ke beranda.",
+    tombol: "Saya Mengerti"
+  });
+}
+
+function pasangPenjaga() {
+  // Tombol OK pop up
+  $("alert-ok").addEventListener("click", function () {
+    var dlg = $("dlg-alert");
+    if (dlg.dataset.final === "1") {
+      $("alert-ok").textContent = "Mengirim...";
+      siapKeluar.klik = true; cekKeluar();
+    } else {
+      dlg.close();
+    }
+  });
+  $("dlg-alert").addEventListener("cancel", function (e) { e.preventDefault(); });   // Esc tidak menutup
+
+  // Teks pilihan jawaban: klik 2x / drag untuk select juga memunculkan peringatan
+  // (klik 1x tetap memilih jawaban seperti biasa)
+  var opts = $("opts");
+  var pesanJawab = "Memilih (select) teks jawaban tidak diperbolehkan selama ujian.";
+  var drag = null;
+  opts.addEventListener("mousedown", function (e) {
+    if (state.selesai) return;
+    if (e.detail > 1) { e.preventDefault(); return; }   // klik ganda cepat: tetap tanpa pop up
+    drag = { x: e.clientX, y: e.clientY };
+  });
+  opts.addEventListener("mousemove", function (e) {
+    if (!drag || state.selesai) return;
+    if (!(e.buttons & 1)) { drag = null; return; }
+    if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) > 8) {   // menyeret = mencoba select
+      drag = null;
+      window.getSelection && window.getSelection().removeAllRanges();
+      if (boleh("sel", 500)) tampilInfo(pesanJawab);
+    }
+  });
+  document.addEventListener("mouseup", function () { drag = null; });
+  opts.addEventListener("dblclick", function (e) {
+    if (state.selesai) return;
+    e.preventDefault();
+    window.getSelection && window.getSelection().removeAllRanges();
+  });
+  opts.addEventListener("dragstart", function (e) { e.preventDefault(); });
+
+  // Klik kanan -> peringatan saja
+  document.addEventListener("contextmenu", function (e) {
+    if (state.selesai) return;
+    e.preventDefault();
+    if (boleh("ctx", 500)) tampilInfo("Klik kanan tidak diperbolehkan selama ujian.");
+  });
+
+  // Select teks / salin -> peringatan saja
+  document.addEventListener("selectstart", function (e) {
+    if (state.selesai) return;
+    var t = e.target && (e.target.nodeType === 3 ? e.target.parentNode : e.target);
+    if (t && t.closest && (t.closest(".opt") || t.closest("dialog"))) { e.preventDefault(); return; }   // klik pada box jawaban: tanpa pop up
+    e.preventDefault();
+    if (boleh("sel", 500)) tampilInfo("Memilih (select) teks tidak diperbolehkan selama ujian.");
+  });
+  ["copy", "cut"].forEach(function (nama) {
+    document.addEventListener(nama, function (e) {
+      if (state.selesai) return;
+      e.preventDefault();
+      if (boleh("cp", 500)) tampilInfo("Menyalin teks tidak diperbolehkan selama ujian.");
+    });
+  });
+
+  // Screenshot -> pelanggaran (deteksi terbaik yang mungkin dilakukan browser)
+  function cekScreenshot(e) {
+    if (state.selesai) return;
+    var k = String(e.key || ""), c = String(e.code || "");
+    var printScr = k === "PrintScreen" || c === "PrintScreen";
+    var winSnip = e.metaKey && e.shiftKey && k.toLowerCase() === "s";               // Win+Shift+S
+    var macShot = e.metaKey && e.shiftKey && (c === "Digit3" || c === "Digit4" || c === "Digit5"); // Cmd+Shift+3/4/5
+    if (printScr || winSnip || macShot) {
+      try { if (navigator.clipboard) navigator.clipboard.writeText(""); } catch (x) {}
+      if (boleh("shot", 1500)) {
+        lepas = true;     // alat screenshot merebut fokus: jangan dihitung lagi sebagai keluar jendela
+        catatPelanggaran("Terdeteksi mengambil screenshot");
+      }
+    }
+  }
+  document.addEventListener("keydown", cekScreenshot);
+  document.addEventListener("keyup", cekScreenshot);
+
+  // Pintasan salin / pilih semua -> peringatan saja
+  document.addEventListener("keydown", function (e) {
+    if (state.selesai || !(e.ctrlKey || e.metaKey) || e.shiftKey) return;
+    var k = String(e.key || "").toLowerCase();
+    if (k === "c" || k === "x" || k === "a") {
+      e.preventDefault();
+      if (boleh("cp", 500)) tampilInfo("Menyalin atau memilih teks tidak diperbolehkan selama ujian.");
+    }
+  });
+}
+
+/* ---------- 7c. WAJIB LAYAR PENUH ----------
+   Browser mewajibkan klik peserta untuk masuk layar penuh, jadi saat halaman dibuka
+   muncul pop up dengan tombol "Masuk Layar Penuh". Bila peserta keluar dari layar penuh,
+   pop up muncul lagi dengan hitung mundur CONFIG.fsBatasDetik detik. Jika belum kembali
+   sebelum habis -> +1 pelanggaran (hitung mundur diulang selama belum layar penuh). */
+var fs = { timer: null, deadline: 0, keluarHalaman: false };
+
+function fsElemen() { return document.fullscreenElement || document.webkitFullscreenElement || null; }
+function fsDidukung() {
+  var d = document.documentElement;
+  return !!(d.requestFullscreen || d.webkitRequestFullscreen);
+}
+function fsMasuk() {
+  var d = document.documentElement;
+  try {
+    var p = d.requestFullscreen ? d.requestFullscreen() : d.webkitRequestFullscreen();
+    if (p && p.catch) p.catch(function () {});
+  } catch (e) {}
+}
+
+function fsTampil(hitung) {
+  var dlg = $("dlg-fs");
+  dlg.className = hitung ? "warn" : "";
+  $("fs-count-wrap").hidden = !hitung;
+  $("fs-title").textContent = hitung ? "Kembali ke Layar Penuh!" : "Ujian Memakai Layar Penuh";
+  $("fs-msg").textContent = hitung
+    ? ((state.fsKeluar || 0) >= CONFIG.fsKeluarLangsung
+        ? "Anda keluar dari layar penuh dan sudah dihitung 1 pelanggaran. Segera klik tombol di bawah untuk melanjutkan ujian."
+        : "Anda keluar dari layar penuh. Segera klik tombol di bawah. Jika keluar lagi, langsung dihitung pelanggaran.")
+    : "Klik tombol di bawah untuk masuk ke layar penuh dan memulai ujian. Jangan keluar dari layar penuh selama ujian berlangsung.";
+  if (!dlg.open) dlg.showModal();
+}
+
+function fsBerhenti() {
+  clearInterval(fs.timer);
+  fs.timer = null;
+  if (state) { state.fsDeadline = 0; saveState(); }
+  var dlg = $("dlg-fs");
+  if (dlg.open) dlg.close();
+}
+
+function fsMulaiHitung(deadline) {
+  clearInterval(fs.timer);
+  var batas = CONFIG.fsBatasDetik * 1000;
+  fs.deadline = deadline || (Date.now() + batas);
+  state.fsDeadline = fs.deadline;
+  saveState();
+  fsTampil(true);
+  $("fs-count").textContent = Math.max(0, Math.ceil((fs.deadline - Date.now()) / 1000));
+
+  fs.timer = setInterval(function () {
+    if (state.selesai) { fsBerhenti(); return; }
+    if (fsElemen()) { fsBerhenti(); return; }
+    var sisa = Math.ceil((fs.deadline - Date.now()) / 1000);
+    if (sisa <= 0) {
+      catatPelanggaran("Tidak kembali ke layar penuh dalam " + CONFIG.fsBatasDetik + " detik");
+      if (state.selesai) { fsBerhenti(); return; }
+      fs.deadline = Date.now() + batas;        // ulangi hitung mundur selama belum layar penuh
+      state.fsDeadline = fs.deadline;
+      saveState();
+      sisa = CONFIG.fsBatasDetik;
+    }
+    $("fs-count").textContent = sisa;
+  }, 250);
+}
+
+function fsBerubah() {
+  if (state.selesai || fs.keluarHalaman) return;
+  if (fsElemen()) { fsBerhenti(); kunciKeyboard(true); siapkanDeteksi(); return; }    // sudah kembali layar penuh
+  kunciKeyboard(false);
+  resetBasis();
+
+  // Keluar dari layar penuh: ke-1 hanya peringatan + hitung mundur, ke-2 dst. langsung pelanggaran
+  state.fsKeluar = (state.fsKeluar || 0) + 1;
+  saveState();
+  fsMulaiHitung();
+  if (state.fsKeluar >= CONFIG.fsKeluarLangsung) {
+    catatPelanggaran("Keluar dari layar penuh (ke-" + state.fsKeluar + ")");
+  }
+}
+
+function pasangFullscreen() {
+  if (!fsDidukung()) {                         // mis. iPhone: tidak ada API layar penuh
+    document.addEventListener("click", siapkanDeteksi, { once: true });
+    return;
+  }
+
+  window.addEventListener("beforeunload", function () { fs.keluarHalaman = true; setTimeout(function () { fs.keluarHalaman = false; }, 1500); });
+  window.addEventListener("pagehide", function () { fs.keluarHalaman = true; });
+
+  $("fs-ok").addEventListener("click", fsKlik);
+  $("dlg-fs").addEventListener("cancel", function (e) { e.preventDefault(); });
+  document.addEventListener("fullscreenchange", fsBerubah);
+  document.addEventListener("webkitfullscreenchange", fsBerubah);
+
+  if (fsElemen()) { siapkanDeteksi(); return; }
+  // Muat ulang saat hitung mundur masih berjalan: lanjutkan hitung mundur yang sama
+  if (state.fsDeadline) fsMulaiHitung(state.fsDeadline);
+  else fsTampil(false);                        // awal ujian: minta masuk layar penuh (belum pelanggaran)
+}
+
+/* ---------- 7d. PERINGATAN SEBELUM PINDAH TAB ----------
+   Browser TIDAK bisa memblokir pindah tab, jadi yang bisa dilakukan adalah memberi
+   peringatan lebih awal saat ada tanda-tanda peserta akan pindah (tidak dihitung):
+     - kursor keluar lewat tepi atas jendela (menuju tab / address bar)
+     - jendela kehilangan fokus
+     - pintasan pindah tab (Ctrl+Tab, Ctrl+PageUp/PageDown, Alt+Tab, Cmd+Tab)
+   Pelanggaran tetap dihitung saat tab benar-benar ditinggalkan. */
+function peringatanTab(pesanKhusus) {
+  if (!state || state.selesai) return;
+  if (!aktif || Date.now() < ignoreSampai) return;   // belum aktif / baru ganti layar penuh
+  if ($("dlg-alert").open || $("dlg-fs").open || $("dlg-submit").open) return;   // jangan menimpa pop up lain
+  if (!boleh("tabwarn", 3000)) return;
+  var sisa = CONFIG.maxPelanggaran - (state.pelanggaran || 0);
+  tampilPopup({
+    mode: "info",
+    judul: "Jangan Pindah Tab!",
+    pesan: (pesanKhusus || "Anda terdeteksi akan meninggalkan halaman ujian.") + " Pindah atau keluar dari tab dihitung sebagai pelanggaran (sisa kesempatan: " + sisa + "x).",
+    tombol: "Tetap di Halaman Ujian"
+  });
+}
+
+function pasangPeringatanTab() {
+  document.documentElement.addEventListener("mouseleave", function (e) {
+    if (e.clientY <= 0) peringatanTab();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (state.selesai) return;
+    var k = String(e.key || "");
+    var kl = k.toLowerCase();
+    var pindahTab = ((e.ctrlKey || e.altKey || e.metaKey) && k === "Tab") ||
+                    (e.ctrlKey && (k === "PageUp" || k === "PageDown")) ||
+                    (e.ctrlKey && ["w", "t", "n", "r", "l"].indexOf(kl) >= 0) ||
+                    (e.altKey && (k === "ArrowLeft" || k === "ArrowRight")) ||
+                    k === "Meta" || k === "F5" || k === "F11";
+    if (pindahTab) { e.preventDefault(); peringatanTab(); }
+  });
+}
+
+/* ---------- 7e. PENAHAN PINDAH TAB / HALAMAN & ALARM ----------
+   Yang BISA dilakukan web (browser tidak mengizinkan pemblokiran total):
+     - Keyboard Lock (Chrome/Edge, saat layar penuh + HTTPS): pintasan sistem/browser
+       seperti Ctrl+Tab, Ctrl+W/T/N, Alt+Tab, tombol Windows dikirim ke halaman lalu diblokir
+     - beforeunload: menutup tab, refresh, tombol kembali, ganti alamat -> browser menahan
+       dengan kotak konfirmasi "Tinggalkan situs?"
+     - Jika tab tetap berhasil ditinggalkan: alarm bunyi, judul tab berkedip, dan notifikasi
+       sistem muncul LANGSUNG (di luar halaman), klik notifikasi = kembali ke ujian */
+var ak = { ctx: null, bunyi: null, judul: "", notif: null, izinDiminta: false };
+
+function alarmSiap() {                       // dipanggil dari klik peserta (syarat browser untuk audio)
+  try {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) {
+      if (!ak.ctx) ak.ctx = new AC();
+      if (ak.ctx.state === "suspended") ak.ctx.resume();
+    }
+  } catch (e) {}
+}
+
+function beep() {
+  try {
+    var o = ak.ctx.createOscillator(), g = ak.ctx.createGain();
+    o.type = "square"; o.frequency.value = 880; g.gain.value = 0.15;
+    o.connect(g); g.connect(ak.ctx.destination);
+    o.start(); o.stop(ak.ctx.currentTime + 0.3);
+  } catch (e) {}
+}
+
+function alarmMulai() {
+  if (ak.bunyi || !state) return;
+  ak.judul = document.title;
+  var pesan = state.selesai
+    ? "Ujian dihentikan karena batas pelanggaran tercapai."
+    : "Pelanggaran " + state.pelanggaran + " dari " + CONFIG.maxPelanggaran + ": Anda meninggalkan tab ujian. Kembali sekarang!";
+  var on = false;
+  function ketuk() {
+    on = !on;
+    document.title = on ? "\u26A0 KEMBALI KE UJIAN!" : ak.judul;
+    if (ak.ctx) beep();
+  }
+  ketuk();
+  ak.bunyi = setInterval(ketuk, 1000);
+  try {
+    if ("Notification" in window && Notification.permission === "granted") {
+      ak.notif = new Notification("Peringatan Ujian", { body: pesan, tag: "ujian-pelanggaran", requireInteraction: true });
+      ak.notif.onclick = function () { try { window.focus(); } catch (e) {} this.close(); };
+    }
+  } catch (e) {}
+}
+
+function alarmBerhenti() {
+  clearInterval(ak.bunyi);
+  ak.bunyi = null;
+  if (ak.judul) document.title = ak.judul;
+  try { if (ak.notif) ak.notif.close(); } catch (e) {}
+  ak.notif = null;
+}
+
+function kunciKeyboard(aktif) {
+  try {
+    if (!navigator.keyboard) return;
+    if (aktif && navigator.keyboard.lock) navigator.keyboard.lock();
+    else if (!aktif && navigator.keyboard.unlock) navigator.keyboard.unlock();
+  } catch (e) {}
+}
+
+// Tombol "Masuk Layar Penuh": bila izin notifikasi belum ditentukan, minta dulu (klik 1), lalu layar penuh (klik 2)
+function fsKlik() {
+  alarmSiap();
+  if (ak.izinDiminta || !("Notification" in window) || Notification.permission !== "default") { fsMasuk(); return; }
+  ak.izinDiminta = true;
+  var tombol = $("fs-ok");
+  tombol.textContent = "Pilih izin notifikasi, lalu klik lagi";
+  var lanjut = function () { tombol.textContent = "Masuk Layar Penuh"; };
+  try {
+    var p = Notification.requestPermission(lanjut);
+    if (p && p.then) p.then(lanjut);
+  } catch (e) { lanjut(); }
+}
+
+function pasangKunci() {
+  document.addEventListener("click", alarmSiap, { once: true });
+
+  // Tahan menutup tab / refresh / kembali / pindah alamat
+  window.addEventListener("beforeunload", function (e) {
+    if (!state || state.selesai) return;
+    e.preventDefault();
+    e.returnValue = "";
+    setTimeout(function () {                 // jika peserta memilih tetap di halaman
+      if (!state.selesai) peringatanTab("Anda mencoba meninggalkan halaman ujian.");
+    }, 700);
+    return "";
+  });
+
+  // Tab berhasil ditinggalkan -> alarm + notifikasi langsung; kembali -> alarm berhenti
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { if (!pergiHalaman) alarmMulai(); }
+    else alarmBerhenti();
+  });
+  window.addEventListener("pagehide", alarmBerhenti);
+}
+
+var pergiHalaman = false;
+window.addEventListener("beforeunload", function () {
+  pergiHalaman = true;
+  setTimeout(function () { pergiHalaman = false; }, 1500);   // direset jika peserta membatalkan keluar
+});
+window.addEventListener("pagehide", function () { pergiHalaman = true; });
+
+/* ---------- 7f. DETEKSI KELUAR JENDELA (tab penuh, jendela mengambang, split screen) ----------
+   Selain tab tersembunyi (visibilitychange), pelanggaran juga dihitung bila:
+     - jendela ujian kehilangan fokus (pindah aplikasi / jendela lain di atasnya / floating window)
+     - ukuran jendela mengecil drastis (layar terbagi / jendela mengambang)
+   Satu kejadian dihitung sekali; dihitung lagi setelah peserta kembali ke jendela ujian.
+   Deteksi baru aktif setelah peserta masuk layar penuh (atau klik pertama bila layar penuh tak didukung),
+   supaya tidak ada pop up salah saat halaman baru dibuka. */
+function ukuranJendela() { return window.innerWidth * window.innerHeight; }
+
+function resetBasis() {
+  basis = ukuranJendela();
+  ignoreSampai = Date.now() + 1500;
+  kecil = false;
+}
+
+function siapkanDeteksi() {
+  clearTimeout(tSiap);
+  tSiap = setTimeout(function () { aktif = true; resetBasis(); }, 1000);
+}
+
+function deteksiKeluar(alasan) {
+  if (!state || state.selesai || lepas || pergiHalaman) return;
+  lepas = true;
+  catatPelanggaran(alasan);
+}
+
+function kembaliFokus() {
+  if (!document.hidden && document.hasFocus()) { lepas = false; tanpaFokus = 0; }
+}
+
+function cekUkuran() {
+  if (!aktif || !basis || !state || state.selesai || Date.now() < ignoreSampai) return;
+  var a = ukuranJendela();
+  if (a < basis * 0.7) {
+    if (!kecil) {
+      kecil = true;
+      if (!pergiHalaman) catatPelanggaran("Ukuran jendela ujian mengecil (layar terbagi / jendela mengambang)");
+    }
+  } else if (a >= basis * 0.9) {
+    kecil = false;
+  }
+}
+
+function pasangDeteksiKeluar() {
+  var ALASAN_FOKUS = "Jendela ujian kehilangan fokus (pindah aplikasi / jendela mengambang / layar terbagi)";
+
+  window.addEventListener("blur", function () {
+    if (!aktif) return;
+    setTimeout(function () {                       // tunda sebentar agar gangguan sesaat tidak dihitung
+      if (aktif && (!document.hasFocus() || document.hidden)) deteksiKeluar(ALASAN_FOKUS);
+    }, 400);
+  });
+  window.addEventListener("focus", kembaliFokus);
+
+  // Cadangan: periksa fokus tiap detik (dua kali berturut-turut tanpa fokus = keluar jendela)
+  setInterval(function () {
+    if (!aktif || !state || state.selesai) return;
+    if (document.hasFocus() && !document.hidden) { tanpaFokus = 0; lepas = false; return; }
+    tanpaFokus++;
+    if (tanpaFokus >= 2) deteksiKeluar(ALASAN_FOKUS);
+  }, 1000);
+
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(cekUkuran, 800);
+  });
+  window.addEventListener("orientationchange", function () { setTimeout(resetBasis, 600); });
+}
+
+/* ---------- 8. PEMASANGAN ---------- */
+function init() {
+  if (!peserta) return;                      // penjaga sedang memindahkan halaman
+
+  state = loadState();
+  saveState();                               // catat waktu mulai
+
+  $("exam-name").textContent = CONFIG.namaUjian;
+  $("who-nama").textContent = peserta.nama;
+  $("who-sekolah").textContent = peserta.sekolah;
+
+  $("btn-logout").addEventListener("click", function () {
+    try {
+      ["user", "profil", "foto", "pakta", "bukti"].forEach(function (n) { sessionStorage.removeItem(CONFIG.sessionKey + "_" + n); });
+    } catch (e) {}
+    location.href = CONFIG.loginPageUrl;
+  });
+  $("btn-resend").addEventListener("click", send);
+
+  // Sudah pernah selesai: tampilkan layar selesai saja, tidak bisa masuk lagi
+  if (state.selesai) {
+    if (state.selesai.sebab === "pelanggaran") { kembaliKeBeranda(); return; }   // dihentikan karena pelanggaran
+    if (!state.verifikasi) { location.replace(CONFIG.verifikasiUrl); return; }   // belum verifikasi
+    showDone();
+    if (CONFIG.submitUrl && !state.terkirim) send();
+    return;
+  }
+
+  buildGrid();
+  state.idx = Math.min(Math.max(state.idx, 0), SOAL.length - 1);
+  renderQuestion();
+
+  $("qgrid").addEventListener("click", function (e) {
+    var b = e.target.closest(".qbtn");
+    if (b) goTo(parseInt(b.getAttribute("data-i"), 10));
+  });
+  $("btn-prev").addEventListener("click", function () { goTo(state.idx - 1); });
+  $("btn-next").addEventListener("click", function () { goTo(state.idx + 1); });
+  $("opts").addEventListener("change", function (e) { if (e.target.name === "jawab") pick(e.target.value); });
+  $("btn-clear").addEventListener("click", function () {
+    var checked = $("opts").querySelector("input:checked");
+    if (checked) checked.checked = false;
+    pick("");
+  });
+
+  $("btn-submit").addEventListener("click", openSubmitDialog);
+  $("dlg-cancel").addEventListener("click", function () { $("dlg-submit").close(); });
+  $("dlg-ok").addEventListener("click", function () { $("dlg-submit").close(); finish("manual"); });
+
+  // Pintasan keyboard: panah kiri/kanan pindah soal, huruf A-E memilih jawaban
+  document.addEventListener("keydown", function (e) {
+    if (state.selesai || $("dlg-submit").open || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === "ArrowRight") goTo(state.idx + 1);
+    else if (e.key === "ArrowLeft") goTo(state.idx - 1);
+    else if (/^[a-eA-E]$/.test(e.key) && SOAL[state.idx].o.length > LETTERS.indexOf(e.key.toUpperCase())) {
+      var letter = e.key.toUpperCase();
+      var radio = $("opts").querySelector('input[value="' + letter + '"]');
+      if (radio) { radio.checked = true; pick(letter); }
+    }
+  });
+
+  // Catat berapa kali tab ditinggalkan (dikirim bersama jawaban)
+  // (memuat ulang / menutup halaman tidak dihitung)
+  var leaving = false;
+  window.addEventListener("beforeunload", function () { leaving = true; setTimeout(function () { leaving = false; }, 1500); });
+  window.addEventListener("pagehide", function () { leaving = true; });
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden && !leaving && !state.selesai) {
+      state.pindahTab++;
+      deteksiKeluar("Meninggalkan / pindah dari tab ujian");     // otomatis +1 pelanggaran
+    } else if (!document.hidden) {
+      kembaliFokus();
+    }
+  });
+
+  pasangPenjaga();
+  pasangFullscreen();
+  pasangPeringatanTab();
+  pasangKunci();
+  pasangDeteksiKeluar();
+
+  tick();
+  timerId = setInterval(tick, 500);
+}
+
+init();
+  </script>
+</body>
+</html>

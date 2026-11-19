@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Beranda Peserta IPS</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+/* =====================================================================
+   CSS HALAMAN BERANDA (gabungan base.css + beranda.css)
+   ===================================================================== */
+
+/* ---- TOKEN WARNA & FONT ---- */
+:root {
+  --bg: #fdf8ec;
+  --card: #fffaf0;
+  --ink: #6a4126;
+  --ink-soft: #8f6f52;
+  --line: #fbe1a0;
+  --field: #fff3dc;
+  --accent: #fdb95a;
+  --accent-hover: #f9ab3f;
+  --accent-deep: #d9821a;
+  --on-accent: #4a2a12;
+  --sun: #ffd45c;
+  --leaf: #a9cf85;
+  --green: #6cb04a;
+  --green-dark: #3f7a2a;
+  --green-soft: #eef5df;
+  --green-line: #bddc9b;
+  --blue: #8cc4f5;
+  --blue-ink: #1f4d78;
+  --blob-a: #fdeec4;
+  --blob-b: #dbe5b8;
+  --danger: #b83a26;
+  --danger-line: #e9a597;
+  --danger-bg: #fde6df;
+  --shadow-soft: 0 10px 30px rgba(224, 170, 70, 0.15);
+
+  --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  color-scheme: light;
+}
+
+/* ---- DASAR ---- */
+* { box-sizing: border-box; }
+html { height: 100%; }
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+[hidden] { display: none !important; }
+
+button:focus-visible, a:focus-visible, label:focus-visible, input:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- LATAR BELAKANG ---- */
+.bg { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.blob { position: absolute; border-radius: 50%; }
+.blob.a { width: 46vmax; height: 40vmax; left: -14vmax; top: -16vmax; background: var(--blob-a); border-radius: 40% 60% 55% 45% / 50% 40% 60% 50%; }
+.blob.b { width: 16vmax; height: 16vmax; left: -6vmax; top: 56%; background: var(--blob-a); }
+.blob.c { width: 30vmax; height: 30vmax; right: -12vmax; bottom: -14vmax; background: var(--blob-b); border-radius: 55% 45% 40% 60% / 60% 50% 50% 40%; }
+.blob.d { width: 22vmax; height: 22vmax; right: -9vmax; top: 58%; background: var(--blob-a); }
+
+.spark { position: absolute; width: 28px; height: 28px; fill: var(--sun); }
+.spark.s1 { right: 14%; top: 20%; }
+.spark.s2 { left: 13%; top: 48%; width: 22px; height: 22px; }
+.spark.s3 { right: 15%; bottom: 14%; width: 20px; height: 20px; }
+.spark.s4 { left: 18%; bottom: 10%; width: 18px; height: 18px; }
+
+.lemon { position: absolute; left: 4%; bottom: 4%; width: clamp(84px, 11vw, 150px); height: auto; }
+.page-beranda .lemon { left: auto; right: 1%; bottom: 0; }
+
+/* ---- JUDUL ---- */
+.title-row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.burst { width: 34px; height: 34px; flex: none; stroke: var(--sun); fill: none; stroke-width: 5; stroke-linecap: round; }
+.burst.r { transform: scaleX(-1); }
+.sub { margin: 4px 0 0; font-size: 1.25rem; font-weight: 600; }
+.swoosh { display: block; margin: 8px auto 0; width: 110px; height: 14px; stroke: var(--sun); fill: none; stroke-width: 5; stroke-linecap: round; }
+
+/* ---- TOMBOL UTAMA ---- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 56px;
+  margin-top: 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s, opacity 0.15s;
+}
+.btn:hover { background: var(--accent-hover); }
+.btn:active { transform: scale(0.985); }
+.btn:disabled { cursor: progress; opacity: 0.85; }
+.btn.locked:disabled { cursor: not-allowed; opacity: 0.5; }
+.btn.locked:hover, .btn.locked:active { background: var(--accent); transform: none; }
+.btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.btn .play { fill: currentColor; stroke: none; }
+
+/* ---- LETAK HALAMAN ---- */
+.page {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-block: 8px 72px;
+  padding-inline: clamp(14px, 3vw, 28px);
+}
+
+/* ---- BAR ATAS ---- */
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand svg { width: 42px; height: 42px; flex: none; }
+.brand b { display: block; font-family: var(--font-display); font-size: 1.2rem; line-height: 1; }
+.brand small { display: block; font-size: 0.8rem; font-weight: 700; color: var(--ink-soft); }
+
+.topbar-actions { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.user { position: relative; min-width: 0; }
+.user-btn {
+  display: flex; align-items: center; gap: 8px;
+  max-width: 100%;
+  padding: 4px 8px 4px 4px;
+  border: 0; border-radius: 999px;
+  background: transparent; color: var(--ink);
+  font: inherit; font-weight: 800; font-size: 0.9rem;
+  cursor: pointer;
+}
+.user-btn:hover { background: color-mix(in srgb, var(--sun) 25%, transparent); }
+.avatar {
+  display: grid; place-items: center; flex: none;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--blue); color: var(--blue-ink); font-weight: 800;
+}
+.user-name { max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chev { width: 14px; height: 14px; flex: none; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.15s; }
+.user-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
+
+.user-pop {
+  position: absolute; right: 0; top: calc(100% + 8px); z-index: 5;
+  width: max-content; min-width: 230px; max-width: min(320px, 86vw);
+  padding: 14px 18px;
+  background: var(--card); border: 2px solid var(--line); border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+}
+.user-pop dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0; font-size: 0.9rem; }
+.user-pop dt { color: var(--ink-soft); font-weight: 700; }
+.user-pop dd { margin: 0; font-weight: 800; overflow-wrap: anywhere; }
+
+.logout {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  border: 2px solid var(--danger-line); border-radius: 12px;
+  background: transparent; color: var(--danger);
+  font: inherit; font-weight: 800; font-size: 0.85rem;
+  cursor: pointer;
+}
+.logout:hover { background: var(--danger-bg); }
+.logout svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---- JUDUL BESAR ---- */
+.hero { text-align: center; margin: 6px 0 30px; }
+.hero h1 { font-size: clamp(2.5rem, 9vw, 4.2rem); letter-spacing: 0.03em; text-transform: uppercase; }
+.hero .sub { font-family: var(--font-display); font-size: clamp(1.2rem, 3.6vw, 1.7rem); font-weight: 700; }
+.hero .burst { width: 40px; height: 40px; }
+
+/* ---- KARTU ---- */
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.panel {
+  min-width: 0;
+  padding: 26px clamp(18px, 3vw, 34px) 30px;
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 28px;
+  box-shadow: var(--shadow-soft);
+}
+.panel + .panel, .grid + .panel { margin-top: 26px; }
+.panel-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.panel-head h2 { margin: 0; font-family: var(--font-display); font-size: clamp(1.25rem, 3vw, 1.55rem); font-weight: 800; line-height: 1.15; }
+.panel-head.center { justify-content: center; }
+
+.icon-badge {
+  display: grid; place-items: center; flex: none;
+  width: 54px; height: 54px; border-radius: 50%;
+  background: color-mix(in srgb, var(--sun) 40%, var(--card));
+}
+.icon-badge svg { width: 28px; height: 28px; fill: none; stroke: var(--accent-deep); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.icon-badge.info-ico { background: transparent; }
+.icon-badge.info-ico b { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-size: 1.1rem; }
+
+.tag { display: inline-block; padding: 4px 18px; border-radius: 999px; background: color-mix(in srgb, var(--sun) 35%, var(--card)); font-weight: 800; font-size: 0.85rem; }
+.exam-desc { margin: 16px 0 18px; font-size: 0.95rem; }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fact {
+  display: flex; align-items: center; gap: 10px; min-width: 0;
+  padding: 14px 16px; border-radius: 16px;
+  background: color-mix(in srgb, var(--sun) 18%, var(--card));
+  font-weight: 800; font-size: 0.92rem;
+}
+.fact svg { width: 24px; height: 24px; flex: none; fill: none; stroke: var(--accent-deep); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.start-hint { margin: 12px 0 0; min-height: 1.4em; text-align: center; font-size: 0.88rem; font-weight: 700; color: var(--ink-soft); }
+.start-hint.ready { color: var(--green-dark); }
+.start-hint.warn { color: var(--danger); }
+
+.check-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.check-list li {
+  position: relative; padding-left: 34px; font-size: 0.95rem;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 12.5l5 5L20 6.5' fill='none' stroke='%236cb04a' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat 0 0.1em / 22px 22px;
+}
+.check-list.tight { gap: 8px; margin: 6px 0 22px; }
+
+/* ---- VERIFIKASI FOTO ---- */
+.verify { border-color: var(--green-line); border-width: 2.5px; text-align: center; }
+.verify .panel-head svg { width: 36px; height: 36px; fill: none; stroke: var(--accent-deep); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.drop {
+  display: grid; justify-items: center; gap: 6px;
+  margin: 0 0 18px; padding: 30px 16px;
+  border: 2px dashed var(--line); border-radius: 20px;
+  background: color-mix(in srgb, var(--sun) 8%, var(--card));
+  cursor: pointer; font-weight: 400;
+  transition: border-color 0.15s, background 0.15s;
+}
+.drop:hover, .drop.drag { border-color: var(--green); background: var(--green-soft); }
+.drop-ico { width: 54px; height: 54px; fill: none; stroke: var(--ink-soft); opacity: 0.65; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.drop-title { font-size: 1.05rem; font-weight: 600; }
+.drop-note { font-size: 0.85rem; color: var(--ink-soft); }
+
+.preview {
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 22px;
+  margin: 0 0 18px; padding: 20px;
+  border: 2px dashed var(--green-line); border-radius: 20px;
+  background: var(--green-soft); text-align: left;
+}
+.preview img { width: 132px; height: 132px; object-fit: cover; border-radius: 18px; border: 3px solid var(--green-line); background: var(--card); }
+.preview-info { min-width: 0; }
+.preview-name { margin: 0; font-weight: 800; overflow-wrap: anywhere; }
+.preview-meta { margin: 2px 0 8px; font-size: 0.88rem; color: var(--ink-soft); }
+.preview-ok { margin: 0 0 12px; font-weight: 800; color: var(--green-dark); font-size: 0.92rem; }
+.preview-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.field-error { margin: 0 0 14px; font-size: 0.9rem; font-weight: 700; color: var(--danger); }
+.field-error:empty { display: none; }
+
+.cam { display: grid; justify-items: center; gap: 12px; margin: 0 0 18px; }
+.cam video { width: 100%; max-width: 420px; border-radius: 18px; background: #1d1308; transform: scaleX(-1); }
+.cam-actions { display: flex; gap: 10px; }
+
+.pill-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px;
+  border: 0; border-radius: 14px;
+  background: color-mix(in srgb, var(--sun) 38%, var(--card));
+  color: var(--ink);
+  font: inherit; font-weight: 800; font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(224, 170, 70, 0.2);
+}
+.pill-btn:hover { background: color-mix(in srgb, var(--sun) 55%, var(--card)); }
+.pill-btn.quiet { background: transparent; box-shadow: none; border: 2px solid var(--line); }
+.pill-btn svg { width: 20px; height: 20px; fill: none; stroke: var(--accent-deep); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---- PAKTA INTEGRITAS ---- */
+.pakta-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 8px; }
+.pakta-head .panel-head { margin: 0; }
+.shield { width: 44px; height: 44px; flex: none; fill: var(--green); stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bismillah {
+  flex: 1; margin: 0; text-align: center;
+  font-family: "Amiri", "Noto Naskh Arabic", "Traditional Arabic", serif;
+  font-size: clamp(1.6rem, 4.5vw, 2.2rem); line-height: 1.6; color: var(--green-dark);
+}
+.pakta p { margin: 8px 0; }
+
+.pakta-id {
+  display: grid; grid-template-columns: max-content 1fr; gap: 6px 4px;
+  margin: 14px 0 18px; padding: 16px 22px;
+  background: var(--green-soft); border-left: 6px solid var(--green); border-radius: 12px;
+  font-weight: 700;
+}
+.pakta-id dt { padding-right: 24px; }
+.pakta-id dd { margin: 0; overflow-wrap: anywhere; }
+.pakta-id dd::before { content: ": "; }
+
+.agree {
+  display: flex; align-items: center; gap: 14px; margin: 0;
+  padding: 16px 20px;
+  border: 2px solid var(--line); border-radius: 18px;
+  background: color-mix(in srgb, var(--sun) 22%, var(--card));
+  font-weight: 800; font-size: 1rem; cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.agree input { width: 22px; height: 22px; flex: none; margin: 0; accent-color: var(--green); cursor: pointer; }
+.agree:has(input:checked) { border-color: var(--green); background: var(--green-soft); }
+
+/* ---- ANIMASI RINGAN (hanya transform & opacity, tanpa library) ---- */
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+@keyframes drop-in { from { opacity: 0; transform: translateY(-12px); } }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-9px) rotate(4deg); } }
+@keyframes twinkle { 0%, 100% { opacity: 0.95; transform: scale(1) rotate(0); } 50% { opacity: 0.3; transform: scale(0.65) rotate(25deg); } }
+@keyframes pop { 0% { transform: scale(0.94); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
+@keyframes draw { from { stroke-dashoffset: 120; } to { stroke-dashoffset: 0; } }
+@keyframes ring { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(1.08, 1.4); opacity: 0; } }
+@keyframes wiggle { 25% { transform: rotate(-12deg) scale(1.08); } 75% { transform: rotate(10deg) scale(1.08); } }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(253, 185, 90, 0.95); } 100% { box-shadow: 0 0 0 16px rgba(253, 185, 90, 0); } }
+
+.spark { animation: twinkle 3.8s ease-in-out infinite; }
+.spark.s2 { animation-delay: -1.2s; animation-duration: 4.4s; }
+.spark.s3 { animation-delay: -2.1s; animation-duration: 3.4s; }
+.spark.s4 { animation-delay: -0.6s; animation-duration: 4.9s; }
+.lemon { animation: bob 5s ease-in-out infinite; transform-origin: 50% 80%; }
+.swoosh path { stroke-dasharray: 120; animation: draw 0.9s 0.45s ease-out backwards; }
+.btn svg { transition: transform 0.15s; }
+
+.page-beranda .btn { position: relative; }
+.topbar { animation: drop-in 0.5s ease-out backwards; }
+.hero h1 { animation: rise 0.6s 0.1s ease-out backwards; }
+.hero .sub { animation: rise 0.6s 0.2s ease-out backwards; }
+.grid .panel:nth-child(1) { animation: rise 0.6s 0.2s ease-out backwards; }
+.grid .panel:nth-child(2) { animation: rise 0.6s 0.32s ease-out backwards; }
+.panel.verify { animation: rise 0.6s 0.44s ease-out backwards; }
+.panel.pakta { animation: rise 0.6s 0.56s ease-out backwards; }
+.check-list li { animation: rise 0.45s ease-out backwards; }
+.check-list li:nth-child(1) { animation-delay: 0.4s; }
+.check-list li:nth-child(2) { animation-delay: 0.46s; }
+.check-list li:nth-child(3) { animation-delay: 0.52s; }
+.check-list li:nth-child(4) { animation-delay: 0.58s; }
+.check-list li:nth-child(5) { animation-delay: 0.64s; }
+.check-list li:nth-child(6) { animation-delay: 0.7s; }
+.check-list li:nth-child(7) { animation-delay: 0.76s; }
+.check-list li:nth-child(8) { animation-delay: 0.82s; }
+.icon-badge, .shield { transition: transform 0.2s; }
+.panel:hover .icon-badge, .panel:hover .shield { transform: rotate(-8deg) scale(1.08); }
+.fact { transition: transform 0.18s; }
+.fact:hover { transform: translateY(-3px); }
+.brand svg { transition: transform 0.2s; }
+.brand:hover svg { animation: wiggle 0.6s; }
+.pill-btn { transition: transform 0.12s, background 0.15s; }
+.pill-btn:hover { transform: translateY(-2px); }
+.pill-btn:active { transform: scale(0.97); }
+.preview:not([hidden]) { animation: pop 0.35s ease-out; }
+.agree:has(input:checked) { animation: pop 0.3s ease-out; }
+.btn:not(:disabled):hover .play { transform: translateX(4px); }
+.btn:not(:disabled)::after {              /* cincin berdenyut: tombol Mulai Ujian sudah aktif */
+  content: ""; position: absolute; inset: 0; border-radius: 999px;
+  border: 3px solid var(--accent); pointer-events: none;
+  animation: ring 2s ease-out infinite;
+}
+
+/* ---- TUTORIAL INTERAKTIF (sorotan langkah demi langkah) ---- */
+#tour-catch { position: fixed; inset: 0; z-index: 900; }
+#tour-spot {
+  position: fixed; z-index: 901; pointer-events: none; border-radius: 18px;
+  border: 3px solid var(--sun); box-shadow: 0 0 0 9999px rgba(74, 42, 18, 0.74);
+  transition: left 0.3s, top 0.3s, width 0.3s, height 0.3s;
+}
+#tour-spot.none { border: 0; }
+#tour-tip {
+  position: fixed; z-index: 902; width: min(92vw, 370px);
+  padding: 16px 18px 14px; background: var(--card); color: var(--ink);
+  border: 2px solid var(--line); border-radius: 22px;
+  box-shadow: 0 14px 40px rgba(74, 42, 18, 0.38);
+  transition: left 0.3s, top 0.3s;
+}
+#tour-tip .tour-step { margin: 0; font-size: 0.8rem; font-weight: 800; color: var(--ink-soft); }
+#tour-tip .tour-title { margin: 2px 0 6px; font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; line-height: 1.2; }
+#tour-tip .tour-text { font-size: 0.95rem; line-height: 1.5; }
+#tour-tip .tour-text p { margin: 0; }
+#tour-tip .tour-text ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; font-size: 0.9rem; }
+#tour-tip .tour-dots { display: flex; gap: 5px; margin-top: 12px; }
+#tour-tip .tour-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: transform 0.2s; }
+#tour-tip .tour-dots i.on { background: var(--accent-deep); transform: scale(1.3); }
+#tour-tip .tour-actions { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+#tour-tip button { font: inherit; font-weight: 800; font-size: 0.92rem; cursor: pointer; border-radius: 999px; padding: 8px 18px; }
+#tour-tip .tour-skip { margin-right: auto; padding-left: 4px; padding-right: 4px; border: 0; background: none; color: var(--ink-soft); }
+#tour-tip .tour-skip:hover { color: var(--ink); text-decoration: underline; }
+#tour-tip .tour-prev { border: 2px solid var(--line); background: transparent; color: var(--ink); }
+#tour-tip .tour-prev:hover { border-color: var(--accent); }
+#tour-tip .tour-next { border: 0; background: var(--accent); color: var(--on-accent); }
+#tour-tip .tour-next:hover { background: var(--accent-hover); }
+.tour-open {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px;
+  border: 2px solid var(--line); border-radius: 999px; background: var(--field, var(--card)); color: var(--ink);
+  font: inherit; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: transform 0.15s, border-color 0.15s;
+}
+.tour-open:hover { border-color: var(--accent); transform: translateY(-2px); }
+.tour-open svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---- RESPONSIF ---- */
+@media (max-width: 820px) {
+  .grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .user-name, .user-btn .chev { display: none; }
+  .page-beranda .lemon, .spark.s2, .spark.s4 { display: none; }
+  .hero .burst { width: 26px; height: 26px; }
+  .title-row { gap: 8px; }
+  .preview { flex-direction: column; text-align: center; }
+  .preview-actions { justify-content: center; }
+  .pakta-id { padding: 14px 16px; }
+  .pakta-id dt { padding-right: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+  </style>
+</head>
+<body class="page-beranda">
+
+  <!-- Kumpulan ikon -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-spark" viewBox="0 0 24 24">
+      <path d="M12 0c.8 6.6 4.2 10.2 12 12-7.8 1.8-11.2 5.4-12 12-.8-6.6-4.2-10.2-12-12C7.8 10.2 11.2 6.6 12 0z"/>
+    </symbol>
+    <symbol id="i-burst" viewBox="0 0 34 34">
+      <path d="M8 4l8 8M3 17h12M8 30l8-8"/>
+    </symbol>
+    <symbol id="i-lemon" viewBox="0 0 120 120">
+      <g transform="translate(60 62) rotate(-30) scale(.68) translate(-79 -60)">
+        <path d="M110 60Q116 58 120 53" fill="none" stroke="#8a6a2e" stroke-width="5" stroke-linecap="round"/>
+        <path d="M8 60Q14 54 24 44C38 28 82 28 96 44Q106 54 112 60Q106 66 96 76C82 92 38 92 24 76Q14 66 8 60Z" fill="#ffd45c" stroke="#f2b632" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M24 76C38 92 82 92 96 76Q106 66 112 60C100 70 80 74 60 74C40 74 20 70 8 60Q14 66 24 76Z" fill="#f5b82e" opacity=".55"/>
+        <ellipse cx="46" cy="46" rx="11" ry="5.5" fill="#fff" opacity=".5" transform="rotate(-12 46 46)"/>
+        <path d="M119 54C121 36 141 30 151 34C149 50 133 61 119 54Z" fill="#8fc065"/>
+        <path d="M122 52Q136 44 148 36" fill="none" stroke="#5fa34a" stroke-width="2" stroke-linecap="round"/>
+      </g>
+    </symbol>
+  </svg>
+
+  <!-- Latar belakang (hiasan) -->
+  <div class="bg" aria-hidden="true">
+    <div class="blob a"></div><div class="blob b"></div><div class="blob c"></div><div class="blob d"></div>
+    <svg class="spark s1"><use href="#i-spark"/></svg>
+    <svg class="spark s2"><use href="#i-spark"/></svg>
+    <svg class="spark s3"><use href="#i-spark"/></svg>
+    <svg class="spark s4"><use href="#i-spark"/></svg>
+    <svg class="lemon" viewBox="0 0 120 120"><use href="#i-lemon"/></svg>
+  </div>
+
+  <div class="page">
+
+    <!-- BAR ATAS -->
+    <header class="topbar">
+      <div class="brand">
+        <svg aria-hidden="true" viewBox="0 0 120 120"><use href="#i-lemon"/></svg>
+        <span><b>Lemon</b><small>Olimpiade</small></span>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="user">
+          <button class="user-btn" id="user-btn" type="button" aria-expanded="false" aria-controls="user-pop">
+            <span class="avatar" id="avatar" aria-hidden="true">U</span>
+            <span class="user-name" id="user-name">Peserta</span>
+            <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="user-pop" id="user-pop" hidden>
+            <dl>
+              <dt>Nama</dt><dd data-profil="nama">-</dd>
+              <dt>Sekolah</dt><dd data-profil="sekolah">-</dd>
+              <dt>Username</dt><dd data-profil="username">-</dd>
+            </dl>
+          </div>
+        </div>
+
+        <button class="tour-open" id="tour-replay" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/></svg>Tutorial</button>
+
+        <button class="logout" id="logout-btn" type="button">
+          Keluar
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l-4-4 4-4M6 12h10"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- JUDUL BESAR (teks dari CONFIG.exam) -->
+    <section class="hero">
+      <div class="title-row">
+        <svg class="burst" aria-hidden="true"><use href="#i-burst"/></svg>
+        <h1 data-exam="judulBesar">LEMON 2026</h1>
+        <svg class="burst r" aria-hidden="true"><use href="#i-burst"/></svg>
+      </div>
+      <p class="sub" data-exam="subjudul">Olimpiade IPS</p>
+      <svg class="swoosh" viewBox="0 0 110 14" aria-hidden="true"><path d="M4 9c30-8 72-8 102 0"/></svg>
+    </section>
+
+    <!-- BARIS 1: kartu ujian + informasi penting -->
+    <div class="grid">
+
+      <section class="panel exam" aria-labelledby="exam-title">
+        <div class="panel-head">
+          <span class="icon-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg>
+          </span>
+          <h2 id="exam-title" data-exam="namaUjian">Ujian Olimpiade IPS</h2>
+        </div>
+        <span class="tag" data-exam="kategori">Sosial - Pilihan Ganda</span>
+        <p class="exam-desc" id="exam-desc"></p>
+
+        <div class="facts">
+          <div class="fact">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M9.5 2.5h5M12 2.5v3"/></svg>
+            <span><span data-exam="durasiMenit">60</span> Menit</span>
+          </div>
+          <div class="fact">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l4-1L19 8a2.1 2.1 0 0 0-3-3L5 16z"/><path d="M14 7l3 3"/></svg>
+            <span><span data-exam="jumlahSoal">30</span> Soal Pilihan Ganda</span>
+          </div>
+          <div class="fact">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            <span>Mode Aman</span>
+          </div>
+          <div class="fact">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.8"/></svg>
+            <span>Pilihan A sampai E</span>
+          </div>
+        </div>
+
+        <button class="btn locked" id="btn-start" type="button" disabled>
+          <svg class="play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          <span>Mulai Ujian</span>
+        </button>
+        <p class="start-hint" id="start-hint" aria-live="polite"></p>
+      </section>
+
+      <section class="panel rules" aria-labelledby="rules-title">
+        <div class="panel-head">
+          <span class="icon-badge info-ico" aria-hidden="true"><b>i</b></span>
+          <h2 id="rules-title">Informasi Penting</h2>
+        </div>
+        <ul class="check-list">
+          <li>Ujian berbentuk pilihan ganda (A sampai E), pilih satu jawaban yang paling tepat</li>
+          <li>Pastikan koneksi internet Anda stabil sebelum memulai ujian</li>
+          <li>Ujian tidak dapat dihentikan setelah dimulai</li>
+          <li>Hindari berpindah-pindah Tab / Browser</li>
+          <li>Jawaban otomatis terkirim ketika waktu sudah habis</li>
+          <li>Sistem akan memantau aktivitas selama ujian</li>
+          <li>Dilarang keras melakukan kecurangan</li>
+          <li>Gunakan browser Chrome, Firefox, atau Edge versi terbaru</li>
+        </ul>
+      </section>
+    </div>
+
+    <!-- VERIFIKASI FOTO -->
+    <section class="panel verify" aria-labelledby="verify-title">
+      <div class="panel-head center">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.5-2.5h7L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/></svg>
+        <h2 id="verify-title">Verifikasi Foto Sebelum Ujian</h2>
+      </div>
+
+      <input class="sr-only" id="foto-input" type="file" accept="image/jpeg,image/png">
+
+      <label class="drop" id="drop" for="foto-input" tabindex="0">
+        <svg class="drop-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 9.5 4 4 0 0 1 17.5 18"/><path d="M12 12v8M9 14.5l3-3 3 3"/></svg>
+        <span class="drop-title">Klik untuk memilih foto atau seret dan lepas file di sini</span>
+        <span class="drop-note">Format yang didukung: JPG, JPEG, PNG (Maks. <span data-photo="maxSizeMB">5</span>MB)</span>
+      </label>
+
+      <div class="preview" id="preview" hidden>
+        <img id="preview-img" alt="Foto peserta">
+        <div class="preview-info">
+          <p class="preview-name" id="preview-name"></p>
+          <p class="preview-meta" id="preview-meta"></p>
+          <p class="preview-ok">Foto siap digunakan</p>
+          <div class="preview-actions">
+            <button class="pill-btn" id="btn-change" type="button">Ganti Foto</button>
+            <button class="pill-btn quiet" id="btn-remove" type="button">Hapus</button>
+          </div>
+        </div>
+      </div>
+
+      <p class="field-error" id="foto-error" role="alert"></p>
+
+      <div class="cam" id="cam" hidden>
+        <video id="cam-video" autoplay playsinline muted></video>
+        <div class="cam-actions">
+          <button class="pill-btn" id="btn-shot" type="button">Ambil Foto</button>
+          <button class="pill-btn quiet" id="btn-cam-cancel" type="button">Batal</button>
+        </div>
+      </div>
+
+      <button class="pill-btn" id="btn-cam" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.5-2.5h7L17 8h3v11H4z"/><circle cx="12" cy="13.5" r="3.5"/></svg>
+        Ambil Foto dengan Webcam
+      </button>
+    </section>
+
+    <!-- PAKTA INTEGRITAS -->
+    <section class="panel pakta" aria-labelledby="pakta-title">
+      <div class="pakta-head">
+        <div class="panel-head">
+          <svg class="shield" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5" fill="none"/></svg>
+          <h2 id="pakta-title">Pakta Integritas</h2>
+        </div>
+        <p class="bismillah" lang="ar" dir="rtl">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
+      </div>
+
+      <p>Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang,<br>Saya yang bertanda tangan di bawah ini:</p>
+
+      <dl class="pakta-id">
+        <dt>Nama</dt><dd data-profil="nama">-</dd>
+        <dt>Sekolah</dt><dd data-profil="sekolah">-</dd>
+        <dt>Username</dt><dd data-profil="username">-</dd>
+      </dl>
+
+      <p>Dengan penuh kesadaran dan keikhlasan, saya <strong>BERJANJI</strong>:</p>
+      <ul class="check-list tight">
+        <li>Mengikuti ujian ini dengan penuh kejujuran sesuai nilai-nilai Islam</li>
+        <li>Mengandalkan kemampuan sendiri tanpa bantuan pihak lain</li>
+        <li>Tidak melakukan kecurangan dalam bentuk apapun</li>
+        <li>Tidak membuka tab/aplikasi lain selama ujian</li>
+        <li>Tidak menggunakan bantuan AI atau alat terlarang lainnya</li>
+        <li>Menjaga waktu dengan disiplin dan amanah</li>
+        <li>Bertanggung jawab penuh atas semua jawaban yang diberikan</li>
+      </ul>
+
+      <label class="agree" for="pakta-check">
+        <input type="checkbox" id="pakta-check">
+        <span>Saya menyetujui dan bersumpah untuk menaati Pakta Integritas ini</span>
+      </label>
+    </section>
+
+  </div>
+
+  <script>
+/* =====================================================================
+   JS HALAMAN BERANDA (gabungan config + session + guard + beranda)
+   ===================================================================== */
+
+/* ---------- 1. PENGATURAN ---------- */
+window.CONFIG = {
+  loginPageUrl: "index.html",      // halaman login (tujuan saat Keluar / belum login)
+  sessionKey: "peserta_login",     // HARUS sama dengan yang di index.html
+
+  // Data ujian yang tampil di beranda
+  exam: {
+    judulBesar: "LEMON 2026",
+    subjudul: "Olimpiade IPS",
+    namaOlimpiade: "Olimpiade IPS",
+    namaUjian: "Ujian Olimpiade IPS",
+    kategori: "Sosial - Pilihan Ganda",
+    durasiMenit: 60,
+    jumlahSoal: 30,
+    // Alamat halaman soal. Kosong = tombol Mulai menampilkan pesan "belum disambungkan".
+    startUrl: "ujian-ips.html"
+  },
+
+  // Aturan unggah foto verifikasi
+  photo: {
+    maxSizeMB: 5,
+    allowedTypes: ["image/jpeg", "image/png"],
+    thumbMaxPx: 480
+  }
+};
+
+/* ---------- 2. SESSION: menyimpan data peserta ---------- */
+window.Session = (function () {
+  var memory = {};
+  var NAMES = ["user", "profil", "foto", "pakta"];
+
+  function keyOf(name) { return CONFIG.sessionKey + "_" + name; }
+
+  function write(name, value) {
+    memory[name] = value;
+    try { sessionStorage.setItem(keyOf(name), value); } catch (e) {}
+  }
+  function read(name) {
+    try {
+      var saved = sessionStorage.getItem(keyOf(name));
+      if (saved !== null) return saved;
+    } catch (e) {}
+    return Object.prototype.hasOwnProperty.call(memory, name) ? memory[name] : null;
+  }
+  function remove(name) {
+    delete memory[name];
+    try { sessionStorage.removeItem(keyOf(name)); } catch (e) {}
+  }
+  function readJSON(name) {
+    var raw = read(name);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch (e) { return null; }
+  }
+
+  function get() { return read("user"); }
+  function getProfile() { return readJSON("profil"); }
+  function isLoggedIn() { return !!get(); }
+
+  function setPhoto(photo) { write("foto", JSON.stringify(photo)); }
+  function getPhoto() { return readJSON("foto"); }
+  function clearPhoto() { remove("foto"); }
+
+  function setPakta(agreed) { if (agreed) write("pakta", "1"); else remove("pakta"); }
+  function getPakta() { return read("pakta") === "1"; }
+
+  function clear() { NAMES.forEach(remove); }
+
+  return {
+    get: get, getProfile: getProfile, isLoggedIn: isLoggedIn,
+    setPhoto: setPhoto, getPhoto: getPhoto, clearPhoto: clearPhoto,
+    setPakta: setPakta, getPakta: getPakta,
+    clear: clear
+  };
+})();
+
+/* ---------- 3. GUARD: tolak bila belum login ---------- */
+(function () {
+  var profile = Session.getProfile();
+  if (!Session.isLoggedIn() || !profile || profile.lomba !== "IPS") {
+    location.replace(CONFIG.loginPageUrl);
+  }
+})();
+
+/* ---------- 4. BERANDA: logika halaman ---------- */
+(function () {
+
+  // Belum login / bukan peserta IPS? guard sedang memindahkan ke login. Hentikan di sini.
+  var _p = Session.getProfile();
+  if (!Session.isLoggedIn() || !_p || _p.lomba !== "IPS") return;
+
+  function $(id) { return document.getElementById(id); }
+
+  var profile = Session.getProfile() || { username: Session.get(), nama: Session.get(), sekolah: "-" };
+
+  /* ----- DATA PESERTA ----- */
+
+  function renderProfile() {
+    var nama = profile.nama || profile.username;
+    $("user-name").textContent = nama;
+    $("avatar").textContent = nama.charAt(0).toUpperCase();
+
+    var targets = document.querySelectorAll("[data-profil]");
+    for (var i = 0; i < targets.length; i++) {
+      var key = targets[i].getAttribute("data-profil");
+      targets[i].textContent = profile[key] || "-";
+    }
+  }
+
+  function toggleUserMenu(forceOpen) {
+    var open = typeof forceOpen === "boolean" ? forceOpen : $("user-pop").hidden;
+    $("user-pop").hidden = !open;
+    $("user-btn").setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  /* ----- TEKS UJIAN ----- */
+
+  function renderExam() {
+    var e = CONFIG.exam;
+
+    var items = document.querySelectorAll("[data-exam]");
+    for (var i = 0; i < items.length; i++) {
+      var key = items[i].getAttribute("data-exam");
+      if (e[key] !== undefined) items[i].textContent = e[key];
+    }
+
+    var photoItems = document.querySelectorAll("[data-photo]");
+    for (var j = 0; j < photoItems.length; j++) {
+      var pkey = photoItems[j].getAttribute("data-photo");
+      if (CONFIG.photo[pkey] !== undefined) photoItems[j].textContent = CONFIG.photo[pkey];
+    }
+
+    $("exam-desc").textContent =
+      "Klik tombol di bawah ini untuk mulai mengerjakan soal " + e.namaOlimpiade + "! " +
+      "Ujian ini terdiri dari " + e.jumlahSoal + " soal pilihan ganda yang harus diselesaikan " +
+      "dalam waktu " + e.durasiMenit + " menit.";
+
+    document.title = e.judulBesar + " - " + e.subjudul;
+  }
+
+  /* ----- FOTO VERIFIKASI ----- */
+
+  var stream = null; // aliran kamera aktif
+
+  function showPhotoError(message) {
+    $("foto-error").textContent = message || "";
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024 * 1024) return Math.max(1, Math.round(bytes / 1024)) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  }
+
+  // Memperkecil gambar lalu mengubahnya menjadi data URL
+  function makeThumb(source, width, height) {
+    var scale = Math.min(1, CONFIG.photo.thumbMaxPx / Math.max(width, height));
+    var canvas = document.createElement("canvas");
+    canvas.width = Math.round(width * scale);
+    canvas.height = Math.round(height * scale);
+    canvas.getContext("2d").drawImage(source, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL("image/jpeg", 0.82);
+  }
+
+  function renderPhoto() {
+    var photo = Session.getPhoto();
+    $("drop").hidden = !!photo;
+    $("preview").hidden = !photo;
+
+    if (photo) {
+      $("preview-img").src = photo.thumb;
+      $("preview-name").textContent = photo.name;
+      $("preview-meta").textContent = photo.size ? formatSize(photo.size) : "Diambil dari webcam";
+    }
+    updateStart();
+  }
+
+  function acceptPhoto(thumb, name, size) {
+    showPhotoError("");
+    Session.setPhoto({ thumb: thumb, name: name, size: size });
+    renderPhoto();
+  }
+
+  function handleFile(file) {
+    showPhotoError("");
+    if (!file) return;
+
+    if (CONFIG.photo.allowedTypes.indexOf(file.type) === -1) {
+      showPhotoError("Format tidak didukung. Gunakan foto JPG, JPEG, atau PNG.");
+      return;
+    }
+    if (file.size > CONFIG.photo.maxSizeMB * 1024 * 1024) {
+      showPhotoError("Ukuran foto melebihi " + CONFIG.photo.maxSizeMB + " MB. Pilih foto yang lebih kecil.");
+      return;
+    }
+
+    var url = URL.createObjectURL(file);
+    var img = new Image();
+    img.onload = function () {
+      acceptPhoto(makeThumb(img, img.naturalWidth, img.naturalHeight), file.name, file.size);
+      URL.revokeObjectURL(url);
+    };
+    img.onerror = function () {
+      URL.revokeObjectURL(url);
+      showPhotoError("Foto tidak dapat dibaca. Coba pilih file lain.");
+    };
+    img.src = url;
+  }
+
+  function removePhoto() {
+    Session.clearPhoto();
+    showPhotoError("");
+    renderPhoto();
+  }
+
+  /* ----- WEBCAM ----- */
+
+  function openCamera() {
+    showPhotoError("");
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      showPhotoError("Browser ini tidak mendukung webcam. Gunakan unggah foto.");
+      return;
+    }
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false })
+      .then(function (s) {
+        stream = s;
+        $("cam-video").srcObject = s;
+        $("cam").hidden = false;
+        $("btn-cam").hidden = true;
+        $("drop").hidden = true;
+        $("preview").hidden = true;
+      })
+      .catch(function () {
+        showPhotoError("Webcam tidak dapat diakses. Izinkan akses kamera di browser, atau gunakan unggah foto.");
+      });
+  }
+
+  function closeCamera() {
+    if (stream) {
+      stream.getTracks().forEach(function (t) { t.stop(); });
+      stream = null;
+    }
+    $("cam-video").srcObject = null;
+    $("cam").hidden = true;
+    $("btn-cam").hidden = false;
+    renderPhoto();
+  }
+
+  function captureShot() {
+    var video = $("cam-video");
+    if (!video.videoWidth) {
+      showPhotoError("Kamera belum siap. Tunggu sebentar lalu coba lagi.");
+      return;
+    }
+    var thumb = makeThumb(video, video.videoWidth, video.videoHeight);
+    closeCamera();
+    acceptPhoto(thumb, "foto-webcam.jpg", null);
+  }
+
+  /* ----- PAKTA INTEGRITAS ----- */
+
+  function handlePakta() {
+    Session.setPakta($("pakta-check").checked);
+    updateStart();
+  }
+
+  /* ----- TOMBOL MULAI UJIAN ----- */
+
+  // Aktif hanya bila foto sudah diterima DAN pakta dicentang
+  function examState() {
+    try {
+      var k = "lemon2026_ujian_ips_" + String(profile.nama || profile.username).toLowerCase().replace(/[^a-z0-9]+/g, "_");
+      var s = JSON.parse(localStorage.getItem(k));
+      return s && s.selesai ? (s.verifikasi ? "done" : "verify") : "";
+    } catch (e) { return ""; }
+  }
+
+  function updateStart() {
+    var st = examState();
+    if (st) {
+      var b = $("btn-start"), h = $("start-hint");
+      b.disabled = false; b.classList.remove("locked");
+      b.querySelector("span").textContent = st === "done" ? "Lihat Jawaban Tersimpan" : "Lanjutkan Verifikasi";
+      h.classList.remove("warn"); h.classList.add("ready");
+      h.textContent = st === "done" ? "Ujian selesai dan verifikasi berhasil. Terima kasih sudah berpartisipasi!" : "Ujian sudah dikirim, tinggal selesaikan verifikasi.";
+      return;
+    }
+    var hasPhoto = !!Session.getPhoto();
+    var hasPakta = $("pakta-check").checked;
+    var ready = hasPhoto && hasPakta;
+
+    $("btn-start").disabled = !ready;
+
+    var hint = $("start-hint");
+    hint.classList.remove("warn");
+    hint.classList.toggle("ready", ready);
+
+    if (ready) {
+      hint.textContent = "Semua syarat terpenuhi. Anda siap memulai ujian.";
+    } else {
+      var missing = [];
+      if (!hasPhoto) missing.push("unggah foto verifikasi");
+      if (!hasPakta) missing.push("setujui Pakta Integritas");
+      hint.textContent = "Untuk memulai: " + missing.join(" dan ") + ".";
+    }
+  }
+
+  function startExam() {
+    if ($("btn-start").disabled) return;
+
+    var url = CONFIG.exam.startUrl;
+    if (url) {
+      location.href = url;
+    } else {
+      var hint = $("start-hint");
+      hint.classList.remove("ready");
+      hint.classList.add("warn");
+      hint.textContent = "Halaman soal belum disambungkan. Isi exam.startUrl di bagian CONFIG pada file ini.";
+    }
+  }
+
+  /* ----- KELUAR ----- */
+
+  function logout() {
+    closeCamera();
+    Session.clear();
+    location.href = CONFIG.loginPageUrl;
+  }
+
+  /* ----- PEMASANGAN ----- */
+
+  function init() {
+    renderExam();
+    renderProfile();
+
+    $("pakta-check").checked = Session.getPakta();
+    renderPhoto();
+
+    // Menu pengguna
+    $("user-btn").addEventListener("click", function (e) { e.stopPropagation(); toggleUserMenu(); });
+    document.addEventListener("click", function (e) {
+      if (!$("user-pop").hidden && !$("user-pop").contains(e.target)) toggleUserMenu(false);
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") toggleUserMenu(false); });
+    $("logout-btn").addEventListener("click", logout);
+
+    // Foto: pilih file
+    $("foto-input").addEventListener("change", function () {
+      handleFile(this.files && this.files[0]);
+      this.value = "";
+    });
+    $("drop").addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("foto-input").click(); }
+    });
+    $("btn-change").addEventListener("click", function () { $("foto-input").click(); });
+    $("btn-remove").addEventListener("click", removePhoto);
+
+    // Foto: seret dan lepas
+    ["dragenter", "dragover"].forEach(function (name) {
+      $("drop").addEventListener(name, function (e) { e.preventDefault(); $("drop").classList.add("drag"); });
+    });
+    ["dragleave", "drop"].forEach(function (name) {
+      $("drop").addEventListener(name, function (e) { e.preventDefault(); $("drop").classList.remove("drag"); });
+    });
+    $("drop").addEventListener("drop", function (e) {
+      handleFile(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
+    });
+
+    // Foto: webcam
+    $("btn-cam").addEventListener("click", openCamera);
+    $("btn-shot").addEventListener("click", captureShot);
+    $("btn-cam-cancel").addEventListener("click", closeCamera);
+
+    // Pakta & tombol Mulai
+    $("pakta-check").addEventListener("change", handlePakta);
+    $("btn-start").addEventListener("click", startExam);
+  }
+
+  init();
+})();
+
+/* ---------- TUTORIAL INTERAKTIF: sorotan langkah demi langkah ----------
+   Muncul otomatis saat halaman dibuka (sekali per sesi tab), bisa diulang lewat tombol "Tutorial". */
+window.Tour = (function () {
+  var cfg = null, idx = 0, tip = null, spot = null, catcher = null;
+  var active = false, raf = 0, current = null, memSeen = false;
+
+  function seen() { try { return sessionStorage.getItem(cfg.key) === "1"; } catch (e) { return memSeen; } }
+  function mark() { memSeen = true; try { sessionStorage.setItem(cfg.key, "1"); } catch (e) {} }
+  function q(sel) { return tip.querySelector(sel); }
+
+  function build() {
+    if (tip) return;
+    catcher = document.createElement("div"); catcher.id = "tour-catch";
+    spot = document.createElement("div"); spot.id = "tour-spot";
+    tip = document.createElement("div"); tip.id = "tour-tip";
+    tip.setAttribute("role", "dialog");
+    tip.setAttribute("aria-modal", "true");
+    tip.setAttribute("aria-labelledby", "tour-title");
+    tip.innerHTML =
+      '<p class="tour-step" id="tour-count"></p>' +
+      '<h2 class="tour-title" id="tour-title"></h2>' +
+      '<div class="tour-text" id="tour-text"></div>' +
+      '<div class="tour-dots" id="tour-dots" aria-hidden="true"></div>' +
+      '<div class="tour-actions">' +
+        '<button type="button" class="tour-skip" id="tour-skip">Lewati</button>' +
+        '<button type="button" class="tour-prev" id="tour-prev">Kembali</button>' +
+        '<button type="button" class="tour-next" id="tour-next">Lanjut</button>' +
+      '</div>';
+    [catcher, spot, tip].forEach(function (el) { el.hidden = true; document.body.appendChild(el); });
+    q("#tour-skip").addEventListener("click", close);
+    q("#tour-prev").addEventListener("click", function () { go(-1); });
+    q("#tour-next").addEventListener("click", function () { go(1); });
+  }
+
+  function place() {
+    if (!active) return;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var w = tip.offsetWidth, h = tip.offsetHeight, left, top;
+    if (!current) {                               // langkah tanpa target: kartu di tengah, layar digelapkan
+      spot.className = "none";
+      spot.style.left = (vw / 2) + "px"; spot.style.top = (vh / 2) + "px";
+      spot.style.width = "0px"; spot.style.height = "0px";
+      left = (vw - w) / 2; top = Math.max(12, (vh - h) / 2);
+    } else {
+      var r = current.getBoundingClientRect(), pad = 8;
+      spot.className = "";
+      spot.style.left = (r.left - pad) + "px"; spot.style.top = (r.top - pad) + "px";
+      spot.style.width = (r.width + pad * 2) + "px"; spot.style.height = (r.height + pad * 2) + "px";
+      var below = vh - r.bottom - pad - 12, above = r.top - pad - 12;
+      if (below >= h + 8) top = r.bottom + pad + 12;
+      else if (above >= h + 8) top = r.top - pad - 12 - h;
+      else top = vh - h - 12;                     // target terlalu besar: kartu menempel di bawah layar
+      left = Math.min(Math.max(12, r.left + r.width / 2 - w / 2), vw - w - 12);
+    }
+    tip.style.left = left + "px"; tip.style.top = top + "px";
+  }
+
+  function scrollTarget(el) {
+    var r = el.getBoundingClientRect(), vh = window.innerHeight, tipH = tip.offsetHeight, y = window.pageYOffset, to;
+    if (r.height + tipH + 40 > vh) to = y + r.top - 70;                      // target besar: sejajarkan di atas
+    else to = y + r.top - (vh - r.height - tipH - 28) / 2;                    // target + kartu di tengah layar
+    window.scrollTo(0, Math.max(0, to));
+  }
+
+  function show(n) {
+    idx = n;
+    var s = cfg.steps[n], last = cfg.steps.length - 1, dots = "";
+    current = s.sel ? document.querySelector(s.sel) : null;
+    q("#tour-count").textContent = "Langkah " + (n + 1) + " dari " + (last + 1);
+    q("#tour-title").textContent = s.title;
+    q("#tour-text").innerHTML = s.html;
+    for (var i = 0; i <= last; i++) dots += '<i class="' + (i === n ? "on" : "") + '"></i>';
+    q("#tour-dots").innerHTML = dots;
+    q("#tour-prev").hidden = n === 0;
+    q("#tour-next").textContent = n === last ? "Selesai" : "Lanjut";
+    if (current) scrollTarget(current);
+    place();
+    q("#tour-next").focus({ preventScroll: true });
+  }
+
+  function go(d) {
+    var n = idx + d;
+    if (n >= cfg.steps.length) close();
+    else if (n >= 0) show(n);
+  }
+
+  function onMove() { if (!raf) raf = requestAnimationFrame(function () { raf = 0; place(); }); }
+
+  function onKey(e) {
+    if (!active) return;
+    if (e.key === "Escape") { e.preventDefault(); close(); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); go(1); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
+    else if (e.key === "Tab") {                    // fokus tetap di dalam kartu tutorial
+      var b = tip.querySelectorAll("button:not([hidden])");
+      var first = b[0], last = b[b.length - 1], now = document.activeElement;
+      if (!tip.contains(now)) { e.preventDefault(); first.focus(); }
+      else if (e.shiftKey && now === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && now === last) { e.preventDefault(); first.focus(); }
+    }
+  }
+
+  function open() {
+    build();
+    active = true;
+    [catcher, spot, tip].forEach(function (el) { el.hidden = false; });
+    window.addEventListener("resize", onMove);
+    window.addEventListener("scroll", onMove, { passive: true });
+    document.addEventListener("keydown", onKey, true);
+    show(0);
+  }
+
+  function close() {
+    if (!active) return;
+    active = false;
+    [catcher, spot, tip].forEach(function (el) { el.hidden = true; });
+    window.removeEventListener("resize", onMove);
+    window.removeEventListener("scroll", onMove);
+    document.removeEventListener("keydown", onKey, true);
+    mark();
+    window.scrollTo(0, 0);
+  }
+
+  function init(c) {
+    cfg = c;
+    var btn = document.getElementById(c.replayId);
+    if (btn) btn.addEventListener("click", open);
+    if (c.skip && c.skip()) return;
+    if (!seen()) setTimeout(open, c.delay || 800);
+  }
+
+  return { init: init, open: open, close: close };
+})();
+
+Tour.init({
+  key: "tour_beranda_v1",
+  replayId: "tour-replay",
+  delay: 1400,
+  skip: function () { return typeof Session === "undefined" || !Session.isLoggedIn(); },
+  steps: [
+    { title: "Selamat Datang di Beranda", html: "<p>Sebelum ujian dimulai ada tiga hal yang harus dilakukan: <b>verifikasi foto</b>, <b>centang pakta integritas</b>, lalu <b>Mulai Ujian</b>. Ikuti panduan singkat ini. Panduan bisa dibuka lagi lewat tombol <b>Tutorial</b>.</p>" },
+    { sel: ".topbar-actions", title: "Profil dan Keluar", html: "<p>Klik nama Anda untuk melihat nama, sekolah, dan username. Tombol <b>Keluar</b> mengakhiri sesi login.</p>" },
+    { sel: ".panel.exam", title: "Kartu Ujian", html: "<p>Di sini terlihat durasi, jumlah soal, dan bentuk soal (pilihan A sampai E). Tombol <b>Mulai Ujian</b> ada di bagian bawah kartu ini.</p>" },
+    { sel: ".panel.rules", title: "Informasi Penting", html: "<p>Baca semua aturan ujian di sini sebelum memulai.</p>" },
+    { sel: ".panel.verify", title: "Verifikasi Foto", html: "<p>Pilih salah satu cara:</p><ul><li>Klik kotak foto atau seret file ke dalamnya (JPG, JPEG, atau PNG, maksimal 5 MB).</li><li>Klik <b>Ambil Foto dengan Webcam</b>, izinkan kamera, lalu tekan <b>Ambil Foto</b>.</li></ul><p style=\"margin-top:6px\">Gunakan <b>Ganti Foto</b> atau <b>Hapus</b> bila perlu.</p>" },
+    { sel: ".agree", title: "Pakta Integritas", html: "<p>Baca pakta integritas di atas kotak ini, lalu centang persetujuan.</p>" },
+    { sel: "#btn-start", title: "Mulai Ujian", html: "<p>Tombol menyala dan berdenyut setelah foto terverifikasi <b>dan</b> pakta dicentang. Tulisan di bawah tombol memberi tahu syarat yang belum terpenuhi. Setelah ditekan, ujian dimulai dan tidak dapat dihentikan.</p>" },
+    { title: "Aturan Saat Ujian", html: "<ul><li>Klik <b>Masuk Layar Penuh</b> saat diminta. Keluar dari layar penuh pertama kali hanya peringatan (10 detik untuk kembali). Keluar kedua dan seterusnya langsung dihitung pelanggaran.</li><li>Pelanggaran: pindah atau keluar tab, screenshot, atau tidak kembali ke layar penuh dalam 10 detik.</li><li>Batas pelanggaran 5 kali. Setelah itu jawaban otomatis terkirim dan Anda kembali ke beranda.</li><li>Klik kanan dan select teks hanya peringatan, tidak dihitung.</li><li>Jawaban otomatis terkirim saat waktu habis.</li><li>Coret-coretan bisa diupload di bukti pengerjaan setelah ujian.</li></ul>" }
+  ]
+});
+  </script>
+</body>
+</html>

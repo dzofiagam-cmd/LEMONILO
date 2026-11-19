@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Login Peserta Olimpiade</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+/* =====================================================================
+   CSS HALAMAN LOGIN (gabungan base.css + login.css)
+   ===================================================================== */
+
+/* ---- TOKEN WARNA & FONT: ubah warna/font cukup di sini ---- */
+:root {
+  --bg: #fdf8ec;
+  --card: #fffaf0;
+  --ink: #6a4126;
+  --ink-soft: #8f6f52;
+  --line: #fbe1a0;
+  --field: #fff3dc;
+  --accent: #fdb95a;
+  --accent-hover: #f9ab3f;
+  --accent-deep: #d9821a;
+  --on-accent: #4a2a12;
+  --sun: #ffd45c;
+  --leaf: #a9cf85;
+  --blob-a: #fdeec4;
+  --blob-b: #dbe5b8;
+  --danger: #b83a26;
+  --danger-bg: #fde6df;
+  --shadow: 0 18px 50px rgba(224, 170, 70, 0.22);
+
+  --font-display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  color-scheme: light;
+}
+
+/* ---- DASAR ---- */
+* { box-sizing: border-box; }
+html { height: 100%; }
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+[hidden] { display: none !important; }
+
+button:focus-visible, a:focus-visible, label:focus-visible, input:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* ---- LATAR BELAKANG ---- */
+.bg { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.blob { position: absolute; border-radius: 50%; }
+.blob.a { width: 46vmax; height: 40vmax; left: -14vmax; top: -16vmax; background: var(--blob-a); border-radius: 40% 60% 55% 45% / 50% 40% 60% 50%; }
+.blob.b { width: 16vmax; height: 16vmax; left: -6vmax; top: 56%; background: var(--blob-a); }
+.blob.c { width: 30vmax; height: 30vmax; right: -12vmax; bottom: -14vmax; background: var(--blob-b); border-radius: 55% 45% 40% 60% / 60% 50% 50% 40%; }
+.blob.d { width: 22vmax; height: 22vmax; right: -9vmax; top: 58%; background: var(--blob-a); }
+
+.spark { position: absolute; width: 28px; height: 28px; fill: var(--sun); }
+.spark.s1 { right: 14%; top: 20%; }
+.spark.s2 { left: 13%; top: 48%; width: 22px; height: 22px; }
+.spark.s3 { right: 15%; bottom: 14%; width: 20px; height: 20px; }
+.spark.s4 { left: 18%; bottom: 10%; width: 18px; height: 18px; }
+
+.lemon { position: absolute; left: 4%; bottom: 4%; width: clamp(84px, 11vw, 150px); height: auto; }
+
+/* ---- JUDUL ---- */
+.title-row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.burst { width: 34px; height: 34px; flex: none; stroke: var(--sun); fill: none; stroke-width: 5; stroke-linecap: round; }
+.burst.r { transform: scaleX(-1); }
+.sub { margin: 4px 0 0; font-size: 1.25rem; font-weight: 600; }
+.swoosh { display: block; margin: 8px auto 0; width: 110px; height: 14px; stroke: var(--sun); fill: none; stroke-width: 5; stroke-linecap: round; }
+
+/* ---- TOMBOL UTAMA ---- */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 56px;
+  margin-top: 22px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s, opacity 0.15s;
+}
+.btn:hover { background: var(--accent-hover); }
+.btn:active { transform: scale(0.985); }
+.btn:disabled { cursor: progress; opacity: 0.85; }
+.btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.btn .spin { display: none; animation: spin 0.8s linear infinite; }
+.btn.loading .arrow { display: none; }
+.btn.loading .spin { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- LETAK HALAMAN & KARTU ---- */
+body.page-login {
+  padding: 28px 16px;
+  display: grid;
+  place-items: center;
+}
+.view { position: relative; z-index: 1; width: 100%; max-width: 520px; }
+.card {
+  background: var(--card);
+  border-radius: 32px;
+  padding: 34px clamp(20px, 6vw, 56px) 36px;
+  box-shadow: var(--shadow);
+}
+.card.shake { animation: shake 0.45s; }
+@keyframes shake {
+  20% { transform: translateX(-9px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(3px); }
+}
+
+.head { text-align: center; margin-bottom: 26px; }
+.head h1 {
+  font-size: clamp(1.9rem, 7vw, 2.6rem);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* ---- FORM ---- */
+label { display: block; margin: 0 0 8px; font-weight: 800; font-size: 1.05rem; }
+.group + .group { margin-top: 18px; }
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  padding: 0 16px;
+  background: var(--field);
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 30%, transparent); }
+.field.invalid { border-color: var(--danger); }
+.field .ico { width: 24px; height: 24px; flex: none; fill: var(--accent); }
+.field input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+}
+.field input::placeholder { color: var(--ink-soft); opacity: 0.8; font-weight: 400; }
+
+.toggle {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-right: -6px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.toggle:hover { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.toggle svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.toggle .eye-on { display: none; }
+.toggle[aria-pressed="true"] .eye-on { display: block; }
+.toggle[aria-pressed="true"] .eye-off { display: none; }
+
+.err { margin: 6px 0 0 18px; font-size: 0.9rem; font-weight: 700; color: var(--danger); }
+.err:empty { display: none; }
+.alert {
+  margin: 18px 0 0;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.alert:empty { display: none; }
+
+/* ---- PILIHAN LOMBA ---- */
+.lomba { border: 0; margin: 18px 0 0; padding: 0; min-width: 0; }
+.lomba legend { padding: 0; margin: 0 0 8px; font-weight: 800; font-size: 1.05rem; }
+.lomba-opts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.lomba-opt { position: relative; display: block; margin: 0; font-size: 1rem; }
+.lomba-opt input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.lomba-opt span {
+  display: flex; align-items: center; justify-content: center;
+  height: 52px; padding: 0 4px;
+  border: 2px solid var(--line); border-radius: 999px;
+  background: var(--field); color: var(--ink);
+  font-weight: 800; font-size: 0.95rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+.lomba-opt:hover span { border-color: var(--accent); }
+.lomba-opt input:checked + span { background: var(--accent); border-color: var(--accent-deep); color: var(--on-accent); }
+.lomba-opt input:focus-visible + span { outline: 3px solid var(--ink); outline-offset: 3px; }
+.lomba-opts.invalid .lomba-opt span { border-color: var(--danger); }
+
+/* ---- KOTAK INFORMASI ---- */
+.info {
+  margin-top: 24px;
+  padding: 16px 20px 18px;
+  background: color-mix(in srgb, var(--sun) 16%, var(--card));
+  border: 2px solid var(--line);
+  border-radius: 24px;
+}
+.info h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; font-size: 1.1rem; font-weight: 800; }
+.info .badge { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-size: 1rem; font-weight: 800; }
+.info ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.info li { position: relative; padding-left: 26px; font-size: 0.95rem; }
+.info li::before { content: ""; position: absolute; left: 6px; top: 0.55em; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+
+/* ---- ANIMASI RINGAN (hanya transform & opacity, tanpa library) ---- */
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } }
+@keyframes drop-in { from { opacity: 0; transform: translateY(-12px); } }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-9px) rotate(4deg); } }
+@keyframes twinkle { 0%, 100% { opacity: 0.95; transform: scale(1) rotate(0); } 50% { opacity: 0.3; transform: scale(0.65) rotate(25deg); } }
+@keyframes pop { 0% { transform: scale(0.94); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
+@keyframes draw { from { stroke-dashoffset: 120; } to { stroke-dashoffset: 0; } }
+@keyframes ring { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(1.08, 1.4); opacity: 0; } }
+@keyframes wiggle { 25% { transform: rotate(-12deg) scale(1.08); } 75% { transform: rotate(10deg) scale(1.08); } }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(253, 185, 90, 0.95); } 100% { box-shadow: 0 0 0 16px rgba(253, 185, 90, 0); } }
+
+.spark { animation: twinkle 3.8s ease-in-out infinite; }
+.spark.s2 { animation-delay: -1.2s; animation-duration: 4.4s; }
+.spark.s3 { animation-delay: -2.1s; animation-duration: 3.4s; }
+.spark.s4 { animation-delay: -0.6s; animation-duration: 4.9s; }
+.lemon { animation: bob 5s ease-in-out infinite; transform-origin: 50% 80%; }
+.swoosh path { stroke-dasharray: 120; animation: draw 0.9s 0.45s ease-out backwards; }
+.btn svg { transition: transform 0.15s; }
+
+.view { animation: rise 0.6s ease-out backwards; }
+.card .group, .card .lomba, .card > .btn, .card > .info { animation: rise 0.5s ease-out backwards; }
+.card .group:nth-of-type(1) { animation-delay: 0.15s; }
+.card .group:nth-of-type(2) { animation-delay: 0.23s; }
+.card .lomba { animation-delay: 0.31s; }
+.card > .btn { animation-delay: 0.39s; }
+.card > .info { animation-delay: 0.47s; }
+.lomba-opt input:checked + span { animation: pop 0.3s ease-out; }
+.btn:not(:disabled):hover .arrow { transform: translateX(4px); }
+.field .ico { transition: transform 0.2s; }
+.field:focus-within .ico { transform: scale(1.18) rotate(-6deg); }
+.flash { animation: flash 1.2s ease-out; }
+
+/* ---- TUTORIAL INTERAKTIF (sorotan langkah demi langkah) ---- */
+#tour-catch { position: fixed; inset: 0; z-index: 900; }
+#tour-spot {
+  position: fixed; z-index: 901; pointer-events: none; border-radius: 18px;
+  border: 3px solid var(--sun); box-shadow: 0 0 0 9999px rgba(74, 42, 18, 0.74);
+  transition: left 0.3s, top 0.3s, width 0.3s, height 0.3s;
+}
+#tour-spot.none { border: 0; }
+#tour-tip {
+  position: fixed; z-index: 902; width: min(92vw, 370px);
+  padding: 16px 18px 14px; background: var(--card); color: var(--ink);
+  border: 2px solid var(--line); border-radius: 22px;
+  box-shadow: 0 14px 40px rgba(74, 42, 18, 0.38);
+  transition: left 0.3s, top 0.3s;
+}
+#tour-tip .tour-step { margin: 0; font-size: 0.8rem; font-weight: 800; color: var(--ink-soft); }
+#tour-tip .tour-title { margin: 2px 0 6px; font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; line-height: 1.2; }
+#tour-tip .tour-text { font-size: 0.95rem; line-height: 1.5; }
+#tour-tip .tour-text p { margin: 0; }
+#tour-tip .tour-text ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 3px; font-size: 0.9rem; }
+#tour-tip .tour-dots { display: flex; gap: 5px; margin-top: 12px; }
+#tour-tip .tour-dots i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); transition: transform 0.2s; }
+#tour-tip .tour-dots i.on { background: var(--accent-deep); transform: scale(1.3); }
+#tour-tip .tour-actions { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+#tour-tip button { font: inherit; font-weight: 800; font-size: 0.92rem; cursor: pointer; border-radius: 999px; padding: 8px 18px; }
+#tour-tip .tour-skip { margin-right: auto; padding-left: 4px; padding-right: 4px; border: 0; background: none; color: var(--ink-soft); }
+#tour-tip .tour-skip:hover { color: var(--ink); text-decoration: underline; }
+#tour-tip .tour-prev { border: 2px solid var(--line); background: transparent; color: var(--ink); }
+#tour-tip .tour-prev:hover { border-color: var(--accent); }
+#tour-tip .tour-next { border: 0; background: var(--accent); color: var(--on-accent); }
+#tour-tip .tour-next:hover { background: var(--accent-hover); }
+.tour-open {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px;
+  border: 2px solid var(--line); border-radius: 999px; background: var(--field, var(--card)); color: var(--ink);
+  font: inherit; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: transform 0.15s, border-color 0.15s;
+}
+.tour-open:hover { border-color: var(--accent); transform: translateY(-2px); }
+.tour-open svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---- RESPONSIF ---- */
+@media (max-width: 640px) {
+  .lemon, .spark.s2, .spark.s4 { display: none; }
+  .card { border-radius: 26px; padding-top: 28px; }
+  .burst { width: 24px; height: 24px; }
+  .title-row { gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+  </style>
+</head>
+<body class="page-login">
+
+  <!-- Kumpulan ikon -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-spark" viewBox="0 0 24 24">
+      <path d="M12 0c.8 6.6 4.2 10.2 12 12-7.8 1.8-11.2 5.4-12 12-.8-6.6-4.2-10.2-12-12C7.8 10.2 11.2 6.6 12 0z"/>
+    </symbol>
+    <symbol id="i-burst" viewBox="0 0 34 34">
+      <path d="M8 4l8 8M3 17h12M8 30l8-8"/>
+    </symbol>
+    <symbol id="i-lemon" viewBox="0 0 120 120">
+      <g transform="translate(60 62) rotate(-30) scale(.68) translate(-79 -60)">
+        <path d="M110 60Q116 58 120 53" fill="none" stroke="#8a6a2e" stroke-width="5" stroke-linecap="round"/>
+        <path d="M8 60Q14 54 24 44C38 28 82 28 96 44Q106 54 112 60Q106 66 96 76C82 92 38 92 24 76Q14 66 8 60Z" fill="#ffd45c" stroke="#f2b632" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M24 76C38 92 82 92 96 76Q106 66 112 60C100 70 80 74 60 74C40 74 20 70 8 60Q14 66 24 76Z" fill="#f5b82e" opacity=".55"/>
+        <ellipse cx="46" cy="46" rx="11" ry="5.5" fill="#fff" opacity=".5" transform="rotate(-12 46 46)"/>
+        <path d="M119 54C121 36 141 30 151 34C149 50 133 61 119 54Z" fill="#8fc065"/>
+        <path d="M122 52Q136 44 148 36" fill="none" stroke="#5fa34a" stroke-width="2" stroke-linecap="round"/>
+      </g>
+    </symbol>
+  </svg>
+
+  <!-- Latar belakang (hiasan) -->
+  <div class="bg" aria-hidden="true">
+    <div class="blob a"></div>
+    <div class="blob b"></div>
+    <div class="blob c"></div>
+    <div class="blob d"></div>
+
+    <svg class="spark s1"><use href="#i-spark"/></svg>
+    <svg class="spark s2"><use href="#i-spark"/></svg>
+    <svg class="spark s3"><use href="#i-spark"/></svg>
+    <svg class="spark s4"><use href="#i-spark"/></svg>
+
+    <svg class="lemon" viewBox="0 0 120 120"><use href="#i-lemon"/></svg>
+  </div>
+
+  <!-- Tampilan login -->
+  <main class="view" id="view-login">
+    <form class="card" id="login-form" novalidate aria-labelledby="judul">
+
+      <header class="head">
+        <div class="title-row">
+          <svg class="burst" aria-hidden="true"><use href="#i-burst"/></svg>
+          <h1 id="judul">Login Peserta</h1>
+          <svg class="burst r" aria-hidden="true"><use href="#i-burst"/></svg>
+        </div>
+        <p class="sub">Sistem Ujian Olimpiade</p>
+        <svg class="swoosh" viewBox="0 0 110 14" aria-hidden="true"><path d="M4 9c30-8 72-8 102 0"/></svg>
+        <button class="tour-open" id="tour-replay" type="button" style="margin-top:12px"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01"/></svg>Tutorial</button>
+      </header>
+
+      <div class="group">
+        <label for="username">Nama Lengkap</label>
+        <div class="field" id="f-username">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="7.5" r="4.5"/><path d="M3 21c0-4.6 4-7.5 9-7.5s9 2.9 9 7.5z"/>
+          </svg>
+          <input id="username" name="username" type="text" autocomplete="name"
+                 spellcheck="false"
+                 placeholder="Masukkan nama lengkap Anda" aria-describedby="err-username">
+        </div>
+        <p class="err" id="err-username"></p>
+      </div>
+
+      <div class="group">
+        <label for="password">Password</label>
+        <div class="field" id="f-password">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 10V7a5 5 0 0 1 10 0v3h1.5A1.5 1.5 0 0 1 20 11.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 20.5v-9A1.5 1.5 0 0 1 5.5 10zm2 0h6V7a3 3 0 0 0-6 0zm3 4.5a1.8 1.8 0 0 0-.9 3.4V19h1.8v-1.1a1.8 1.8 0 0 0-.9-3.4z"/>
+          </svg>
+          <input id="password" name="password" type="password" autocomplete="current-password"
+                 placeholder="Masukkan password Anda" aria-describedby="err-password">
+          <button class="toggle" id="toggle-pw" type="button" aria-pressed="false" aria-label="Tampilkan password">
+            <svg class="eye-off" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 8.5 4.2 9.5 6a14 14 0 0 1-2.6 3.3M6.6 7.6A14 14 0 0 0 2.5 12c1 1.8 4.5 6 9.5 6 1.4 0 2.7-.3 3.8-.8M9.9 9.9a3 3 0 0 0 4.2 4.2"/>
+            </svg>
+            <svg class="eye-on" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2.5 12c1-1.8 4.5-6 9.5-6s8.5 4.2 9.5 6c-1 1.8-4.5 6-9.5 6s-8.5-4.2-9.5-6z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+        <p class="err" id="err-password"></p>
+      </div>
+
+      <!-- Pilihan lomba. Harus sama dengan lomba yang didaftarkan. Nilai (value) = kunci di CONFIG.lomba -->
+      <fieldset class="lomba" id="lomba" aria-describedby="err-lomba">
+        <legend>Lomba yang Diikuti</legend>
+        <div class="lomba-opts" id="f-lomba">
+          <label class="lomba-opt"><input type="radio" name="lomba" value="IPA"><span>IPA</span></label>
+          <label class="lomba-opt"><input type="radio" name="lomba" value="IPS"><span>IPS</span></label>
+          <label class="lomba-opt"><input type="radio" name="lomba" value="MATEMATIKA"><span>Matematika</span></label>
+        </div>
+        <p class="err" id="err-lomba"></p>
+      </fieldset>
+
+      <p class="alert" id="form-alert" role="alert"></p>
+
+      <button class="btn" id="submit-btn" type="submit">
+        <span>Masuk</span>
+        <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+        <svg class="spin" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9"/></svg>
+      </button>
+
+      <section class="info" aria-labelledby="info-judul">
+        <h2 id="info-judul"><span class="badge" aria-hidden="true">i</span>Informasi Login</h2>
+        <ul>
+          <li>Isi nama lengkap, password, dan pilih lomba sesuai data pendaftaran dari panitia</li>
+          <li>Pastikan koneksi internet stabil</li>
+          <li>Browser yang disarankan: Chrome, Firefox, atau Edge</li>
+          <li>Jika mengalami kendala, hubungi panitia segera</li>
+        </ul>
+      </section>
+    </form>
+
+  </main>
+
+  <script>
+/* =====================================================================
+   JS HALAMAN LOGIN (gabungan config + session + auth + ui + app)
+   ===================================================================== */
+
+/* ---------- 1. PENGATURAN ---------- */
+window.CONFIG = {
+
+  // ---------------------------------------------------------------
+  // DATA PESERTA (dari database_dumy.xlsx)
+  // Login berhasil HANYA bila nama + password + lomba cocok dengan satu baris.
+  //   nama     : dipakai sebagai "username" saat login (huruf besar/kecil tidak berpengaruh)
+  //   password : persis sama (huruf besar/kecil berpengaruh)
+  //   lomba    : "IPA", "IPS", atau "MATEMATIKA"
+  // Tambah peserta = tambah satu baris di bawah.
+  // ---------------------------------------------------------------
+  users: [
+    // ---- Peserta IPA ----
+    { nama: "Dewa Radhitya", sekolah: "SMPI Al Madina", password: "lemon_2026_071", lomba: "IPA" },
+    { nama: "Raissa Ulma Az Zahra", sekolah: "SMPN 1 Kerumutan", password: "lemon_2026_072", lomba: "IPA" },
+    { nama: "Nadia Jihandiva Farah Fathin", sekolah: "SMPN 1 Salaman", password: "lemon_2026_073", lomba: "IPA" },
+    { nama: "Muhammad Alzam Husni Adib", sekolah: "MTsN 4 Jakarta", password: "lemon_2026_074", lomba: "IPA" },
+    { nama: "Farah Fauziah Zahra", sekolah: "SMPN 2 Jember", password: "lemon_2026_075", lomba: "IPA" },
+    { nama: "Muhammad Iqbal Pratama", sekolah: "MTsN 1 Purbalingga", password: "lemon_2026_076", lomba: "IPA" },
+    { nama: "Raka Nadzir Khairan", sekolah: "MTsN 1 Mojokerto", password: "lemon_2026_077", lomba: "IPA" },
+    { nama: "Safina Alya Amin", sekolah: "SMPI Al Abidin Surakarta", password: "lemon_2026_078", lomba: "IPA" },
+    { nama: "Almaira Ramadhani Putri", sekolah: "SMPN 1 Tarakan", password: "lemon_2026_079", lomba: "IPA" },
+    { nama: "Hansel Nadivo Rusdian", sekolah: "SMP RUSHD Surakarta", password: "lemon_2026_080", lomba: "IPA" },
+    { nama: "Nediva Tertia", sekolah: "SMPN 14 Depok", password: "lemon_2026_081", lomba: "IPA" },
+    { nama: "Azzam Fatih Makarim", sekolah: "SMPI Al-Abidin Surakarta", password: "lemon_2026_082", lomba: "IPA" },
+    { nama: "Meriana Delina", sekolah: "SMP Sekolah Tasikmalaya", password: "lemon_2026_083", lomba: "IPA" },
+    { nama: "Ajeng Devi Azkhadina", sekolah: "MTsN 2 Buleleng", password: "lemon_2026_084", lomba: "IPA" },
+    // ---- Peserta IPS ----
+    { nama: "M. Wildan Syafa'at", sekolah: "SMPI Al-Wasatiyah", password: "lemon_2026_085", lomba: "IPS" },
+    { nama: "Ukhil Sofiatun Nasifa", sekolah: "SMPN 2 Mojosari", password: "lemon_2026_086", lomba: "IPS" },
+    { nama: "Muhammad Roni Husnuddikri", sekolah: "SMPN 1 Bondowoso", password: "lemon_2026_087", lomba: "IPS" },
+    { nama: "Fawwaz Berdy Rafif Sukmawan", sekolah: "MTsN 1 Kota Malang", password: "lemon_2026_088", lomba: "IPS" },
+    { nama: "Kenes Jaladra Maharanie", sekolah: "SMPIT Nur Hidayah Surakarta", password: "lemon_2026_089", lomba: "IPS" },
+    { nama: "Begawan Kamadera Aksara Bhumi", sekolah: "MTsN 1 Kota Malang", password: "lemon_2026_090", lomba: "IPS" },
+    { nama: "Andromedha Chakra Bonapartee", sekolah: "MTsN 1 Mojokerto", password: "lemon_2026_091", lomba: "IPS" },
+    { nama: "Nisrina Qutratun Nada", sekolah: "MTsN 1 Mojokerto", password: "lemon_2026_092", lomba: "IPS" },
+    { nama: "Fairuz Azalia Diyanah", sekolah: "MTsN 1 Mojokerto", password: "lemon_2026_093", lomba: "IPS" },
+    { nama: "Khoirul Umar Fadhil", sekolah: "SMPIT Al-Falah Simo", password: "lemon_2026_094", lomba: "IPS" },
+    { nama: "Aqila Althfunisa", sekolah: "MTsN 1 Purbalingga", password: "lemon_2026_095", lomba: "IPS" },
+    { nama: "Anahatta Isyraq Vadahnia A.", sekolah: "SMPN 14 Malang", password: "lemon_2026_096", lomba: "IPS" },
+    { nama: "Aqila Rahayu", sekolah: "MTsN 1 Purbalingga", password: "lemon_2026_097", lomba: "IPS" },
+    // ---- Peserta MATEMATIKA ----
+    { nama: "ARSYAKAYLA MIRAI SHOFIYA", sekolah: "MTsN 5 SRAGEN", password: "lemon_2026_098", lomba: "MATEMATIKA" },
+    { nama: "Najwa Banis Ghassania", sekolah: "SMPII Al-Abidin Sukoharjo", password: "lemon_2026_099", lomba: "MATEMATIKA" },
+    { nama: "Rezwa Athaya Perdana", sekolah: "SMPN 1 Ponorogo", password: "lemon_2026_100", lomba: "MATEMATIKA" },
+    { nama: "Haikal Fatihan Asrofi", sekolah: "MTs At-Taqwa Bondowoso", password: "lemon_2026_101", lomba: "MATEMATIKA" },
+    { nama: "Alysa Fiani Maritza Khanza", sekolah: "SMPIT Ummu'l Quro Depok", password: "lemon_2026_102", lomba: "MATEMATIKA" },
+    { nama: "Alikha Zahra Azkadina", sekolah: "SMPI AL ABIDIN SKA", password: "lemon_2026_103", lomba: "MATEMATIKA" },
+    { nama: "Najwa Banis Ghassania", sekolah: "SMPII Al-Abidin Sukoharjo", password: "lemon_2026_104", lomba: "MATEMATIKA" },
+    { nama: "Daliya Zahra Khaseib", sekolah: "SMP Islam Al-Irsyad Cilacap", password: "lemon_2026_105", lomba: "MATEMATIKA" },
+    { nama: "Alzena Rahma Asda", sekolah: "MTsN 2 SUKOHARJO", password: "lemon_2026_106", lomba: "MATEMATIKA" },
+    { nama: "Alysha Syakira", sekolah: "SMPIT Al Falah Kota Cirebon", password: "lemon_2026_107", lomba: "MATEMATIKA" },
+    { nama: "Hansel Nadivo Rusdian", sekolah: "SMP RUSHD SOLO", password: "lemon_2026_108", lomba: "MATEMATIKA" },
+    { nama: "Reyna Aaliyah Rhynaldie", sekolah: "SMP Citra Nusa", password: "lemon_2026_109", lomba: "MATEMATIKA" }
+  ],
+
+  // ---------------------------------------------------------------
+  // TUJUAN HALAMAN PER LOMBA
+  //   Peserta yang lolos login dikirim ke nextPageUrl lomba masing-masing.
+  //   >>> Halaman IPS dan Matematika belum ada. Begitu web-nya jadi, cukup
+  //   >>> isi nextPageUrl-nya di bawah ini (contoh: "beranda-ips.html"),
+  //   >>> tidak ada bagian lain yang perlu diubah.
+  //   Selama masih "" (kosong), peserta IPS/Matematika yang datanya benar
+  //   tetap TIDAK dimasukkan dan hanya melihat pesan "belum tersedia".
+  // ---------------------------------------------------------------
+  lomba: {
+    IPA:        { label: "IPA",        nextPageUrl: "beranda-ipa.html" },
+    IPS:        { label: "IPS",        nextPageUrl: "beranda-ips.html" },
+    MATEMATIKA: { label: "Matematika", nextPageUrl: "beranda-matematika.html" }    // <-- ISI DI SINI saat halaman Matematika siap
+  },
+
+  sessionKey: "peserta_login",     // HARUS sama dengan yang di beranda.html
+  loadingDelayMs: 650,
+  namaCaseSensitive: false,        // false: "fahmi" dan "FAHMI" dianggap sama
+
+  messages: {
+    usernameRequired: "Nama lengkap wajib diisi.",
+    passwordRequired: "Password wajib diisi.",
+    lombaRequired: "Pilih lomba yang Anda ikuti.",
+    fieldsIncomplete: "Lengkapi nama, password, dan pilihan lomba terlebih dahulu.",
+    // Sengaja tidak menyebut bagian mana yang salah
+    wrongCredentials: "Nama, password, atau pilihan lomba tidak sesuai dengan data pendaftaran. Periksa kembali.",
+    lombaUnavailable: "Halaman lomba {lomba} belum tersedia. Silakan tunggu informasi dari panitia."
+  }
+};
+
+/* ---------- 2. SESSION: menyimpan data peserta ---------- */
+window.Session = (function () {
+  var memory = {};
+  var NAMES = ["user", "profil", "foto", "pakta"];
+
+  function keyOf(name) { return CONFIG.sessionKey + "_" + name; }
+
+  function write(name, value) {
+    memory[name] = value;
+    try { sessionStorage.setItem(keyOf(name), value); } catch (e) {}
+  }
+  function read(name) {
+    try {
+      var saved = sessionStorage.getItem(keyOf(name));
+      if (saved !== null) return saved;
+    } catch (e) {}
+    return Object.prototype.hasOwnProperty.call(memory, name) ? memory[name] : null;
+  }
+  function remove(name) {
+    delete memory[name];
+    try { sessionStorage.removeItem(keyOf(name)); } catch (e) {}
+  }
+
+  function login(profile) {
+    write("user", profile.username);
+    write("profil", JSON.stringify(profile));
+  }
+  function get() { return read("user"); }
+  function getProfile() {
+    var raw = read("profil");
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch (e) { return null; }
+  }
+  function isLoggedIn() { return !!get(); }
+  function clear() { NAMES.forEach(remove); }
+
+  return { login: login, get: get, getProfile: getProfile, isLoggedIn: isLoggedIn, clear: clear };
+})();
+
+/* ---------- 3. AUTH: validasi & pencocokan akun ---------- */
+window.Auth = (function () {
+
+  // Rapikan teks: spasi/tab berlebih dibuang
+  function clean(text) { return String(text == null ? "" : text).replace(/\s+/g, " ").trim(); }
+
+  function validate(username, password, lomba) {
+    var errors = {};
+    if (!username) errors.username = CONFIG.messages.usernameRequired;
+    if (!password) errors.password = CONFIG.messages.passwordRequired;
+    if (!lomba) errors.lomba = CONFIG.messages.lombaRequired;
+    return { ok: Object.keys(errors).length === 0, errors: errors };
+  }
+
+  // Cocok hanya bila NAMA + PASSWORD + LOMBA sama dengan satu baris data
+  function findUser(username, password, lomba) {
+    var input = clean(username);
+    if (!CONFIG.namaCaseSensitive) input = input.toLowerCase();
+    var pass = String(password).trim();
+
+    for (var i = 0; i < CONFIG.users.length; i++) {
+      var user = CONFIG.users[i];
+      var name = clean(user.nama);
+      if (!CONFIG.namaCaseSensitive) name = name.toLowerCase();
+
+      if (name === input && user.password === pass && user.lomba === lomba) {
+        return {
+          username: clean(user.nama),
+          nama: clean(user.nama),
+          sekolah: clean(user.sekolah) || "-",
+          lomba: user.lomba
+        };
+      }
+    }
+    return null;
+  }
+
+  // Promise, supaya mudah diganti fetch() ke server nanti
+  function login(username, password, lomba) {
+    return new Promise(function (resolve) {
+      setTimeout(function () {
+        var user = findUser(username, password, lomba);
+        resolve({ ok: !!user, user: user });
+      }, CONFIG.loadingDelayMs);
+    });
+  }
+
+  return { validate: validate, findUser: findUser, login: login };
+})();
+
+/* ---------- 4. UI: perubahan tampilan ---------- */
+window.UI = (function () {
+
+  function $(id) { return document.getElementById(id); }
+
+  var card = $("login-form");
+  var submitBtn = $("submit-btn");
+  var alertBox = $("form-alert");
+
+  function setFieldError(name, message) {
+    $("f-" + name).classList.toggle("invalid", !!message);
+    $("err-" + name).textContent = message || "";
+    $(name).setAttribute("aria-invalid", message ? "true" : "false");
+  }
+
+  function clearErrors() {
+    setFieldError("username", "");
+    setFieldError("password", "");
+    setFieldError("lomba", "");
+    alertBox.textContent = "";
+  }
+
+  function showAlert(message) {
+    alertBox.textContent = message;
+    shakeCard();
+  }
+
+  function shakeCard() {
+    card.classList.remove("shake");
+    void card.offsetWidth;
+    card.classList.add("shake");
+  }
+
+  function setLoading(isLoading) {
+    submitBtn.disabled = isLoading;
+    submitBtn.classList.toggle("loading", isLoading);
+  }
+
+  function togglePassword() {
+    var input = $("password");
+    var button = $("toggle-pw");
+    var willShow = input.type === "password";
+
+    input.type = willShow ? "text" : "password";
+    button.setAttribute("aria-pressed", willShow ? "true" : "false");
+    button.setAttribute("aria-label", willShow ? "Sembunyikan password" : "Tampilkan password");
+    input.focus();
+  }
+
+  function focusField(name) {
+    if (name === "lomba") {
+      var first = document.querySelector('input[name="lomba"]');
+      if (first) first.focus();
+      return;
+    }
+    $(name).focus();
+  }
+
+  return {
+    setFieldError: setFieldError,
+    clearErrors: clearErrors,
+    showAlert: showAlert,
+    shakeCard: shakeCard,
+    setLoading: setLoading,
+    togglePassword: togglePassword,
+    focusField: focusField
+  };
+})();
+
+/* ---------- 5. APP: penghubung alur login ---------- */
+(function () {
+
+  function $(id) { return document.getElementById(id); }
+
+  function selectedLomba() {
+    var checked = document.querySelector('input[name="lomba"]:checked');
+    return checked ? checked.value : "";
+  }
+
+  // Alamat halaman untuk sebuah lomba ("" bila belum disiapkan)
+  function pageOf(lomba) {
+    var item = CONFIG.lomba[lomba];
+    return item ? item.nextPageUrl : "";
+  }
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    if ($("submit-btn").disabled) return;
+
+    UI.clearErrors();
+
+    var username = $("username").value.trim();
+    var password = $("password").value;
+    var lomba = selectedLomba();
+
+    // Langkah 1: cek kolom kosong
+    var check = Auth.validate(username, password, lomba);
+    if (!check.ok) {
+      UI.setFieldError("username", check.errors.username);
+      UI.setFieldError("password", check.errors.password);
+      UI.setFieldError("lomba", check.errors.lomba);
+      UI.focusField(!username ? "username" : (!password ? "password" : "lomba"));
+      UI.showAlert(CONFIG.messages.fieldsIncomplete);
+      return;
+    }
+
+    // Langkah 2: cocokkan nama + password + lomba
+    UI.setLoading(true);
+    Auth.login(username, password, lomba).then(function (result) {
+      UI.setLoading(false);
+
+      if (!result.ok) {
+        $("password").value = "";
+        UI.focusField("password");
+        UI.showAlert(CONFIG.messages.wrongCredentials);
+        return;
+      }
+
+      // Langkah 3: data benar, tetapi apakah halaman lombanya sudah ada?
+      var target = pageOf(result.user.lomba);
+      if (!target) {
+        UI.showAlert(CONFIG.messages.lombaUnavailable.replace("{lomba}", CONFIG.lomba[result.user.lomba].label));
+        return;                                   // belum ada halaman: sesi TIDAK dibuat
+      }
+
+      Session.login(result.user);
+      location.href = target;
+    });
+  }
+
+  function init() {
+    // Sudah login sebelumnya? Lanjut ke halaman lombanya.
+    if (Session.isLoggedIn()) {
+      var profile = Session.getProfile();
+      var target = profile ? pageOf(profile.lomba) : "";
+      if (target) {
+        location.replace(target);
+        return;
+      }
+      Session.clear();                            // sesi lama tanpa lomba: paksa login ulang
+    }
+
+    $("login-form").addEventListener("submit", handleSubmit);
+    $("toggle-pw").addEventListener("click", UI.togglePassword);
+
+    $("username").addEventListener("input", function () { UI.setFieldError("username", ""); });
+    $("password").addEventListener("input", function () { UI.setFieldError("password", ""); });
+    var radios = document.querySelectorAll('input[name="lomba"]');
+    for (var i = 0; i < radios.length; i++) {
+      radios[i].addEventListener("change", function () { UI.setFieldError("lomba", ""); });
+    }
+  }
+
+  init();
+})();
+
+
+/* ---------- TUTORIAL INTERAKTIF: sorotan langkah demi langkah ----------
+   Muncul otomatis saat halaman dibuka (sekali per sesi tab), bisa diulang lewat tombol "Tutorial". */
+window.Tour = (function () {
+  var cfg = null, idx = 0, tip = null, spot = null, catcher = null;
+  var active = false, raf = 0, current = null, memSeen = false;
+
+  function seen() { try { return sessionStorage.getItem(cfg.key) === "1"; } catch (e) { return memSeen; } }
+  function mark() { memSeen = true; try { sessionStorage.setItem(cfg.key, "1"); } catch (e) {} }
+  function q(sel) { return tip.querySelector(sel); }
+
+  function build() {
+    if (tip) return;
+    catcher = document.createElement("div"); catcher.id = "tour-catch";
+    spot = document.createElement("div"); spot.id = "tour-spot";
+    tip = document.createElement("div"); tip.id = "tour-tip";
+    tip.setAttribute("role", "dialog");
+    tip.setAttribute("aria-modal", "true");
+    tip.setAttribute("aria-labelledby", "tour-title");
+    tip.innerHTML =
+      '<p class="tour-step" id="tour-count"></p>' +
+      '<h2 class="tour-title" id="tour-title"></h2>' +
+      '<div class="tour-text" id="tour-text"></div>' +
+      '<div class="tour-dots" id="tour-dots" aria-hidden="true"></div>' +
+      '<div class="tour-actions">' +
+        '<button type="button" class="tour-skip" id="tour-skip">Lewati</button>' +
+        '<button type="button" class="tour-prev" id="tour-prev">Kembali</button>' +
+        '<button type="button" class="tour-next" id="tour-next">Lanjut</button>' +
+      '</div>';
+    [catcher, spot, tip].forEach(function (el) { el.hidden = true; document.body.appendChild(el); });
+    q("#tour-skip").addEventListener("click", close);
+    q("#tour-prev").addEventListener("click", function () { go(-1); });
+    q("#tour-next").addEventListener("click", function () { go(1); });
+  }
+
+  function place() {
+    if (!active) return;
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var w = tip.offsetWidth, h = tip.offsetHeight, left, top;
+    if (!current) {                               // langkah tanpa target: kartu di tengah, layar digelapkan
+      spot.className = "none";
+      spot.style.left = (vw / 2) + "px"; spot.style.top = (vh / 2) + "px";
+      spot.style.width = "0px"; spot.style.height = "0px";
+      left = (vw - w) / 2; top = Math.max(12, (vh - h) / 2);
+    } else {
+      var r = current.getBoundingClientRect(), pad = 8;
+      spot.className = "";
+      spot.style.left = (r.left - pad) + "px"; spot.style.top = (r.top - pad) + "px";
+      spot.style.width = (r.width + pad * 2) + "px"; spot.style.height = (r.height + pad * 2) + "px";
+      var below = vh - r.bottom - pad - 12, above = r.top - pad - 12;
+      if (below >= h + 8) top = r.bottom + pad + 12;
+      else if (above >= h + 8) top = r.top - pad - 12 - h;
+      else top = vh - h - 12;                     // target terlalu besar: kartu menempel di bawah layar
+      left = Math.min(Math.max(12, r.left + r.width / 2 - w / 2), vw - w - 12);
+    }
+    tip.style.left = left + "px"; tip.style.top = top + "px";
+  }
+
+  function scrollTarget(el) {
+    var r = el.getBoundingClientRect(), vh = window.innerHeight, tipH = tip.offsetHeight, y = window.pageYOffset, to;
+    if (r.height + tipH + 40 > vh) to = y + r.top - 70;                      // target besar: sejajarkan di atas
+    else to = y + r.top - (vh - r.height - tipH - 28) / 2;                    // target + kartu di tengah layar
+    window.scrollTo(0, Math.max(0, to));
+  }
+
+  function show(n) {
+    idx = n;
+    var s = cfg.steps[n], last = cfg.steps.length - 1, dots = "";
+    current = s.sel ? document.querySelector(s.sel) : null;
+    q("#tour-count").textContent = "Langkah " + (n + 1) + " dari " + (last + 1);
+    q("#tour-title").textContent = s.title;
+    q("#tour-text").innerHTML = s.html;
+    for (var i = 0; i <= last; i++) dots += '<i class="' + (i === n ? "on" : "") + '"></i>';
+    q("#tour-dots").innerHTML = dots;
+    q("#tour-prev").hidden = n === 0;
+    q("#tour-next").textContent = n === last ? "Selesai" : "Lanjut";
+    if (current) scrollTarget(current);
+    place();
+    q("#tour-next").focus({ preventScroll: true });
+  }
+
+  function go(d) {
+    var n = idx + d;
+    if (n >= cfg.steps.length) close();
+    else if (n >= 0) show(n);
+  }
+
+  function onMove() { if (!raf) raf = requestAnimationFrame(function () { raf = 0; place(); }); }
+
+  function onKey(e) {
+    if (!active) return;
+    if (e.key === "Escape") { e.preventDefault(); close(); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); go(1); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
+    else if (e.key === "Tab") {                    // fokus tetap di dalam kartu tutorial
+      var b = tip.querySelectorAll("button:not([hidden])");
+      var first = b[0], last = b[b.length - 1], now = document.activeElement;
+      if (!tip.contains(now)) { e.preventDefault(); first.focus(); }
+      else if (e.shiftKey && now === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && now === last) { e.preventDefault(); first.focus(); }
+    }
+  }
+
+  function open() {
+    build();
+    active = true;
+    [catcher, spot, tip].forEach(function (el) { el.hidden = false; });
+    window.addEventListener("resize", onMove);
+    window.addEventListener("scroll", onMove, { passive: true });
+    document.addEventListener("keydown", onKey, true);
+    show(0);
+  }
+
+  function close() {
+    if (!active) return;
+    active = false;
+    [catcher, spot, tip].forEach(function (el) { el.hidden = true; });
+    window.removeEventListener("resize", onMove);
+    window.removeEventListener("scroll", onMove);
+    document.removeEventListener("keydown", onKey, true);
+    mark();
+    window.scrollTo(0, 0);
+  }
+
+  function init(c) {
+    cfg = c;
+    var btn = document.getElementById(c.replayId);
+    if (btn) btn.addEventListener("click", open);
+    if (c.skip && c.skip()) return;
+    if (!seen()) setTimeout(open, c.delay || 800);
+  }
+
+  return { init: init, open: open, close: close };
+})();
+
+Tour.init({
+  key: "tour_login_v1",
+  replayId: "tour-replay",
+  delay: 900,
+  skip: function () { return window.Session && Session.isLoggedIn(); },
+  steps: [
+    { title: "Selamat Datang", html: "<p>Panduan singkat ini menunjukkan cara masuk ke ujian, langkah demi langkah. Tekan <b>Lanjut</b> untuk mulai. Panduan bisa dibuka lagi kapan saja lewat tombol <b>Tutorial</b>.</p>" },
+    { sel: "#f-username", title: "1. Tulis Nama Lengkap", html: "<p>ketik nama lengkap sesuai pada data pendaftar. Huruf besar dan kecil tidak berpengaruh.</p>" },
+    { sel: "#f-password", title: "2. Isi Password", html: "<p>Masukkan password yang telah diberikan oleh panitia. Untuk password, huruf besar dan kecil berpengaruh.</p>" },
+    { sel: "#toggle-pw", title: "3. Cek Password", html: "<p>Klik ikon mata untuk menampilkan atau menyembunyikan password, agar tidak salah ketik.</p>" },
+    { sel: "#f-lomba", title: "4. Pilih Lomba", html: "<p>Pilih satu: IPA, IPS, atau Matematika. Pilihan harus sama dengan lomba yang Anda daftarkan.</p>" },
+    { sel: "#submit-btn", title: "5. Tekan Masuk", html: "<p> Setelah mengisi nama lengkap, password dan memilih lomba. tekan tombol masuk, tombol berputar sebentar. Jika data benar, Anda otomatis dibawa ke beranda lomba Anda.</p>" },
+    { title: "Jika Muncul Pesan Merah", html: "<ul><li>Kolom bertanda merah masih kosong: lengkapi lalu tekan Masuk lagi.</li><li>Data tidak sesuai: periksa nama, password, dan lomba. Password dikosongkan otomatis, isi ulang dengan teliti.</li><li>Tetap gagal: hubungi panitia.</li></ul>" }
+  ]
+});
+  </script>
+</body>
+</html>

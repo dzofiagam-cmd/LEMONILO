@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Reset Ujian (Panitia)</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fdf8ec;--card:#fffaf0;--ink:#6a4126;--soft:#8f6f52;--line:#fbe1a0;--accent:#fdb95a;--danger:#b83a26;--ok:#3f7a2e;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:16px/1.5 "Nunito",system-ui,sans-serif;padding:max(20px,env(safe-area-inset-top)) 16px 32px}
+.box{max-width:820px;margin:0 auto;background:var(--card);border-radius:28px;padding:26px clamp(18px,4vw,36px);box-shadow:0 18px 50px rgba(224,170,70,.22)}
+h1{margin:0 0 4px;font:800 1.7rem/1.2 "Baloo 2",system-ui,sans-serif}
+p{margin:6px 0}.soft{color:var(--soft)}
+[hidden]{display:none!important}
+input{height:46px;padding:0 16px;border:2px solid var(--line);border-radius:14px;background:#fff;color:var(--ink);font:inherit;width:min(100%,260px)}
+button{border:0;border-radius:99px;padding:9px 20px;background:var(--accent);color:#4a2a12;font-weight:800;font-size:.95rem;font-family:inherit;cursor:pointer}
+button:hover{filter:brightness(.96)}
+button.q{background:#fff3d0;border:2px solid var(--line)}
+button.d{background:#fde6df;color:var(--danger)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0}
+.msg{min-height:1.5em;font-weight:800;color:var(--ok)}.msg.bad{color:var(--danger)}
+.wrap{overflow-x:auto;border-radius:16px;border:2px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:#fff3d0}tr:last-child td{border-bottom:0}
+.tag{display:inline-block;padding:2px 10px;border-radius:99px;background:#fdecb8;font-weight:800;font-size:.8rem}
+.tag.s{background:#e3f1d2;color:var(--ok)}
+</style>
+</head>
+<body>
+<main class="box">
+  <h1>Reset Ujian Peserta</h1>
+  <p class="soft">Halaman khusus panitia. Jangan dibagikan ke peserta.</p>
+
+  <section id="gate">
+    <p>Masukkan PIN panitia:</p>
+    <div class="bar"><input id="pin" type="password" autocomplete="off" placeholder="PIN"><button id="go" type="button">Masuk</button></div>
+    <p class="msg bad" id="gmsg" role="alert"></p>
+  </section>
+
+  <section id="panel" hidden>
+    <p>Daftar ujian yang tersimpan di <b>browser ini</b>. Reset membuat peserta bisa mengerjakan lagi dari awal (jawaban, waktu, dan status selesai dihapus).</p>
+    <div class="bar">
+      <button id="all" class="d" type="button">Reset Semua</button>
+      <button id="ref" class="q" type="button">Muat Ulang Daftar</button>
+    </div>
+    <p class="msg" id="msg" role="status"></p>
+    <div class="wrap"><table>
+      <thead><tr><th>Nama</th><th>Lomba</th><th>Status</th><th>Terjawab</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+    <p class="soft" id="empty" hidden>Tidak ada data ujian di browser ini.</p>
+    <p class="soft" style="margin-top:16px;font-size:.9rem">Catatan: data ujian disimpan di perangkat masing-masing peserta. Halaman ini hanya mereset perangkat tempat halaman ini dibuka. Untuk perangkat peserta lain, buka halaman ini di perangkat itu. Jawaban yang sudah terkirim ke panitia tidak ikut terhapus.</p>
+  </section>
+</main>
+
+<script>
+var PIN = "lemon-admin";   // GANTI PIN INI sebelum dipakai
+var RE = /^lemon2026_(v2_)?ujian_(ips|ipa|matematika)_(.+)$/;
+function $(id) { return document.getElementById(id); }
+
+function scan() {
+  var out = [];
+  for (var i = 0; i < localStorage.length; i++) {
+    var k = localStorage.key(i), m = RE.exec(k);
+    if (!m) continue;
+    var s = {}; try { s = JSON.parse(localStorage.getItem(k)) || {}; } catch (e) {}
+    out.push({
+      key: k, lomba: m[2].toUpperCase(), lama: !m[1],
+      nama: (s.verifikasi && s.verifikasi.nama) || m[3].replace(/_/g, " "),
+      status: s.selesai ? (s.verifikasi ? "Selesai" : "Belum verifikasi") : (s.mulai ? "Sedang mengerjakan" : "-"),
+      selesai: !!(s.selesai && s.verifikasi),
+      n: Object.keys(s.jawaban || {}).length
+    });
+  }
+  out.sort(function (a, b) { return a.lomba.localeCompare(b.lomba) || a.nama.localeCompare(b.nama); });
+  return out;
+}
+function say(t, bad) { $("msg").textContent = t || ""; $("msg").className = "msg" + (bad ? " bad" : ""); }
+
+function render() {
+  var rows = scan(), tb = $("rows"); tb.textContent = "";
+  $("empty").hidden = rows.length > 0; $("all").disabled = !rows.length;
+  rows.forEach(function (r) {
+    var tr = document.createElement("tr");
+    [r.nama + (r.lama ? " (data lama)" : ""), r.lomba, r.status, r.n].forEach(function (v, i) {
+      var td = document.createElement("td");
+      if (i === 2) { var t = document.createElement("span"); t.className = "tag" + (r.selesai ? " s" : ""); t.textContent = v; td.appendChild(t); }
+      else td.textContent = v;
+      tr.appendChild(td);
+    });
+    var td = document.createElement("td"), b = document.createElement("button");
+    b.type = "button"; b.className = "q"; b.textContent = "Reset";
+    b.addEventListener("click", function () {
+      if (!confirm("Reset ujian " + r.nama + " (" + r.lomba + ")? Jawabannya akan dihapus.")) return;
+      localStorage.removeItem(r.key); render(); say("Ujian " + r.nama + " sudah direset.");
+    });
+    td.appendChild(b); tr.appendChild(td); tb.appendChild(tr);
+  });
+}
+
+function unlock() {
+  if ($("pin").value === PIN) { $("gate").hidden = true; $("panel").hidden = false; render(); }
+  else { $("gmsg").textContent = "PIN salah."; $("pin").select(); }
+}
+$("go").addEventListener("click", unlock);
+$("pin").addEventListener("keydown", function (e) { if (e.key === "Enter") unlock(); });
+$("ref").addEventListener("click", function () { render(); say(""); });
+$("all").addEventListener("click", function () {
+  var rows = scan();
+  if (!rows.length || !confirm("Reset SEMUA (" + rows.length + " data ujian) di browser ini? Tidak bisa dibatalkan.")) return;
+  rows.forEach(function (r) { localStorage.removeItem(r.key); });
+  render(); say(rows.length + " data ujian sudah direset.");
+});
+</script>
+</body>
+</html>
