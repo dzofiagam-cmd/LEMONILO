@@ -1,0 +1,367 @@
+{
+  "category": "IPA",
+  "version": "1.0.0",
+  "checksum": "placeholder-sha256",
+  "questions": [
+    {
+      "n": 1,
+      "mapel": "Biologi",
+      "q": "Pada suatu ekosistem sawah terdapat padi, belalang, katak, ular, dan elang. Jika populasi ular menurun drastis akibat perburuan, perubahan yang paling mungkin terjadi dalam jangka pendek adalah ...",
+      "o": [
+        "Populasi katak menurun dan belalang meningkat",
+        "Populasi katak meningkat dan elang dapat berkurang",
+        "Populasi padi meningkat karena ular memakan padi",
+        "Populasi belalang langsung punah",
+        "Populasi elang meningkat karena jumlah ular berkurang"
+      ]
+    },
+    {
+      "n": 2,
+      "mapel": "Biologi",
+      "q": "Sebuah tanaman diletakkan di tempat gelap selama 48 jam. Kemudian sebagian daunnya ditutup kertas aluminium dan tanaman disinari matahari. Setelah diuji dengan larutan iodin, bagian daun yang terkena cahaya berubah biru kehitaman, sedangkan bagian tertutup tidak. Kesimpulan yang tepat adalah ...",
+      "o": [
+        "Cahaya diperlukan dalam pembentukan amilum melalui fotosintesis",
+        "Iodin menyebabkan daun melakukan fotosintesis",
+        "Amilum hanya terbentuk pada malam hari",
+        "Karbon dioksida tidak diperlukan dalam fotosintesis",
+        "Klorofil mengubah iodin menjadi amilum"
+      ]
+    },
+    {
+      "n": 3,
+      "mapel": "Biologi",
+      "q": "Dalam percobaan osmosis, sel tumbuhan dimasukkan ke larutan garam pekat. Peristiwa yang paling mungkin terjadi adalah ...",
+      "o": [
+        "Air masuk ke sel sehingga sel mengalami turgid",
+        "Air keluar dari sel sehingga membran plasma menjauh dari dinding sel",
+        "Garam keluar dari sel dan vakuola membesar",
+        "Dinding sel larut seluruhnya",
+        "Sel membelah lebih cepat"
+      ]
+    },
+    {
+      "n": 4,
+      "mapel": "Biologi",
+      "q": "Pada persilangan tanaman berbiji bulat heterozigot (Bb) dengan tanaman berbiji keriput (bb), jika bulat dominan terhadap keriput, peluang keturunan berbiji keriput adalah ...",
+      "o": [
+        "0%",
+        "25%",
+        "50%",
+        "75%",
+        "100%"
+      ]
+    },
+    {
+      "n": 5,
+      "mapel": "Biologi",
+      "q": "Ketika seseorang berlari cepat, frekuensi pernapasan dan denyut jantung meningkat. Hal ini terutama bertujuan untuk ...",
+      "o": [
+        "Mengurangi suhu tubuh hingga di bawah normal",
+        "Mempercepat pengiriman oksigen dan nutrisi serta pengangkutan karbon dioksida",
+        "Menghentikan pembentukan energi di otot",
+        "Mengurangi aliran darah ke jaringan otot",
+        "Mengubah seluruh glukosa menjadi protein"
+      ]
+    },
+    {
+      "n": 6,
+      "mapel": "Biologi",
+      "q": "Antibiotik tidak efektif untuk mengobati influenza karena ...",
+      "o": [
+        "Influenza disebabkan oleh bakteri yang memiliki dinding sel tebal",
+        "Virus tidak memiliki struktur dan proses metabolisme yang menjadi target utama antibiotik",
+        "Virus influenza berukuran lebih besar daripada bakteri",
+        "Antibiotik hanya bekerja pada sel darah merah",
+        "Influenza tidak disebabkan oleh mikroorganisme"
+      ]
+    },
+    {
+      "n": 7,
+      "mapel": "Biologi",
+      "q": "Jika suatu populasi bakteri terpapar antibiotik berulang kali, bakteri yang resisten dapat menjadi lebih dominan. Mekanisme evolusi yang menjelaskan hal ini adalah ...",
+      "o": [
+        "Seleksi alam",
+        "Fotosintesis",
+        "Fermentasi",
+        "Osmoregulasi",
+        "Fragmentasi"
+      ]
+    },
+    {
+      "n": 8,
+      "mapel": "Biologi",
+      "q": "Pada manusia, apabila nefron mengalami kerusakan pada glomerulus, proses yang paling langsung terganggu adalah ...",
+      "o": [
+        "Penyerapan kembali air di tubulus kolektivus",
+        "Filtrasi darah untuk membentuk urine primer",
+        "Pengeluaran urine melalui ureter",
+        "Pengubahan amonia menjadi urea di hati",
+        "Penyerapan sari makanan di usus halus"
+      ]
+    },
+    {
+      "n": 9,
+      "mapel": "Fisika",
+      "q": "Sebuah benda bergerak lurus dengan kecepatan awal 4 m/s dan percepatan tetap 2 m/s² selama 5 sekon. Kecepatan akhirnya adalah ...",
+      "o": [
+        "6 m/s",
+        "10 m/s",
+        "14 m/s",
+        "20 m/s",
+        "24 m/s"
+      ]
+    },
+    {
+      "n": 10,
+      "mapel": "Fisika",
+      "q": "Sebuah benda bermassa 2 kg berada pada ketinggian 5 m dari tanah. Jika percepatan gravitasi 10 m/s², energi potensial gravitasinya adalah ...",
+      "o": [
+        "10 J",
+        "25 J",
+        "50 J",
+        "100 J",
+        "200 J"
+      ]
+    },
+    {
+      "n": 11,
+      "mapel": "Fisika",
+      "q": "Dua hambatan 6 Ω dan 3 Ω dipasang paralel, kemudian dihubungkan dengan sumber tegangan 12 V. Arus total rangkaian adalah ...",
+      "o": [
+        "2 A",
+        "4 A",
+        "6 A",
+        "8 A",
+        "12 A"
+      ]
+    },
+    {
+      "n": 12,
+      "mapel": "Fisika",
+      "q": "Sebuah benda memiliki berat 20 N di udara. Ketika dicelupkan seluruhnya ke dalam air, berat semunya menjadi 15 N. Besar gaya ke atas yang dialami benda adalah ...",
+      "o": [
+        "3 N",
+        "5 N",
+        "15 N",
+        "20 N",
+        "35 N"
+      ]
+    },
+    {
+      "n": 13,
+      "mapel": "Fisika",
+      "q": "Gelombang merambat dengan frekuensi 5 Hz dan panjang gelombang 2 m. Cepat rambat gelombang tersebut adalah ...",
+      "o": [
+        "0,4 m/s",
+        "2,5 m/s",
+        "5 m/s",
+        "7 m/s",
+        "10 m/s"
+      ]
+    },
+    {
+      "n": 14,
+      "mapel": "Fisika",
+      "q": "Air bermassa 0,5 kg dipanaskan dari 20°C menjadi 60°C. Jika kalor jenis air 4.200 J/kg°C, kalor yang diperlukan adalah ...",
+      "o": [
+        "8.400 J",
+        "21.000 J",
+        "42.000 J",
+        "84.000 J",
+        "168.000 J"
+      ]
+    },
+    {
+      "n": 15,
+      "mapel": "Fisika",
+      "q": "Sebuah lensa cembung memiliki jarak fokus 10 cm. Benda diletakkan 15 cm di depan lensa. Jarak bayangan yang terbentuk adalah ...",
+      "o": [
+        "6 cm",
+        "10 cm",
+        "15 cm",
+        "20 cm",
+        "30 cm"
+      ]
+    },
+    {
+      "n": 16,
+      "mapel": "Fisika",
+      "q": "Sebuah mobil bermassa 1.000 kg bergerak dengan kecepatan 10 m/s. Jika mobil berhenti dalam 5 sekon dengan perlambatan konstan, besar gaya pengereman rata-rata adalah ...",
+      "o": [
+        "200 N",
+        "500 N",
+        "1.000 N",
+        "2.000 N",
+        "5.000 N"
+      ]
+    },
+    {
+      "n": 17,
+      "mapel": "Kimia",
+      "q": "Atom netral memiliki nomor atom 17 dan nomor massa 35. Jumlah proton, elektron, dan neutron berturut-turut adalah ...",
+      "o": [
+        "17, 17, 18",
+        "17, 18, 17",
+        "18, 17, 17",
+        "35, 17, 18",
+        "17, 35, 18"
+      ]
+    },
+    {
+      "n": 18,
+      "mapel": "Kimia",
+      "q": "Unsur X memiliki konfigurasi elektron 2, 8, 1. Kecenderungan unsur tersebut ketika membentuk ion adalah ...",
+      "o": [
+        "Menerima 1 elektron menjadi X⁻",
+        "Melepaskan 1 elektron menjadi X⁺",
+        "Menerima 7 elektron menjadi X⁷⁻",
+        "Melepaskan 8 elektron menjadi X⁸⁺",
+        "Tidak dapat membentuk ion"
+      ]
+    },
+    {
+      "n": 19,
+      "mapel": "Kimia",
+      "q": "Larutan dengan pH 3 dibandingkan larutan dengan pH 5 memiliki konsentrasi ion hidrogen ...",
+      "o": [
+        "2 kali lebih besar",
+        "10 kali lebih besar",
+        "100 kali lebih besar",
+        "1.000 kali lebih besar",
+        "Sama besar"
+      ]
+    },
+    {
+      "n": 20,
+      "mapel": "Kimia",
+      "q": "Persamaan reaksi setara untuk pembakaran sempurna propana (C₃H₈) adalah ...",
+      "o": [
+        "C₃H₈ + O₂ → 3CO₂ + 4H₂O",
+        "C₃H₈ + 5O₂ → 3CO₂ + 4H₂O",
+        "2C₃H₈ + 5O₂ → 6CO₂ + 8H₂O",
+        "C₃H₈ + 3O₂ → 3CO + 4H₂O",
+        "C₃H₈ + 4O₂ → 3CO₂ + 2H₂O"
+      ]
+    },
+    {
+      "n": 21,
+      "mapel": "Kimia",
+      "q": "Campuran pasir dan garam dapur dapat dipisahkan secara efektif melalui urutan proses ...",
+      "o": [
+        "Sublimasi lalu distilasi",
+        "Pelarutan dalam air, filtrasi, kemudian penguapan",
+        "Kromatografi lalu magnetisasi",
+        "Filtrasi langsung tanpa pelarut",
+        "Pembekuan lalu dekantasi"
+      ]
+    },
+    {
+      "n": 22,
+      "mapel": "Kimia",
+      "q": "Sebanyak 10 gram kalsium karbonat (CaCO₃) dipanaskan sempurna menurut reaksi CaCO₃ → CaO + CO₂. Jika Ar Ca = 40, C = 12, O = 16, massa CO₂ yang dihasilkan adalah ...",
+      "o": [
+        "2,2 gram",
+        "3,0 gram",
+        "4,4 gram",
+        "5,6 gram",
+        "10 gram"
+      ]
+    },
+    {
+      "n": 23,
+      "mapel": "Kimia",
+      "q": "Peristiwa yang termasuk perubahan kimia adalah ...",
+      "o": [
+        "Es mencair",
+        "Gula larut dalam air",
+        "Besi berkarat",
+        "Air menguap",
+        "Kertas dipotong"
+      ]
+    },
+    {
+      "n": 24,
+      "mapel": "Bumi dan Antariksa",
+      "q": "Pergantian musim di Bumi terutama disebabkan oleh ...",
+      "o": [
+        "Perubahan jarak Bumi–Matahari setiap hari",
+        "Kemiringan sumbu rotasi Bumi terhadap bidang orbit dan revolusi Bumi",
+        "Rotasi Bulan mengelilingi Bumi",
+        "Perubahan ukuran Matahari",
+        "Gerak Matahari mengelilingi Bumi"
+      ]
+    },
+    {
+      "n": 25,
+      "mapel": "Bumi dan Antariksa",
+      "q": "Gerhana Matahari total dapat terjadi ketika ...",
+      "o": [
+        "Bumi berada di antara Matahari dan Bulan",
+        "Bulan berada di antara Matahari dan Bumi dan pengamat berada di daerah umbra",
+        "Matahari berada di antara Bumi dan Bulan",
+        "Bulan berada pada fase purnama",
+        "Bumi memasuki bayangan Bulan saat malam hari"
+      ]
+    },
+    {
+      "n": 26,
+      "mapel": "Bumi dan Antariksa",
+      "q": "Lapisan atmosfer tempat sebagian besar fenomena cuaca seperti awan, hujan, dan angin terjadi adalah ...",
+      "o": [
+        "Troposfer",
+        "Stratosfer",
+        "Mesosfer",
+        "Termosfer",
+        "Eksosfer"
+      ]
+    },
+    {
+      "n": 27,
+      "mapel": "Bumi dan Antariksa",
+      "q": "Batuan beku luar seperti basalt memiliki ukuran kristal relatif halus karena ...",
+      "o": [
+        "Magma mendingin sangat lambat jauh di dalam kerak",
+        "Lava mendingin relatif cepat di permukaan",
+        "Batuan terbentuk dari pemadatan sisa organisme",
+        "Batuan mengalami tekanan tanpa perubahan suhu",
+        "Kristal larut seluruhnya oleh air"
+      ]
+    },
+    {
+      "n": 28,
+      "mapel": "Bumi dan Antariksa",
+      "q": "Batas lempeng konvergen yang melibatkan lempeng samudra dan lempeng benua umumnya membentuk ...",
+      "o": [
+        "Punggung tengah samudra saja",
+        "Palung laut dan busur gunung api di tepi benua",
+        "Dataran banjir yang luas saja",
+        "Sesar transform tanpa aktivitas vulkanik",
+        "Gurun pasir akibat sedimentasi angin"
+      ]
+    },
+    {
+      "n": 29,
+      "mapel": "Bumi dan Antariksa",
+      "q": "Bulan tampak mengalami fase-fase berbeda karena ...",
+      "o": [
+        "Bulan menghasilkan cahaya dengan intensitas yang berubah",
+        "Bagian Bulan yang disinari Matahari dan terlihat dari Bumi berubah seiring posisi relatifnya",
+        "Bayangan Bumi selalu menutupi sebagian Bulan",
+        "Jarak Bulan ke Bumi berubah menjadi nol",
+        "Atmosfer Bumi mengubah bentuk Bulan"
+      ]
+    },
+    {
+      "n": 30,
+      "mapel": "Bumi dan Antariksa",
+      "q": "Jika suatu wilayah berada pada zona waktu UTC+7, ketika waktu UTC menunjukkan pukul 09.30, waktu lokal wilayah tersebut adalah ...",
+      "o": [
+        "02.30",
+        "09.30",
+        "14.30",
+        "16.30",
+        "17.30"
+      ]
+    }
+  ]
+}

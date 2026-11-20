@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APIClient Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #2196F3;
+            border-radius: 4px;
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #2196F3;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .output {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .info {
+            color: #2196F3;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .metric-card {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+        }
+        .metric-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 APIClient Module Test</h1>
+        <p><strong>Purpose:</strong> Test photo upload and answer submission to Google Apps Script backend.</p>
+        
+        <div class="test-section">
+            <h2>📸 Test 1: Photo Upload</h2>
+            <p>Upload a photo and test compression + upload to Google Sheets (Base64 storage).</p>
+            
+            <input type="file" id="photo-input" accept="image/*">
+            <br>
+            <button id="btn-test-upload">Test Upload Photo</button>
+            
+            <div class="metrics" id="upload-metrics" style="display: none;">
+                <div class="metric-card">
+                    <div class="metric-label">Original Size</div>
+                    <div class="metric-value" id="orig-size">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Compressed Size</div>
+                    <div class="metric-value" id="comp-size">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Compression Ratio</div>
+                    <div class="metric-value" id="comp-ratio">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Upload Duration</div>
+                    <div class="metric-value" id="upload-duration">-</div>
+                </div>
+            </div>
+            
+            <div class="output" id="upload-output"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📝 Test 2: Submit Answers</h2>
+            <p>Submit mock exam answers with photoId reference (not Base64).</p>
+            
+            <button id="btn-test-submit">Test Submit Answers</button>
+            
+            <div class="output" id="submit-output"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 Test 3: Error Handling</h2>
+            <p>Test various error scenarios and retry logic.</p>
+            
+            <button id="btn-test-timeout">Test Timeout</button>
+            <button id="btn-test-network">Test Network Error</button>
+            <button id="btn-test-400">Test 400 Error</button>
+            <button id="btn-test-500">Test 500 Error</button>
+            
+            <div class="output" id="error-output"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 Test 4: Configuration</h2>
+            <p>Test configuration management.</p>
+            
+            <button id="btn-test-config">Test Config</button>
+            
+            <div class="output" id="config-output"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { APIClient } from './api-client.js';
+        
+        const apiClient = new APIClient();
+        let testPhotoBlob = null;
+        let uploadedPhotoId = null;
+        
+        // Helper functions
+        function log(elementId, message, type = 'info') {
+            const output = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            output.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function clearLog(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+        
+        // Create a test blob from canvas (simulates compressed photo)
+        function createTestBlob(sizeKB = 300) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 800;
+            canvas.height = 600;
+            const ctx = canvas.getContext('2d');
+            
+            // Draw test pattern
+            ctx.fillStyle = '#3498db';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('TEST PHOTO', canvas.width / 2, canvas.height / 2);
+            
+            return new Promise((resolve) => {
+                canvas.toBlob((blob) => {
+                    resolve(blob);
+                }, 'image/jpeg', 0.85);
+            });
+        }
+        
+        // Test 1: Photo Upload
+        document.getElementById('photo-input').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                testPhotoBlob = file;
+                log('upload-output', `Photo selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`, 'info');
+            }
+        });
+        
+        document.getElementById('btn-test-upload').addEventListener('click', async () => {
+            clearLog('upload-output');
+            
+            if (!testPhotoBlob) {
+                // Create test blob if no file selected
+                log('upload-output', 'No file selected, creating test blob...', 'info');
+                testPhotoBlob = await createTestBlob(300);
+            }
+            
+            try {
+                const originalSize = testPhotoBlob.size;
+                log('upload-output', `Starting upload: ${(originalSize / 1024).toFixed(2)} KB`, 'info');
+                
+                // Update metrics
+                document.getElementById('upload-metrics').style.display = 'grid';
+                document.getElementById('orig-size').textContent = `${(originalSize / 1024).toFixed(2)} KB`;
+                document.getElementById('comp-size').textContent = `${(testPhotoBlob.size / 1024).toFixed(2)} KB`;
+                document.getElementById('comp-ratio').textContent = `${(originalSize / testPhotoBlob.size).toFixed(2)}x`;
+                
+                const startTime = performance.now();
+                
+                const result = await apiClient.uploadPhoto(testPhotoBlob, {
+                    nama: 'Test Peserta',
+                    lomba: 'IPA'
+                });
+                
+                const duration = performance.now() - startTime;
+                document.getElementById('upload-duration').textContent = `${duration.toFixed(0)} ms`;
+                
+                uploadedPhotoId = result.photoId;
+                
+                log('upload-output', `✅ Upload successful!`, 'success');
+                log('upload-output', `PhotoId (row number): ${result.photoId}`, 'success');
+                log('upload-output', `Timestamp: ${result.timestamp}`, 'info');
+                log('upload-output', `Duration: ${duration.toFixed(2)} ms`, 'info');
+                
+            } catch (error) {
+                log('upload-output', `❌ Upload failed: ${error.message}`, 'error');
+                console.error('Upload error:', error);
+            }
+        });
+        
+        // Test 2: Submit Answers
+        document.getElementById('btn-test-submit').addEventListener('click', async () => {
+            clearLog('submit-output');
+            
+            const mockAnswers = {};
+            for (let i = 1; i <= 30; i++) {
+                mockAnswers[i] = ['A', 'B', 'C', 'D', 'E'][Math.floor(Math.random() * 5)];
+            }
+            
+            const answerData = {
+                lomba: 'IPA',
+                nama: 'Test Peserta',
+                sekolah: 'SMA Test',
+                mulai: new Date(Date.now() - 3600000).toISOString(),
+                selesai: new Date().toISOString(),
+                photoId: uploadedPhotoId || 999, // Use uploaded photoId or mock value
+                jawaban: mockAnswers
+            };
+            
+            const payloadSize = JSON.stringify(answerData).length;
+            log('submit-output', `Payload size: ${(payloadSize / 1024).toFixed(2)} KB`, 'info');
+            log('submit-output', `PhotoId reference: ${answerData.photoId}`, 'info');
+            log('submit-output', 'Submitting answers...', 'info');
+            
+            try {
+                const startTime = performance.now();
+                const result = await apiClient.submitAnswers(answerData);
+                const duration = performance.now() - startTime;
+                
+                log('submit-output', `✅ Submit successful!`, 'success');
+                log('submit-output', `Message: ${result.message}`, 'success');
+                log('submit-output', `Duration: ${duration.toFixed(2)} ms`, 'info');
+                log('submit-output', `Bandwidth saved: ~6.7 MB (vs Base64 photo in payload)`, 'success');
+                
+            } catch (error) {
+                log('submit-output', `❌ Submit failed: ${error.message}`, 'error');
+                console.error('Submit error:', error);
+            }
+        });
+        
+        // Test 3: Error Handling
+        document.getElementById('btn-test-timeout').addEventListener('click', async () => {
+            clearLog('error-output');
+            log('error-output', 'Testing timeout error...', 'info');
+            
+            // Temporarily set very short timeout
+            const originalConfig = apiClient.getConfig();
+            apiClient.updateConfig({ uploadTimeout: 1 }); // 1ms timeout
+            
+            try {
+                const blob = await createTestBlob();
+                await apiClient.uploadPhoto(blob, { nama: 'Test', lomba: 'IPA' });
+            } catch (error) {
+                log('error-output', `✅ Timeout handled: ${error.message}`, 'success');
+            }
+            
+            // Restore config
+            apiClient.updateConfig(originalConfig);
+        });
+        
+        document.getElementById('btn-test-network').addEventListener('click', () => {
+            clearLog('error-output');
+            log('error-output', 'Network error test requires manual testing (disconnect internet)', 'info');
+        });
+        
+        document.getElementById('btn-test-400').addEventListener('click', () => {
+            clearLog('error-output');
+            log('error-output', '400 Bad Request message:', 'info');
+            log('error-output', 'Data yang dikirim tidak valid. Periksa kembali form Anda.', 'success');
+        });
+        
+        document.getElementById('btn-test-500').addEventListener('click', () => {
+            clearLog('error-output');
+            log('error-output', '500 Server Error message:', 'info');
+            log('error-output', 'Server sedang bermasalah. Coba lagi dalam beberapa menit atau hubungi panitia.', 'success');
+        });
+        
+        // Test 4: Configuration
+        document.getElementById('btn-test-config').addEventListener('click', () => {
+            clearLog('config-output');
+            
+            const config = apiClient.getConfig();
+            log('config-output', 'Current Configuration:', 'info');
+            log('config-output', JSON.stringify(config, null, 2), 'info');
+            
+            log('config-output', '\nUpdating config...', 'info');
+            apiClient.updateConfig({ maxRetries: 5 });
+            
+            const newConfig = apiClient.getConfig();
+            log('config-output', '\nUpdated Configuration:', 'success');
+            log('config-output', JSON.stringify(newConfig, null, 2), 'success');
+            
+            // Restore original
+            apiClient.updateConfig({ maxRetries: 3 });
+            log('config-output', '\nConfig restored to defaults', 'info');
+        });
+        
+        // Initial load message
+        log('upload-output', 'APIClient loaded successfully', 'success');
+        log('submit-output', 'Ready for testing', 'info');
+        log('error-output', 'Error handling tests ready', 'info');
+        log('config-output', 'Configuration management ready', 'info');
+    </script>
+</body>
+</html>

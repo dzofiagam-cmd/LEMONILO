@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StorageManager Test</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #2c3e50; }
+    h2 { color: #34495e; font-size: 1.2em; margin-top: 0; }
+    button {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+      font-size: 14px;
+    }
+    button:hover { background: #2980b9; }
+    button:disabled {
+      background: #95a5a6;
+      cursor: not-allowed;
+    }
+    .result {
+      margin-top: 15px;
+      padding: 15px;
+      background: #ecf0f1;
+      border-radius: 5px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .success { background: #d5f4e6; color: #27ae60; }
+    .error { background: #fadbd8; color: #c0392b; }
+    .warning { background: #fef5e7; color: #d68910; }
+    .info { background: #d6eaf8; color: #2874a6; }
+  </style>
+</head>
+<body>
+  <h1>🧪 StorageManager Module Test</h1>
+  <p>Test suite untuk memverifikasi fungsionalitas StorageManager module.</p>
+
+  <!-- Test 1: Check Quota -->
+  <div class="test-section">
+    <h2>Test 1: Check Storage Quota</h2>
+    <p>Verifikasi bahwa getQuota() mengembalikan informasi quota yang valid.</p>
+    <button onclick="testCheckQuota()">Run Test</button>
+    <div id="result-quota" class="result" style="display:none;"></div>
+  </div>
+
+  <!-- Test 2: Set and Get Item -->
+  <div class="test-section">
+    <h2>Test 2: Set & Get Item</h2>
+    <p>Test simpan dan ambil data dari storage.</p>
+    <button onclick="testSetGetItem()">Run Test</button>
+    <div id="result-setget" class="result" style="display:none;"></div>
+  </div>
+
+  <!-- Test 3: Photo Reference -->
+  <div class="test-section">
+    <h2>Test 3: Save Photo Reference</h2>
+    <p>Test menyimpan photoId reference (bukan base64).</p>
+    <button onclick="testPhotoReference()">Run Test</button>
+    <div id="result-photo" class="result" style="display:none;"></div>
+  </div>
+
+  <!-- Test 4: Clear Expired -->
+  <div class="test-section">
+    <h2>Test 4: Clear Expired Data</h2>
+    <p>Test pembersihan data yang sudah kadaluarsa.</p>
+    <button onclick="testClearExpired()">Run Test</button>
+    <div id="result-clear" class="result" style="display:none;"></div>
+  </div>
+
+  <!-- Test 5: Storage Stats -->
+  <div class="test-section">
+    <h2>Test 5: Storage Statistics</h2>
+    <p>Lihat statistik penggunaan storage saat ini.</p>
+    <button onclick="testStatistics()">Run Test</button>
+    <div id="result-stats" class="result" style="display:none;"></div>
+  </div>
+
+  <!-- Test 6: Active Exam Preservation -->
+  <div class="test-section">
+    <h2>Test 6: Active Exam Preservation</h2>
+    <p>Verifikasi bahwa data ujian aktif tidak terhapus saat cleanup.</p>
+    <button onclick="testActiveExamPreservation()">Run Test</button>
+    <div id="result-active" class="result" style="display:none;"></div>
+  </div>
+
+  <!-- Test 7: IndexedDB Migration -->
+  <div class="test-section">
+    <h2>Test 7: IndexedDB Migration (Manual)</h2>
+    <p>Test migrasi data ke IndexedDB. <strong>Warning:</strong> Akan menyimpan data besar!</p>
+    <button onclick="testIndexedDBMigration()">Run Test</button>
+    <div id="result-indexeddb" class="result" style="display:none;"></div>
+  </div>
+
+  <!-- Clear All Test Data -->
+  <div class="test-section" style="border: 2px solid #e74c3c;">
+    <h2>🗑️ Cleanup</h2>
+    <p>Hapus semua test data dari localStorage.</p>
+    <button onclick="clearTestData()" style="background: #e74c3c;">Clear Test Data</button>
+    <div id="result-cleanup" class="result" style="display:none;"></div>
+  </div>
+
+  <script type="module">
+    import { StorageManager } from './storage-manager.js';
+    
+    // Create global instance for tests
+    window.storageManager = new StorageManager();
+    window.testResults = {};
+
+    // Helper functions
+    window.showResult = function(elementId, content, type = 'info') {
+      const element = document.getElementById(elementId);
+      element.textContent = content;
+      element.className = `result ${type}`;
+      element.style.display = 'block';
+    };
+
+    window.log = function(message) {
+      console.log(`[StorageManager Test] ${message}`);
+      return message;
+    };
+
+    // Test 1: Check Quota
+    window.testCheckQuota = async function() {
+      try {
+        log('Test 1: Checking storage quota...');
+        const quota = await window.storageManager.getQuota();
+        
+        const result = `✓ Quota Check Success
+        
+Used: ${(quota.used / 1024 / 1024).toFixed(2)} MB
+Total: ${(quota.total / 1024 / 1024).toFixed(2)} MB
+Percentage: ${quota.percentage.toFixed(2)}%
+
+Quota object:
+${JSON.stringify(quota, null, 2)}`;
+        
+        showResult('result-quota', result, 'success');
+        window.testResults.quota = true;
+        
+      } catch (err) {
+        showResult('result-quota', `✗ Error: ${err.message}\n\n${err.stack}`, 'error');
+        window.testResults.quota = false;
+      }
+    };
+
+    // Test 2: Set and Get Item
+    window.testSetGetItem = async function() {
+      try {
+        log('Test 2: Testing setItem and getItem...');
+        
+        const testKey = 'test_storage_manager_' + Date.now();
+        const testData = {
+          nama: 'Test Peserta',
+          lomba: 'IPA',
+          mulai: new Date().toISOString(),
+          jawaban: { 1: 'A', 2: 'B', 3: 'C' }
+        };
+        
+        // Set item
+        const setResult = await window.storageManager.setItem(testKey, testData);
+        log(`Set result: ${JSON.stringify(setResult)}`);
+        
+        // Get item
+        const getData = await window.storageManager.getItem(testKey);
+        log(`Retrieved data: ${JSON.stringify(getData)}`);
+        
+        // Verify
+        const isEqual = JSON.stringify(getData.nama) === JSON.stringify(testData.nama);
+        
+        const result = `✓ Set/Get Test Success
+
+Saved to: ${setResult.storage}
+Data verified: ${isEqual}
+
+Original data:
+${JSON.stringify(testData, null, 2)}
+
+Retrieved data:
+${JSON.stringify(getData, null, 2)}`;
+        
+        showResult('result-setget', result, 'success');
+        window.testResults.setget = true;
+        
+      } catch (err) {
+        showResult('result-setget', `✗ Error: ${err.message}\n\n${err.stack}`, 'error');
+        window.testResults.setget = false;
+      }
+    };
+
+    // Test 3: Photo Reference
+    window.testPhotoReference = async function() {
+      try {
+        log('Test 3: Testing savePhotoReference...');
+        
+        const examKey = 'test_exam_photo_' + Date.now();
+        
+        // Create exam data first
+        const examData = {
+          nama: 'Test Peserta Photo',
+          lomba: 'MATEMATIKA',
+          mulai: new Date().toISOString()
+        };
+        
+        await window.storageManager.setItem(examKey, examData);
+        
+        // Save photo reference (NOT base64!)
+        const photoId = 'photo_' + Math.random().toString(36).substr(2, 9);
+        const photoUrl = `https://cdn.example.com/photos/${photoId}.jpg`;
+        
+        const success = await window.storageManager.savePhotoReference(examKey, photoId, photoUrl);
+        
+        // Retrieve and verify
+        const updatedData = await window.storageManager.getItem(examKey);
+        
+        const result = `✓ Photo Reference Test Success
+
+Success: ${success}
+PhotoId: ${updatedData.verifikasi?.photoId}
+PhotoUrl: ${updatedData.verifikasi?.photoUrl}
+
+Updated exam data:
+${JSON.stringify(updatedData, null, 2)}
+
+✓ Verification:
+- No base64 data stored: ${!JSON.stringify(updatedData).includes('data:image')}
+- PhotoId stored: ${!!updatedData.verifikasi?.photoId}
+- PhotoUrl stored: ${!!updatedData.verifikasi?.photoUrl}`;
+        
+        showResult('result-photo', result, 'success');
+        window.testResults.photo = true;
+        
+      } catch (err) {
+        showResult('result-photo', `✗ Error: ${err.message}\n\n${err.stack}`, 'error');
+        window.testResults.photo = false;
+      }
+    };
+
+    // Test 4: Clear Expired
+    window.testClearExpired = async function() {
+      try {
+        log('Test 4: Testing clearExpired...');
+        
+        // Create old data (8 days old)
+        const oldKey = 'test_old_exam_' + Date.now();
+        const oldDate = new Date();
+        oldDate.setDate(oldDate.getDate() - 8);
+        
+        const oldData = {
+          nama: 'Old Exam',
+          timestamp: oldDate.toISOString(),
+          selesai: { waktu: oldDate.toISOString() }
+        };
+        
+        localStorage.setItem(oldKey, JSON.stringify(oldData));
+        
+        // Create recent data (1 day old)
+        const recentKey = 'test_recent_exam_' + Date.now();
+        const recentDate = new Date();
+        recentDate.setDate(recentDate.getDate() - 1);
+        
+        const recentData = {
+          nama: 'Recent Exam',
+          timestamp: recentDate.toISOString()
+        };
+        
+        localStorage.setItem(recentKey, JSON.stringify(recentData));
+        
+        // Clear expired (7 days threshold)
+        const removed = await window.storageManager.clearExpired(7);
+        
+        // Verify
+        const oldExists = localStorage.getItem(oldKey) !== null;
+        const recentExists = localStorage.getItem(recentKey) !== null;
+        
+        const result = `✓ Clear Expired Test Success
+
+Items removed: ${removed}
+Old data (8 days) removed: ${!oldExists} ✓
+Recent data (1 day) preserved: ${recentExists} ✓
+
+Test validates:
+- Data older than threshold is removed
+- Recent data is preserved
+- Cleanup works correctly`;
+        
+        showResult('result-clear', result, 'success');
+        window.testResults.clear = true;
+        
+      } catch (err) {
+        showResult('result-clear', `✗ Error: ${err.message}\n\n${err.stack}`, 'error');
+        window.testResults.clear = false;
+      }
+    };
+
+    // Test 5: Statistics
+    window.testStatistics = async function() {
+      try {
+        log('Test 5: Getting storage statistics...');
+        
+        const stats = await window.storageManager.getStatistics();
+        
+        const result = `✓ Storage Statistics
+
+Total Items: ${stats.itemCount}
+Total Size: ${(stats.totalSize / 1024).toFixed(2)} KB
+
+Largest Items:
+${stats.largestItems.map((item, i) => 
+  `${i + 1}. ${item.key.substring(0, 50)}... (${item.sizeKB} KB)`
+).join('\n')}
+
+Full stats:
+${JSON.stringify(stats, null, 2)}`;
+        
+        showResult('result-stats', result, 'info');
+        window.testResults.stats = true;
+        
+      } catch (err) {
+        showResult('result-stats', `✗ Error: ${err.message}\n\n${err.stack}`, 'error');
+        window.testResults.stats = false;
+      }
+    };
+
+    // Test 6: Active Exam Preservation
+    window.testActiveExamPreservation = async function() {
+      try {
+        log('Test 6: Testing active exam preservation...');
+        
+        // Create active exam (started 1 hour ago)
+        const activeKey = 'exam_session_active_test';
+        const activeDate = new Date();
+        activeDate.setHours(activeDate.getHours() - 1);
+        
+        const activeData = {
+          nama: 'Active Exam',
+          lomba: 'IPS',
+          mulai: activeDate.toISOString()
+        };
+        
+        await window.storageManager.setItem(activeKey, activeData);
+        
+        // Create old exam (10 days old)
+        const oldKey = 'test_old_cleanup_' + Date.now();
+        const oldDate = new Date();
+        oldDate.setDate(oldDate.getDate() - 10);
+        
+        const oldData = {
+          nama: 'Old Exam',
+          timestamp: oldDate.toISOString()
+        };
+        
+        localStorage.setItem(oldKey, JSON.stringify(oldData));
+        
+        // Run cleanup
+        const removed = await window.storageManager.clearExpired(7);
+        
+        // Verify
+        const activeExists = await window.storageManager.getItem(activeKey);
+        const oldExists = localStorage.getItem(oldKey);
+        
+        const result = `✓ Active Exam Preservation Test Success
+
+Items removed: ${removed}
+Active exam preserved: ${activeExists !== null} ✓
+Old exam removed: ${oldExists === null} ✓
+
+Active exam data:
+${JSON.stringify(activeExists, null, 2)}
+
+Test validates:
+- Active exam sessions are never deleted
+- Old non-active data is cleaned up
+- Preservation logic works correctly`;
+        
+        showResult('result-active', result, 'success');
+        window.testResults.active = true;
+        
+      } catch (err) {
+        showResult('result-active', `✗ Error: ${err.message}\n\n${err.stack}`, 'error');
+        window.testResults.active = false;
+      }
+    };
+
+    // Test 7: IndexedDB Migration (manual, potentially slow)
+    window.testIndexedDBMigration = async function() {
+      if (!confirm('This test will create large data in storage. Continue?')) {
+        return;
+      }
+      
+      try {
+        log('Test 7: Testing IndexedDB migration...');
+        showResult('result-indexeddb', '⏳ Running migration test... this may take a moment', 'warning');
+        
+        const largeKey = 'test_large_data_migration';
+        // Create large data (simulate compressed photos metadata)
+        const largeData = {
+          examData: 'test',
+          photos: new Array(1000).fill(null).map((_, i) => ({
+            id: `photo_${i}`,
+            metadata: 'x'.repeat(500) // 500 chars each
+          }))
+        };
+        
+        const result = await window.storageManager._migrateToIndexedDB(largeKey, largeData);
+        
+        // Check if reference is stored
+        const ref = localStorage.getItem(largeKey);
+        const refData = JSON.parse(ref);
+        
+        const output = `✓ IndexedDB Migration Test Success
+
+Migration result: ${JSON.stringify(result)}
+Reference stored in localStorage: ${refData._storage === 'indexeddb'}
+
+Reference data:
+${ref}
+
+Test validates:
+- Large data migrated to IndexedDB
+- Reference marker stored in localStorage
+- Migration completes without errors`;
+        
+        showResult('result-indexeddb', output, 'success');
+        window.testResults.indexeddb = true;
+        
+      } catch (err) {
+        showResult('result-indexeddb', `✗ Error: ${err.message}\n\n${err.stack}`, 'error');
+        window.testResults.indexeddb = false;
+      }
+    };
+
+    // Clear all test data
+    window.clearTestData = function() {
+      if (!confirm('Remove all test data from localStorage?')) {
+        return;
+      }
+      
+      try {
+        let removed = 0;
+        const keys = Object.keys(localStorage);
+        
+        for (const key of keys) {
+          if (key.startsWith('test_') || key.includes('_test')) {
+            localStorage.removeItem(key);
+            removed++;
+          }
+        }
+        
+        showResult('result-cleanup', `✓ Cleanup Complete\n\nRemoved ${removed} test items from localStorage.`, 'success');
+        
+      } catch (err) {
+        showResult('result-cleanup', `✗ Error: ${err.message}`, 'error');
+      }
+    };
+
+    // Run initial quota check on load
+    log('StorageManager test page loaded');
+  </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LEMON - Module Import Test</title>
+</head>
+<body>
+  <h1>LEMON Module Import Test</h1>
+  <div id="results"></div>
+  
+  <script type="module">
+    const results = document.getElementById('results');
+    
+    async function testImports() {
+      const tests = [];
+      
+      // Test validation utils
+      try {
+        const { validatePhotoFile, validateNama, validateLomba } = await import('./utils/validation.js');
+        tests.push({ module: 'validation.js', status: '✓ SUCCESS', color: 'green' });
+      } catch (err) {
+        tests.push({ module: 'validation.js', status: '✗ FAILED: ' + err.message, color: 'red' });
+      }
+      
+      // Test logger utils
+      try {
+        const { info, warn, error, logCompressionMetrics } = await import('./utils/logger.js');
+        tests.push({ module: 'logger.js', status: '✓ SUCCESS', color: 'green' });
+      } catch (err) {
+        tests.push({ module: 'logger.js', status: '✗ FAILED: ' + err.message, color: 'red' });
+      }
+      
+      // Test PhotoCompressor module
+      try {
+        const { PhotoCompressor } = await import('./modules/photo-compressor.js');
+        const compressor = new PhotoCompressor();
+        tests.push({ module: 'photo-compressor.js', status: '✓ SUCCESS', color: 'green' });
+      } catch (err) {
+        tests.push({ module: 'photo-compressor.js', status: '✗ FAILED: ' + err.message, color: 'red' });
+      }
+      
+      // Test StorageManager module
+      try {
+        const { StorageManager } = await import('./modules/storage-manager.js');
+        const storage = new StorageManager();
+        tests.push({ module: 'storage-manager.js', status: '✓ SUCCESS', color: 'green' });
+      } catch (err) {
+        tests.push({ module: 'storage-manager.js', status: '✗ FAILED: ' + err.message, color: 'red' });
+      }
+      
+      // Test QuestionLoader module
+      try {
+        const { QuestionLoader } = await import('./modules/question-loader.js');
+        const loader = new QuestionLoader();
+        tests.push({ module: 'question-loader.js', status: '✓ SUCCESS', color: 'green' });
+      } catch (err) {
+        tests.push({ module: 'question-loader.js', status: '✗ FAILED: ' + err.message, color: 'red' });
+      }
+      
+      // Test APIClient module
+      try {
+        const { APIClient } = await import('./modules/api-client.js');
+        const client = new APIClient();
+        tests.push({ module: 'api-client.js', status: '✓ SUCCESS', color: 'green' });
+      } catch (err) {
+        tests.push({ module: 'api-client.js', status: '✗ FAILED: ' + err.message, color: 'red' });
+      }
+      
+      // Display results
+      results.innerHTML = '<h2>Import Test Results:</h2><ul>' + 
+        tests.map(t => `<li style="color: ${t.color}; margin: 10px 0;"><strong>${t.module}</strong>: ${t.status}</li>`).join('') +
+        '</ul>';
+      
+      // Summary
+      const successCount = tests.filter(t => t.status.startsWith('✓')).length;
+      const totalCount = tests.length;
+      
+      results.innerHTML += `<h3>Summary: ${successCount}/${totalCount} modules imported successfully</h3>`;
+      
+      if (successCount === totalCount) {
+        results.innerHTML += '<p style="color: green; font-weight: bold;">✓ All modules are ready for implementation!</p>';
+      } else {
+        results.innerHTML += '<p style="color: red; font-weight: bold;">✗ Some modules have import errors. Check console for details.</p>';
+      }
+    }
+    
+    testImports();
+  </script>
+</body>
+</html>

@@ -658,10 +658,14 @@ h1 {
 
   </div>
 
-  <script>
+  <script type="module">
 /* =====================================================================
    JS HALAMAN BERANDA (gabungan config + session + guard + beranda)
    ===================================================================== */
+
+/* ---------- MODULE IMPORTS ---------- */
+import PhotoCompressor from './js/modules/photo-compressor.js';
+import { APIClient } from './js/modules/api-client.js';
 
 /* ---------- 1. PENGATURAN ---------- */
 window.CONFIG = {
@@ -757,6 +761,11 @@ window.Session = (function () {
 
   var profile = Session.getProfile() || { username: Session.get(), nama: Session.get(), sekolah: "-" };
 
+  /* ----- MODULE INITIALIZATION ----- */
+  const compressor = new PhotoCompressor();
+  const apiClient = new APIClient();
+  let photoBlob = null; // Store compressed photo blob
+
   /* ----- DATA PESERTA ----- */
 
   function renderProfile() {
@@ -806,6 +815,17 @@ window.Session = (function () {
 
   var stream = null; // aliran kamera aktif
 
+  function showLoading(message) {
+    var btn = $("btn-start");
+    btn.disabled = true;
+    btn.querySelector("span").textContent = message || "Memproses...";
+    $("start-hint").textContent = message || "Memproses...";
+  }
+
+  function hideLoading() {
+    updateStart();
+  }
+
   function showPhotoError(message) {
     $("foto-error").textContent = message || "";
   }
@@ -838,8 +858,9 @@ window.Session = (function () {
     updateStart();
   }
 
-  function acceptPhoto(thumb, name, size) {
+  function acceptPhoto(thumb, name, size, blob) {
     showPhotoError("");
+    photoBlob = blob; // Store compressed blob for upload
     Session.setPhoto({ thumb: thumb, name: name, size: size });
     renderPhoto();
   }
@@ -857,20 +878,36 @@ window.Session = (function () {
       return;
     }
 
-    var url = URL.createObjectURL(file);
-    var img = new Image();
-    img.onload = function () {
-      acceptPhoto(makeThumb(img, img.naturalWidth, img.naturalHeight), file.name, file.size);
-      URL.revokeObjectURL(url);
-    };
-    img.onerror = function () {
-      URL.revokeObjectURL(url);
-      showPhotoError("Foto tidak dapat dibaca. Coba pilih file lain.");
-    };
-    img.src = url;
+    // Show loading indicator
+    showLoading("Mengkompresi foto...");
+    $("drop").hidden = true;
+    $("preview").hidden = true;
+
+    // Compress photo using PhotoCompressor
+    compressor.compress(file)
+      .then(function(result) {
+        console.log('Photo compressed:', {
+          originalSize: result.metadata.originalSize,
+          compressedSize: result.metadata.compressedSize,
+          compressionRatio: (result.metadata.compressionRatio * 100).toFixed(1) + '%',
+          quality: result.metadata.quality,
+          duration: result.metadata.duration + 'ms'
+        });
+        
+        // Use the compressed blob and data URL
+        acceptPhoto(result.dataUrl, file.name, result.blob.size, result.blob);
+        hideLoading();
+      })
+      .catch(function(error) {
+        console.error('Photo compression failed:', error);
+        showPhotoError(error.message || "Gagal mengkompresi foto. Coba foto lain.");
+        $("drop").hidden = false;
+        hideLoading();
+      });
   }
 
   function removePhoto() {
+    photoBlob = null; // Clear compressed blob
     Session.clearPhoto();
     showPhotoError("");
     renderPhoto();
@@ -915,9 +952,51 @@ window.Session = (function () {
       showPhotoError("Kamera belum siap. Tunggu sebentar lalu coba lagi.");
       return;
     }
-    var thumb = makeThumb(video, video.videoWidth, video.videoHeight);
-    closeCamera();
-    acceptPhoto(thumb, "foto-webcam.jpg", null);
+
+    // Capture video frame to canvas
+    var canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext("2d").drawImage(video, 0, 0);
+
+    // Convert canvas to blob
+    canvas.toBlob(function(blob) {
+      if (!blob) {
+        showPhotoError("Gagal mengambil foto dari kamera.");
+        return;
+      }
+
+      // Close camera first
+      closeCamera();
+
+      // Create a File object from blob for compression
+      var file = new File([blob], "foto-webcam.jpg", { type: "image/jpeg" });
+
+      // Show loading
+      showLoading("Mengkompresi foto...");
+      $("drop").hidden = true;
+      $("preview").hidden = true;
+
+      // Compress the captured photo
+      compressor.compress(file)
+        .then(function(result) {
+          console.log('Webcam photo compressed:', {
+            originalSize: result.metadata.originalSize,
+            compressedSize: result.metadata.compressedSize,
+            compressionRatio: (result.metadata.compressionRatio * 100).toFixed(1) + '%',
+            duration: result.metadata.duration + 'ms'
+          });
+
+          acceptPhoto(result.dataUrl, "foto-webcam.jpg", result.blob.size, result.blob);
+          hideLoading();
+        })
+        .catch(function(error) {
+          console.error('Webcam photo compression failed:', error);
+          showPhotoError(error.message || "Gagal mengkompresi foto dari kamera.");
+          $("drop").hidden = false;
+          hideLoading();
+        });
+    }, "image/jpeg", 0.9);
   }
 
   /* ----- PAKTA INTEGRITAS ----- */
@@ -972,14 +1051,52 @@ window.Session = (function () {
     if ($("btn-start").disabled) return;
 
     var url = CONFIG.exam.startUrl;
-    if (url) {
-      location.href = url;
-    } else {
+    if (!url) {
       var hint = $("start-hint");
       hint.classList.remove("ready");
       hint.classList.add("warn");
       hint.textContent = "Halaman soal belum disambungkan. Isi exam.startUrl di bagian CONFIG pada file ini.";
+      return;
     }
+
+    // Check if we have a compressed photo blob
+    if (!photoBlob) {
+      showPhotoError("Foto tidak ditemukan. Silakan unggah foto lagi.");
+      return;
+    }
+
+    // Show loading
+    showLoading("Mengunggah foto...");
+    $("btn-start").disabled = true;
+
+    // Upload photo to server
+    apiClient.uploadPhoto(photoBlob, {
+      nama: profile.nama || profile.username,
+      lomba: "MATEMATIKA"
+    })
+    .then(function(result) {
+      console.log('Photo uploaded successfully:', result);
+
+      // Store photoId reference in sessionStorage
+      sessionStorage.setItem("photo_ref", JSON.stringify({
+        photoId: result.photoId,
+        timestamp: result.timestamp
+      }));
+
+      // Navigate to exam page
+      location.href = url;
+    })
+    .catch(function(error) {
+      console.error('Photo upload failed:', error);
+      
+      // Show error message
+      var errorMsg = error.message || "Gagal mengunggah foto. Periksa koneksi internet Anda dan coba lagi.";
+      showPhotoError(errorMsg);
+      alert(errorMsg);
+      
+      // Re-enable button
+      hideLoading();
+    });
   }
 
   /* ----- KELUAR ----- */

@@ -1,0 +1,367 @@
+{
+  "category": "MATEMATIKA",
+  "version": "1.0.0",
+  "checksum": "placeholder-sha256",
+  "questions": [
+    {
+      "n": 1,
+      "mapel": "Bilangan dan Aritmetika",
+      "q": "Hasil dari {1/2} + {1/6} + {1/12} + {1/20} + {1/30} adalah ...",
+      "o": [
+        "{1/2}",
+        "{2/3}",
+        "{3/4}",
+        "{5/6}",
+        "1"
+      ]
+    },
+    {
+      "n": 2,
+      "mapel": "Bilangan dan Aritmetika",
+      "q": "Bilangan positif terkecil yang habis dibagi 12, 18, dan 30 serta merupakan kuadrat sempurna adalah ...",
+      "o": [
+        "180",
+        "360",
+        "720",
+        "900",
+        "1.800"
+      ]
+    },
+    {
+      "n": 3,
+      "mapel": "Bilangan dan Aritmetika",
+      "q": "Jika a dan b merupakan bilangan bulat positif dengan FPB(a, b) = 6 dan KPK(a, b) = 180, banyak pasangan terurut (a, b) yang mungkin adalah ...",
+      "o": [
+        "2",
+        "4",
+        "6",
+        "8",
+        "10"
+      ]
+    },
+    {
+      "n": 4,
+      "mapel": "Bilangan dan Aritmetika",
+      "q": "Jumlah semua bilangan bulat positif kurang dari 100 yang habis dibagi 3 atau 5 adalah ...",
+      "o": [
+        "2.115",
+        "2.315",
+        "2.415",
+        "2.515",
+        "2.715"
+      ]
+    },
+    {
+      "n": 5,
+      "mapel": "Bilangan dan Aritmetika",
+      "q": "Suatu bilangan terdiri atas tiga angka. Jumlah ketiga angkanya adalah 15. Jika angka ratusan dan satuan ditukar, bilangan baru menjadi 396 lebih kecil daripada bilangan semula. Selisih angka ratusan dan satuannya adalah ...",
+      "o": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "n": 6,
+      "mapel": "Bilangan dan Aritmetika",
+      "q": "Jika 2^(x+1) + 2^(x) + 2^(x−1) = 56, maka nilai x adalah ...",
+      "o": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    },
+    {
+      "n": 7,
+      "mapel": "Aljabar",
+      "q": "Jika x + y = 10 dan xy = 21, nilai x² + y² adalah ...",
+      "o": [
+        "42",
+        "48",
+        "52",
+        "58",
+        "64"
+      ]
+    },
+    {
+      "n": 8,
+      "mapel": "Aljabar",
+      "q": "Diketahui {x − 2/3} + {x + 1/2} = 7. Nilai x adalah ...",
+      "o": [
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    {
+      "n": 9,
+      "mapel": "Aljabar",
+      "q": "Jika a + b = 8 dan a² + b² = 34, nilai ab adalah ...",
+      "o": [
+        "12",
+        "14",
+        "15",
+        "16",
+        "18"
+      ]
+    },
+    {
+      "n": 10,
+      "mapel": "Aljabar",
+      "q": "Himpunan penyelesaian dari persamaan x² − 7x + 12 = 0 adalah ...",
+      "o": [
+        "12",
+        "6",
+        "4",
+        "−4",
+        "−6"
+      ]
+    },
+    {
+      "n": 11,
+      "mapel": "Aljabar",
+      "q": "Jika x + {1/x} = 3, maka nilai x² + {1/x²} adalah ...",
+      "o": [
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    },
+    {
+      "n": 12,
+      "mapel": "Aljabar",
+      "q": "Sebuah bilangan jika dikalikan dengan bilangan berikutnya menghasilkan 156. Bilangan tersebut adalah ...",
+      "o": [
+        "10",
+        "11",
+        "12",
+        "13",
+        "14"
+      ]
+    },
+    {
+      "n": 13,
+      "mapel": "Geometri",
+      "q": "Sebuah segitiga memiliki panjang sisi 13 cm, 14 cm, dan 15 cm. Luas segitiga tersebut adalah ...",
+      "o": [
+        "72 cm²",
+        "78 cm²",
+        "84 cm²",
+        "90 cm²",
+        "96 cm²"
+      ]
+    },
+    {
+      "n": 14,
+      "mapel": "Geometri",
+      "q": "Sebuah lingkaran memiliki jari-jari 14 cm. Luas juring dengan sudut pusat 90° adalah ... (gunakan π = {22/7}).",
+      "o": [
+        "77 cm²",
+        "154 cm²",
+        "196 cm²",
+        "308 cm²",
+        "616 cm²"
+      ]
+    },
+    {
+      "n": 15,
+      "mapel": "Geometri",
+      "q": "Sebuah persegi memiliki diagonal sepanjang 10√2 cm. Luas persegi tersebut adalah ...",
+      "o": [
+        "25 cm²",
+        "50 cm²",
+        "75 cm²",
+        "100 cm²",
+        "200 cm²"
+      ]
+    },
+    {
+      "n": 16,
+      "mapel": "Geometri",
+      "q": "Sebuah segitiga siku-siku memiliki sisi tegak 9 cm dan sisi alas 12 cm. Jari-jari lingkaran dalam segitiga tersebut adalah ...",
+      "o": [
+        "2 cm",
+        "3 cm",
+        "4 cm",
+        "5 cm",
+        "6 cm"
+      ]
+    },
+    {
+      "n": 17,
+      "mapel": "Geometri",
+      "q": "Sebuah kubus memiliki luas permukaan 384 cm². Volume kubus tersebut adalah ...",
+      "o": [
+        "216 cm³",
+        "343 cm³",
+        "512 cm³",
+        "729 cm³",
+        "1.000 cm³"
+      ]
+    },
+    {
+      "n": 18,
+      "mapel": "Geometri",
+      "q": "Pada sebuah segitiga ABC, besar sudut A = 2 kali sudut B dan sudut C = 3 kali sudut B. Besar sudut terbesar segitiga tersebut adalah ...",
+      "o": [
+        "60°",
+        "72°",
+        "90°",
+        "108°",
+        "120°"
+      ]
+    },
+    {
+      "n": 19,
+      "mapel": "Kombinatorika dan Peluang",
+      "q": "Terdapat 5 siswa yang akan duduk berjajar. Banyak susunan berbeda jika dua siswa tertentu harus selalu berdampingan adalah ...",
+      "o": [
+        "24",
+        "36",
+        "48",
+        "60",
+        "120"
+      ]
+    },
+    {
+      "n": 20,
+      "mapel": "Kombinatorika dan Peluang",
+      "q": "Sebuah dadu dilempar dua kali. Peluang jumlah kedua mata dadu sama dengan 8 adalah ...",
+      "o": [
+        "{1/12}",
+        "{5/36}",
+        "{1/6}",
+        "{7/36}",
+        "{1/4}"
+      ]
+    },
+    {
+      "n": 21,
+      "mapel": "Kombinatorika dan Peluang",
+      "q": "Dari angka 1, 2, 3, 4, dan 5 akan dibentuk bilangan tiga angka tanpa pengulangan digit. Banyak bilangan yang lebih besar dari 300 adalah ...",
+      "o": [
+        "24",
+        "30",
+        "36",
+        "48",
+        "60"
+      ]
+    },
+    {
+      "n": 22,
+      "mapel": "Kombinatorika dan Peluang",
+      "q": "Dalam sebuah kelas terdapat 20 siswa. Setiap siswa berjabat tangan tepat satu kali dengan setiap siswa lainnya. Jumlah jabat tangan yang terjadi adalah ...",
+      "o": [
+        "100",
+        "160",
+        "180",
+        "190",
+        "200"
+      ]
+    },
+    {
+      "n": 23,
+      "mapel": "Kombinatorika dan Peluang",
+      "q": "Banyak cara memilih 3 orang dari 8 orang untuk menjadi sebuah tim adalah ...",
+      "o": [
+        "24",
+        "36",
+        "48",
+        "56",
+        "64"
+      ]
+    },
+    {
+      "n": 24,
+      "mapel": "Kombinatorika dan Peluang",
+      "q": "Sebuah kotak berisi 4 bola merah, 3 bola biru, dan 2 bola hijau. Jika diambil dua bola secara acak tanpa pengembalian, peluang kedua bola memiliki warna yang sama adalah ...",
+      "o": [
+        "{1/6}",
+        "{5/18}",
+        "{1/3}",
+        "{7/18}",
+        "{1/2}"
+      ]
+    },
+    {
+      "n": 25,
+      "mapel": "Teori Bilangan dan Logika",
+      "q": "Banyak faktor positif dari 360 adalah ...",
+      "o": [
+        "18",
+        "20",
+        "24",
+        "30",
+        "36"
+      ]
+    },
+    {
+      "n": 26,
+      "mapel": "Teori Bilangan dan Logika",
+      "q": "Jika suatu bilangan dibagi 5 bersisa 3 dan dibagi 7 bersisa 4, bilangan positif terkecil yang memenuhi adalah ...",
+      "o": [
+        "18",
+        "23",
+        "28",
+        "33",
+        "38"
+      ]
+    },
+    {
+      "n": 27,
+      "mapel": "Teori Bilangan dan Logika",
+      "q": "Bilangan prima terkecil yang dapat dinyatakan sebagai jumlah dua bilangan prima berbeda adalah ...",
+      "o": [
+        "5",
+        "7",
+        "9",
+        "11",
+        "13"
+      ]
+    },
+    {
+      "n": 28,
+      "mapel": "Teori Bilangan dan Logika",
+      "q": "Jumlah 100 bilangan asli pertama adalah ...",
+      "o": [
+        "4.950",
+        "5.000",
+        "5.050",
+        "5.100",
+        "5.500"
+      ]
+    },
+    {
+      "n": 29,
+      "mapel": "Teori Bilangan dan Logika",
+      "q": "Suatu barisan bilangan memiliki pola 2, 6, 12, 20, 30, 42, ... Suku ke-10 barisan tersebut adalah ...",
+      "o": [
+        "90",
+        "100",
+        "110",
+        "120",
+        "132"
+      ]
+    },
+    {
+      "n": 30,
+      "mapel": "Teori Bilangan dan Logika",
+      "q": "Terdapat tiga kotak. Kotak pertama berisi 2 bola merah dan 3 bola putih, kotak kedua berisi 4 bola merah dan 1 bola putih, sedangkan kotak ketiga berisi 3 bola merah dan 2 bola putih. Satu kotak dipilih secara acak, kemudian diambil satu bola secara acak. Peluang terambil bola merah adalah ...",
+      "o": [
+        "{1/3}",
+        "{2/5}",
+        "{3/5}",
+        "{2/3}",
+        "{4/5}"
+      ]
+    }
+  ]
+}

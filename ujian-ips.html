@@ -434,12 +434,22 @@ dialog .warn-text { color: var(--danger); font-weight: 800; }
     </div>
   </dialog>
 
-  <script>
+  <script type="module">
 /* =====================================================================
    JS HALAMAN UJIAN IPS
    Daftar isi: 1 Pengaturan | 2 Soal | 3 Penjaga & data peserta
                4 Status ujian | 5 Tampilan | 6 Timer | 7 Kirim | 8 Pasang
    ===================================================================== */
+
+/* ---------- 0. IMPORT MODULES ---------- */
+import { QuestionLoader } from './js/modules/question-loader.js';
+import { StorageManager } from './js/modules/storage-manager.js';
+import { APIClient } from './js/modules/api-client.js';
+
+// Initialize module instances
+const questionLoader = new QuestionLoader();
+const storageManager = new StorageManager();
+const apiClient = new APIClient();
 
 /* ---------- 1. PENGATURAN ---------- */
 var CONFIG = {
@@ -463,8 +473,12 @@ var CONFIG = {
 
 /* ---------- 2. SOAL ----------
    Kunci jawaban SENGAJA tidak ada di halaman ini.
-   Penilaian dilakukan panitia memakai file kunci_jawaban_ips.csv (jangan diunggah). */
-var SOAL = [
+   Penilaian dilakukan panitia memakai file kunci_jawaban_ips.csv (jangan diunggah).
+   Soal dimuat dinamis dari questions/ips.json */
+let SOAL = [];
+
+/* Hardcoded SOAL removed - now loaded dynamically */
+var SOAL_LEGACY = [
  {
   "n": 1,
   "mapel": "Geografi",
@@ -827,6 +841,11 @@ var SOAL = [
  }
 ];
 
+// Set embedded fallback questions for QuestionLoader
+if (SOAL_LEGACY && SOAL_LEGACY.length > 0) {
+  questionLoader.setEmbeddedQuestions("ips", SOAL_LEGACY);
+}
+
 /* ---------- 3. PENJAGA & DATA PESERTA ---------- */
 var peserta = (function () {
   function read(name) {
@@ -975,12 +994,28 @@ function tick() {
 function buildPayload() {
   var jawaban = {};
   for (var i = 0; i < SOAL.length; i++) jawaban[SOAL[i].n] = state.jawaban[SOAL[i].n] || "";
+  
+  // Get photoId from sessionStorage (stored as "photo_ref")
+  var photoRef = sessionStorage.getItem("photo_ref");
+  var photoId = null;
+  
+  if (photoRef) {
+    try {
+      var parsed = JSON.parse(photoRef);
+      photoId = parsed.photoId;  // Row number from Spreadsheet Foto
+    } catch (e) {
+      console.error("Failed to parse photo reference:", e);
+    }
+  }
+  
   return {
+    action: 'submitAnswers',
     lomba: CONFIG.lomba,
     nama: peserta.nama,
     sekolah: peserta.sekolah,
     mulai: new Date(state.mulai).toISOString(),
     selesai: state.selesai.waktu,
+    photoId: photoId,  // Row number reference, not base64
     sebab: state.selesai.sebab,          // "manual" atau "waktu"
     pindahTab: state.pindahTab,          // berapa kali tab ditinggalkan selama ujian
     pelanggaran: state.pelanggaran || 0,       // jumlah pelanggaran (pindah tab + screenshot), maks. 5
@@ -990,18 +1025,26 @@ function buildPayload() {
   };
 }
 
-function send() {
+async function send() {
   if (!CONFIG.submitUrl) { showDone(); return; }
-  fetch(CONFIG.submitUrl, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(buildPayload())
-  }).then(function () {
-    state.terkirim = true; saveState(); showDone();
-  }).catch(function () {
-    state.terkirim = false; saveState(); showDone();
-  });
+  
+  try {
+    var payload = buildPayload();
+    console.log('Submitting answers with payload size:', 
+                JSON.stringify(payload).length, 'bytes');
+    
+    // Use APIClient to submit answers
+    await apiClient.submitAnswers(payload);
+    
+    state.terkirim = true; 
+    saveState(); 
+    showDone();
+  } catch (error) {
+    console.error('Failed to submit answers:', error);
+    state.terkirim = false; 
+    saveState(); 
+    showDone();
+  }
 }
 
 function finish(sebab) {
@@ -1062,21 +1105,24 @@ function boleh(kunci, ms) {            // cegah satu kejadian terhitung berkali-
   return true;
 }
 
-function kirimLalu(cb) {
+async function kirimLalu(cb) {
   if (!CONFIG.submitUrl) { cb(); return; }
   var sudah = false;
   function sekali() { if (!sudah) { sudah = true; cb(); } }
   setTimeout(sekali, 8000);
-  fetch(CONFIG.submitUrl, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(buildPayload())
-  }).then(function () {
-    state.terkirim = true; saveState(); sekali();
-  }).catch(function () {
-    state.terkirim = false; saveState(); sekali();
-  });
+  
+  try {
+    var payload = buildPayload();
+    await apiClient.submitAnswers(payload);
+    state.terkirim = true; 
+    saveState(); 
+    sekali();
+  } catch (error) {
+    console.error('Failed to submit answers:', error);
+    state.terkirim = false; 
+    saveState(); 
+    sekali();
+  }
 }
 
 function kembaliKeBeranda() {
@@ -1571,7 +1617,39 @@ function pasangDeteksiKeluar() {
 }
 
 /* ---------- 8. PEMASANGAN ---------- */
-function init() {
+async function initExam() {
+  if (!peserta) return;  // penjaga sedang memindahkan halaman
+  
+  try {
+    // Show loading indicator (reuse existing elements or log to console)
+    console.log("Memuat soal ujian...");
+    
+    // Load questions from JSON using QuestionLoader
+    var questions = await questionLoader.loadQuestions("ips");
+    SOAL = questions;
+    
+    console.log(`Loaded ${SOAL.length} questions for IPS`);
+    
+    // Check storage quota and cleanup if needed
+    var quota = await storageManager.getQuota();
+    console.log(`Storage: ${quota.percentage.toFixed(1)}% used (${(quota.used / 1024).toFixed(2)} KB / ${(quota.total / 1024).toFixed(2)} KB)`);
+    
+    if (quota.percentage > 80) {
+      console.log('Storage usage above 80%, triggering cleanup...');
+      var removed = await storageManager.clearExpired(7);
+      console.log(`Cleaned up ${removed} expired items`);
+    }
+    
+    // Continue with normal initialization
+    initExamUI();
+    
+  } catch (error) {
+    console.error("Gagal memuat soal ujian:", error);
+    alert("Gagal memuat soal ujian: " + error.message + "\n\nHubungi panitia segera.");
+  }
+}
+
+function initExamUI() {
   if (!peserta) return;                      // penjaga sedang memindahkan halaman
 
   state = loadState();
@@ -1655,7 +1733,10 @@ function init() {
   timerId = setInterval(tick, 500);
 }
 
-init();
+// Call initExam() to load questions and initialize
+if (peserta) {
+  initExam();
+}
   </script>
 </body>
 </html>

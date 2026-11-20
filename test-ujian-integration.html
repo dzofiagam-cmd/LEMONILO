@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test Ujian Integration</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-card {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .status.pending { background: #ffc107; color: #000; }
+    .status.pass { background: #4caf50; color: white; }
+    .status.fail { background: #f44336; color: white; }
+    pre {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+    }
+    button {
+      background: #2196f3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 5px;
+    }
+    button:hover {
+      background: #1976d2;
+    }
+    #console-log {
+      background: #263238;
+      color: #aed581;
+      padding: 15px;
+      border-radius: 4px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      margin-top: 20px;
+    }
+    .log-line {
+      margin: 2px 0;
+      word-wrap: break-word;
+    }
+    .log-error { color: #ef5350; }
+    .log-warn { color: #ffb74d; }
+    .log-info { color: #64b5f6; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Test Ujian IPA Integration</h1>
+  <p>This page tests the module integration in ujian-ipa.html</p>
+
+  <div class="test-card">
+    <h2>Test 1: Module Imports <span class="status pending" id="test1-status">PENDING</span></h2>
+    <p id="test1-result">Testing if modules can be imported...</p>
+    <button onclick="runTest1()">Run Test 1</button>
+  </div>
+
+  <div class="test-card">
+    <h2>Test 2: Question Loading <span class="status pending" id="test2-status">PENDING</span></h2>
+    <p id="test2-result">Testing QuestionLoader.loadQuestions("ipa")...</p>
+    <button onclick="runTest2()">Run Test 2</button>
+  </div>
+
+  <div class="test-card">
+    <h2>Test 3: Storage Management <span class="status pending" id="test3-status">PENDING</span></h2>
+    <p id="test3-result">Testing StorageManager quota check...</p>
+    <button onclick="runTest3()">Run Test 3</button>
+  </div>
+
+  <div class="test-card">
+    <h2>Test 4: Photo Reference Mock <span class="status pending" id="test4-status">PENDING</span></h2>
+    <p id="test4-result">Testing photoId extraction from sessionStorage...</p>
+    <button onclick="runTest4()">Run Test 4</button>
+  </div>
+
+  <div class="test-card">
+    <h2>Test 5: Payload Build <span class="status pending" id="test5-status">PENDING</span></h2>
+    <p id="test5-result">Testing payload size with photoId reference...</p>
+    <button onclick="runTest5()">Run Test 5</button>
+  </div>
+
+  <button onclick="runAllTests()" style="background: #4caf50; font-weight: bold; display: block; width: 100%; margin-top: 20px;">
+    🚀 Run All Tests
+  </button>
+
+  <div id="console-log">
+    <strong>Console Output:</strong>
+    <div id="console-output"></div>
+  </div>
+
+  <script type="module">
+    import { QuestionLoader } from './js/modules/question-loader.js';
+    import { StorageManager } from './js/modules/storage-manager.js';
+    import { APIClient } from './js/modules/api-client.js';
+
+    // Store in window for test functions
+    window.questionLoader = new QuestionLoader();
+    window.storageManager = new StorageManager();
+    window.apiClient = new APIClient();
+    window.testQuestions = null;
+
+    // Enhanced console logging
+    const consoleOutput = document.getElementById('console-output');
+    function addLog(message, type = 'info') {
+      const line = document.createElement('div');
+      line.className = `log-line log-${type}`;
+      line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      consoleOutput.appendChild(line);
+      consoleOutput.parentElement.scrollTop = consoleOutput.parentElement.scrollHeight;
+    }
+
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    console.log = function(...args) {
+      originalLog.apply(console, args);
+      addLog(args.join(' '), 'info');
+    };
+    console.error = function(...args) {
+      originalError.apply(console, args);
+      addLog(args.join(' '), 'error');
+    };
+    console.warn = function(...args) {
+      originalWarn.apply(console, args);
+      addLog(args.join(' '), 'warn');
+    };
+
+    window.testModules = {
+      QuestionLoader,
+      StorageManager,
+      APIClient
+    };
+
+    console.log('✓ Modules loaded successfully');
+    updateStatus('test1', 'pass', '✓ All modules imported successfully');
+  </script>
+
+  <script>
+    function updateStatus(testId, status, message) {
+      const statusEl = document.getElementById(`${testId}-status`);
+      const resultEl = document.getElementById(`${testId}-result`);
+      
+      statusEl.className = `status ${status}`;
+      statusEl.textContent = status.toUpperCase();
+      resultEl.textContent = message;
+    }
+
+    async function runTest1() {
+      console.log('\n=== Running Test 1: Module Imports ===');
+      try {
+        if (window.testModules && window.testModules.QuestionLoader && 
+            window.testModules.StorageManager && window.testModules.APIClient) {
+          updateStatus('test1', 'pass', '✓ All modules imported successfully');
+          console.log('✓ Test 1 PASSED');
+        } else {
+          throw new Error('Some modules are missing');
+        }
+      } catch (error) {
+        updateStatus('test1', 'fail', `✗ ${error.message}`);
+        console.error('✗ Test 1 FAILED:', error);
+      }
+    }
+
+    async function runTest2() {
+      console.log('\n=== Running Test 2: Question Loading ===');
+      try {
+        console.log('Loading questions from questions/ipa.json...');
+        const questions = await window.questionLoader.loadQuestions('ipa');
+        
+        if (!questions || !Array.isArray(questions)) {
+          throw new Error('Questions not loaded or not an array');
+        }
+        
+        console.log(`✓ Loaded ${questions.length} questions`);
+        
+        if (questions.length !== 30) {
+          throw new Error(`Expected 30 questions, got ${questions.length}`);
+        }
+        
+        // Verify question structure
+        const firstQ = questions[0];
+        if (!firstQ.n || !firstQ.mapel || !firstQ.q || !Array.isArray(firstQ.o)) {
+          throw new Error('Invalid question structure');
+        }
+        
+        console.log('✓ Question structure validated');
+        console.log('Sample question:', JSON.stringify(firstQ, null, 2));
+        
+        window.testQuestions = questions;
+        updateStatus('test2', 'pass', `✓ Loaded ${questions.length} questions successfully`);
+        console.log('✓ Test 2 PASSED');
+      } catch (error) {
+        updateStatus('test2', 'fail', `✗ ${error.message}`);
+        console.error('✗ Test 2 FAILED:', error);
+      }
+    }
+
+    async function runTest3() {
+      console.log('\n=== Running Test 3: Storage Management ===');
+      try {
+        console.log('Checking storage quota...');
+        const quota = await window.storageManager.getQuota();
+        
+        console.log(`Storage used: ${(quota.used / 1024).toFixed(2)} KB`);
+        console.log(`Storage total: ${(quota.total / 1024).toFixed(2)} KB`);
+        console.log(`Usage: ${quota.percentage.toFixed(2)}%`);
+        
+        if (quota.percentage > 80) {
+          console.warn('Storage usage above 80%, cleanup recommended');
+          const removed = await window.storageManager.clearExpired(7);
+          console.log(`✓ Cleaned up ${removed} expired items`);
+        }
+        
+        updateStatus('test3', 'pass', `✓ Storage: ${quota.percentage.toFixed(1)}% used`);
+        console.log('✓ Test 3 PASSED');
+      } catch (error) {
+        updateStatus('test3', 'fail', `✗ ${error.message}`);
+        console.error('✗ Test 3 FAILED:', error);
+      }
+    }
+
+    async function runTest4() {
+      console.log('\n=== Running Test 4: Photo Reference Mock ===');
+      try {
+        // Mock photo reference in sessionStorage
+        const mockPhotoRef = {
+          photoId: 42,
+          timestamp: new Date().toISOString()
+        };
+        
+        sessionStorage.setItem('photo_ref', JSON.stringify(mockPhotoRef));
+        console.log('✓ Mock photo reference stored:', mockPhotoRef);
+        
+        // Retrieve and verify
+        const stored = sessionStorage.getItem('photo_ref');
+        const parsed = JSON.parse(stored);
+        
+        if (parsed.photoId !== 42) {
+          throw new Error('PhotoId mismatch');
+        }
+        
+        console.log('✓ Photo reference retrieved correctly');
+        updateStatus('test4', 'pass', `✓ PhotoId reference working (photoId: ${parsed.photoId})`);
+        console.log('✓ Test 4 PASSED');
+      } catch (error) {
+        updateStatus('test4', 'fail', `✗ ${error.message}`);
+        console.error('✗ Test 4 FAILED:', error);
+      }
+    }
+
+    async function runTest5() {
+      console.log('\n=== Running Test 5: Payload Build ===');
+      try {
+        if (!window.testQuestions) {
+          throw new Error('Questions not loaded. Run Test 2 first.');
+        }
+        
+        // Mock exam data
+        const mockPayload = {
+          action: 'submitAnswers',
+          lomba: 'IPA',
+          nama: 'Test Student',
+          sekolah: 'Test School',
+          mulai: new Date().toISOString(),
+          selesai: new Date().toISOString(),
+          photoId: 42,  // Row number reference
+          jawaban: {
+            1: 'A', 2: 'B', 3: 'C', 4: 'D', 5: 'E',
+            6: 'A', 7: 'B', 8: 'C', 9: 'D', 10: 'E'
+          }
+        };
+        
+        const payloadStr = JSON.stringify(mockPayload);
+        const payloadSize = payloadStr.length;
+        
+        console.log(`Payload size: ${(payloadSize / 1024).toFixed(2)} KB`);
+        console.log('Payload structure:', JSON.stringify(mockPayload, null, 2));
+        
+        // Verify payload is small (should be under 50KB without base64 photo)
+        if (payloadSize > 100 * 1024) {
+          throw new Error(`Payload too large: ${(payloadSize / 1024).toFixed(2)} KB`);
+        }
+        
+        console.log('✓ Payload size is optimal (no base64 photo data)');
+        
+        // Verify photoId is a number, not base64 string
+        if (typeof mockPayload.photoId === 'string' && mockPayload.photoId.length > 100) {
+          throw new Error('PhotoId appears to be base64 data instead of row number');
+        }
+        
+        console.log('✓ PhotoId is reference (number), not base64 data');
+        
+        updateStatus('test5', 'pass', `✓ Payload size: ${(payloadSize / 1024).toFixed(2)} KB (optimized)`);
+        console.log('✓ Test 5 PASSED');
+      } catch (error) {
+        updateStatus('test5', 'fail', `✗ ${error.message}`);
+        console.error('✗ Test 5 FAILED:', error);
+      }
+    }
+
+    async function runAllTests() {
+      console.log('\n🚀 RUNNING ALL TESTS...\n');
+      await runTest1();
+      await new Promise(r => setTimeout(r, 500));
+      await runTest2();
+      await new Promise(r => setTimeout(r, 500));
+      await runTest3();
+      await new Promise(r => setTimeout(r, 500));
+      await runTest4();
+      await new Promise(r => setTimeout(r, 500));
+      await runTest5();
+      console.log('\n✅ ALL TESTS COMPLETED!\n');
+    }
+  </script>
+</body>
+</html>

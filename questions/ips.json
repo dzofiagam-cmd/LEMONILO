@@ -1,0 +1,367 @@
+{
+  "category": "IPS",
+  "version": "1.0.0",
+  "checksum": "placeholder-sha256",
+  "questions": [
+    {
+      "n": 1,
+      "mapel": "Geografi",
+      "q": "Fenomena El Niño menyebabkan penurunan curah hujan di sebagian besar wilayah Indonesia. Mekanisme utama yang menyebabkan fenomena tersebut adalah ...",
+      "o": [
+        "Menguatnya angin muson barat",
+        "Meningkatnya suhu permukaan laut di Samudra Pasifik bagian tengah dan timur",
+        "Meningkatnya tekanan udara di Samudra Hindia",
+        "Melemahnya arus laut di Samudra Atlantik",
+        "Menurunnya suhu permukaan laut di Samudra Pasifik bagian timur"
+      ]
+    },
+    {
+      "n": 2,
+      "mapel": "Geografi",
+      "q": "Suatu wilayah memiliki piramida penduduk dengan dasar sempit dan bagian tengah hingga atas relatif lebar. Kondisi tersebut paling tepat menunjukkan ...",
+      "o": [
+        "Angka kelahiran sangat tinggi",
+        "Mayoritas penduduk berusia anak-anak",
+        "Pertumbuhan penduduk rendah atau negatif",
+        "Terjadi ledakan penduduk",
+        "Angka ketergantungan anak sangat tinggi"
+      ]
+    },
+    {
+      "n": 3,
+      "mapel": "Geografi",
+      "q": "Dalam analisis kerawanan bencana, wilayah dengan lereng curam, batuan lapuk, curah hujan tinggi, dan perubahan tutupan lahan menjadi permukiman memiliki risiko utama berupa ...",
+      "o": [
+        "Tsunami",
+        "Tanah longsor",
+        "Abrasi",
+        "Intrusi air laut",
+        "Kekeringan meteorologis"
+      ]
+    },
+    {
+      "n": 4,
+      "mapel": "Geografi",
+      "q": "Jika skala peta adalah 1 : 250.000 dan jarak dua kota pada peta 8 cm, jarak sebenarnya kedua kota tersebut adalah ...",
+      "o": [
+        "2 km",
+        "8 km",
+        "20 km",
+        "25 km",
+        "200 km"
+      ]
+    },
+    {
+      "n": 5,
+      "mapel": "Geografi",
+      "q": "Konsep aglomerasi dalam geografi ekonomi paling tepat ditunjukkan oleh ...",
+      "o": [
+        "Perusahaan tekstil berpindah ke daerah dengan upah tertinggi",
+        "Berbagai industri sejenis berkumpul di satu kawasan untuk memperoleh efisiensi",
+        "Penduduk desa berpindah ke kota karena bencana",
+        "Lahan pertanian berubah menjadi hutan lindung",
+        "Kota berkembang mengikuti garis pantai"
+      ]
+    },
+    {
+      "n": 6,
+      "mapel": "Geografi",
+      "q": "Fenomena urban heat island terutama disebabkan oleh ...",
+      "o": [
+        "Peningkatan vegetasi di pusat kota",
+        "Dominasi permukaan beton dan aspal serta berkurangnya ruang terbuka hijau",
+        "Penurunan aktivitas transportasi",
+        "Kelembapan tanah yang meningkat",
+        "Berkurangnya bangunan bertingkat"
+      ]
+    },
+    {
+      "n": 7,
+      "mapel": "Geografi",
+      "q": "Sebuah daerah aliran sungai mengalami banjir lebih sering setelah hutan di bagian hulu dikonversi menjadi perkebunan dan permukiman. Penyebab paling langsung adalah ...",
+      "o": [
+        "Infiltrasi meningkat dan limpasan menurun",
+        "Evapotranspirasi meningkat drastis",
+        "Kapasitas infiltrasi menurun sehingga limpasan permukaan meningkat",
+        "Sedimentasi sungai berhenti",
+        "Debit puncak sungai selalu menurun"
+      ]
+    },
+    {
+      "n": 8,
+      "mapel": "Ekonomi",
+      "q": "Ketika harga suatu barang naik 10% dan jumlah yang diminta turun 20%, nilai elastisitas harga permintaannya adalah ...",
+      "o": [
+        "0,5 dan inelastis",
+        "1 dan uniter",
+        "2 dan elastis",
+        "10 dan elastis sempurna",
+        "20 dan inelastis"
+      ]
+    },
+    {
+      "n": 9,
+      "mapel": "Ekonomi",
+      "q": "Bank sentral menaikkan suku bunga acuan untuk menekan inflasi. Dampak yang paling mungkin terjadi adalah ...",
+      "o": [
+        "Kredit semakin murah dan konsumsi meningkat",
+        "Permintaan agregat cenderung melemah",
+        "Jumlah uang beredar langsung menjadi nol",
+        "Investasi selalu meningkat",
+        "Harga seluruh barang langsung turun"
+      ]
+    },
+    {
+      "n": 10,
+      "mapel": "Ekonomi",
+      "q": "Jika pemerintah menetapkan harga maksimum di bawah harga keseimbangan pasar, dengan asumsi faktor lain tetap, kemungkinan yang terjadi adalah ...",
+      "o": [
+        "Surplus barang",
+        "Kekurangan barang",
+        "Keseimbangan baru tanpa perubahan kuantitas",
+        "Penawaran meningkat tanpa batas",
+        "Permintaan turun menjadi nol"
+      ]
+    },
+    {
+      "n": 11,
+      "mapel": "Ekonomi",
+      "q": "PDB nominal suatu negara meningkat, tetapi PDB riilnya tetap. Kesimpulan yang paling tepat adalah ...",
+      "o": [
+        "Produksi barang dan jasa meningkat tajam",
+        "Kenaikan PDB nominal terutama berasal dari kenaikan tingkat harga",
+        "Jumlah pengangguran pasti turun",
+        "Produktivitas tenaga kerja pasti meningkat",
+        "Negara mengalami deflasi"
+      ]
+    },
+    {
+      "n": 12,
+      "mapel": "Ekonomi",
+      "q": "Dalam teori keunggulan komparatif, suatu negara sebaiknya mengkhususkan produksi pada barang yang ...",
+      "o": [
+        "Memiliki biaya absolut paling tinggi",
+        "Memiliki biaya peluang relatif lebih rendah",
+        "Selalu membutuhkan tenaga kerja paling banyak",
+        "Tidak diperdagangkan secara internasional",
+        "Memiliki harga jual paling mahal"
+      ]
+    },
+    {
+      "n": 13,
+      "mapel": "Ekonomi",
+      "q": "Seseorang berhenti bekerja dan secara aktif mencari pekerjaan, tetapi belum memperoleh pekerjaan. Dalam pengukuran ketenagakerjaan, orang tersebut termasuk ...",
+      "o": [
+        "Bukan angkatan kerja",
+        "Penganggur terbuka",
+        "Pekerja penuh",
+        "Setengah penganggur sukarela",
+        "Pekerja informal"
+      ]
+    },
+    {
+      "n": 14,
+      "mapel": "Ekonomi",
+      "q": "Jika marginal cost (MC) berada di bawah average total cost (ATC), maka ATC akan ...",
+      "o": [
+        "Meningkat",
+        "Menurun",
+        "Tetap selalu nol",
+        "Sama dengan harga pasar",
+        "Tidak dapat ditentukan dalam kondisi apa pun"
+      ]
+    },
+    {
+      "n": 15,
+      "mapel": "Sejarah",
+      "q": "Salah satu faktor utama yang mendorong bangsa Eropa melakukan penjelajahan samudra pada abad ke-15 adalah ...",
+      "o": [
+        "Keinginan menghapus seluruh kerajaan di Asia",
+        "Jatuhnya Konstantinopel pada 1453 yang mengganggu jalur perdagangan lama",
+        "Penemuan mesin uap",
+        "Berakhirnya Perang Dunia I",
+        "Terbentuknya Liga Bangsa-Bangsa"
+      ]
+    },
+    {
+      "n": 16,
+      "mapel": "Sejarah",
+      "q": "Kebijakan tanam paksa (Cultuurstelsel) yang diterapkan pemerintah kolonial Belanda sejak 1830 terutama bertujuan untuk ...",
+      "o": [
+        "Meningkatkan kesejahteraan petani secara merata",
+        "Mengisi kas Belanda melalui produksi tanaman ekspor",
+        "Menghapus sistem pajak tanah",
+        "Mendorong industrialisasi pribumi",
+        "Memberikan kemerdekaan ekonomi kepada desa"
+      ]
+    },
+    {
+      "n": 17,
+      "mapel": "Sejarah",
+      "q": "Makna penting Sumpah Pemuda 1928 bagi pergerakan nasional Indonesia adalah ...",
+      "o": [
+        "Menetapkan bentuk negara republik",
+        "Mengukuhkan identitas persatuan bangsa, tanah air, dan bahasa Indonesia",
+        "Membentuk pemerintahan pertama Indonesia",
+        "Mengakhiri pendudukan Jepang",
+        "Menetapkan Pancasila sebagai dasar negara"
+      ]
+    },
+    {
+      "n": 18,
+      "mapel": "Sejarah",
+      "q": "Peristiwa Rengasdengklok pada 16 Agustus 1945 terjadi karena ...",
+      "o": [
+        "Golongan muda ingin menunda proklamasi",
+        "Golongan muda mendesak agar proklamasi dilakukan segera tanpa campur tangan Jepang",
+        "Belanda meminta Indonesia kembali menjadi koloni",
+        "Jepang hendak membentuk negara federal",
+        "Sekutu telah mengakui kemerdekaan Indonesia"
+      ]
+    },
+    {
+      "n": 19,
+      "mapel": "Sejarah",
+      "q": "Politik Etis yang diperkenalkan pemerintah kolonial Belanda pada awal abad ke-20 mencakup tiga program utama, yaitu ...",
+      "o": [
+        "Edukasi, irigasi, dan emigrasi",
+        "Industrialisasi, militerisasi, dan urbanisasi",
+        "Monopoli, tanam paksa, dan kerja rodi",
+        "Transmigrasi, privatisasi, dan liberalisasi",
+        "Pendidikan, nasionalisasi, dan demokratisasi"
+      ]
+    },
+    {
+      "n": 20,
+      "mapel": "Sejarah",
+      "q": "Salah satu dampak Perang Dunia II terhadap proses dekolonisasi di Asia dan Afrika adalah ...",
+      "o": [
+        "Menguatnya kemampuan ekonomi seluruh negara kolonial",
+        "Melemahnya kekuatan negara-negara kolonial Eropa",
+        "Hilangnya seluruh gerakan nasionalisme",
+        "Berakhirnya persaingan ideologi dunia",
+        "Kembalinya sistem feodalisme di semua wilayah"
+      ]
+    },
+    {
+      "n": 21,
+      "mapel": "Sejarah",
+      "q": "Konferensi Asia Afrika tahun 1955 di Bandung memiliki arti penting karena ...",
+      "o": [
+        "Membentuk pakta militer Asia-Afrika",
+        "Menjadi forum solidaritas negara-negara Asia-Afrika dan mendorong kerja sama antarbangsa",
+        "Menetapkan pembagian wilayah kolonial baru",
+        "Membentuk Uni Eropa",
+        "Mengakhiri Perang Dingin"
+      ]
+    },
+    {
+      "n": 22,
+      "mapel": "Sosiologi",
+      "q": "Menurut Émile Durkheim, solidaritas mekanik umumnya ditemukan pada masyarakat yang ...",
+      "o": [
+        "Memiliki pembagian kerja sangat kompleks",
+        "Memiliki kesamaan nilai, pekerjaan, dan cara hidup yang kuat",
+        "Seluruh hubungan sosialnya bersifat kontraktual",
+        "Didominasi sektor industri modern",
+        "Mengutamakan spesialisasi profesi"
+      ]
+    },
+    {
+      "n": 23,
+      "mapel": "Sosiologi",
+      "q": "Seorang siswa menyesuaikan gaya berpakaian dengan kelompok pertemanannya agar diterima. Fenomena tersebut merupakan contoh ...",
+      "o": [
+        "Konflik sosial",
+        "Konformitas",
+        "Disorganisasi",
+        "Mobilitas horizontal",
+        "Segregasi"
+      ]
+    },
+    {
+      "n": 24,
+      "mapel": "Sosiologi",
+      "q": "Menurut teori konflik Karl Marx, sumber utama pertentangan dalam masyarakat kapitalis adalah ...",
+      "o": [
+        "Perbedaan iklim antardaerah",
+        "Pertentangan kepentingan antara pemilik alat produksi dan kaum pekerja",
+        "Perbedaan bahasa daerah",
+        "Perubahan musim",
+        "Perbedaan usia penduduk"
+      ]
+    },
+    {
+      "n": 25,
+      "mapel": "Sosiologi",
+      "q": "Perpindahan status sosial seseorang dari kelas sosial bawah ke kelas sosial atas disebut ...",
+      "o": [
+        "Mobilitas horizontal",
+        "Mobilitas vertikal naik",
+        "Mobilitas vertikal turun",
+        "Mobilitas geografis saja",
+        "Diferensiasi sosial"
+      ]
+    },
+    {
+      "n": 26,
+      "mapel": "Sosiologi",
+      "q": "Penelitian yang menggunakan wawancara mendalam untuk memahami pengalaman subjektif korban perundungan termasuk pendekatan ...",
+      "o": [
+        "Kuantitatif eksperimental",
+        "Kualitatif",
+        "Statistik deskriptif murni",
+        "Survei sensus wajib",
+        "Kuasi-eksperimen"
+      ]
+    },
+    {
+      "n": 27,
+      "mapel": "Sosiologi",
+      "q": "Ketika dua kelompok yang berkonflik sepakat menghentikan pertikaian melalui bantuan pihak ketiga yang memberikan keputusan mengikat, proses tersebut disebut ...",
+      "o": [
+        "Mediasi",
+        "Arbitrase",
+        "Koersi",
+        "Kompetisi",
+        "Kontravensi"
+      ]
+    },
+    {
+      "n": 28,
+      "mapel": "Sosiologi",
+      "q": "Pernyataan bahwa perilaku menyimpang terbentuk melalui proses interaksi dan pembelajaran dengan kelompok dekat merupakan inti teori ...",
+      "o": [
+        "Anomie",
+        "Asosiasi diferensial",
+        "Fungsionalisme struktural",
+        "Pertukaran sosial",
+        "Evolusi sosial"
+      ]
+    },
+    {
+      "n": 29,
+      "mapel": "IPS Terpadu",
+      "q": "Indeks Pembangunan Manusia (IPM) mengukur pembangunan melalui tiga dimensi utama, yaitu ...",
+      "o": [
+        "Pendapatan ekspor, luas wilayah, dan jumlah industri",
+        "Umur panjang dan hidup sehat, pengetahuan, serta standar hidup layak",
+        "Inflasi, suku bunga, dan nilai tukar",
+        "Kelahiran, migrasi, dan kepadatan penduduk",
+        "Konsumsi, tabungan, dan investasi"
+      ]
+    },
+    {
+      "n": 30,
+      "mapel": "IPS Terpadu",
+      "q": "Suatu wilayah mengalami pertumbuhan ekonomi tinggi, tetapi ketimpangan pendapatan juga meningkat. Kesimpulan yang paling tepat adalah ...",
+      "o": [
+        "Pertumbuhan ekonomi selalu menjamin pemerataan",
+        "Peningkatan output tidak otomatis membuat distribusi pendapatan lebih merata",
+        "Ketimpangan pasti menurunkan PDB nominal",
+        "Seluruh penduduk memperoleh manfaat yang sama",
+        "Pertumbuhan ekonomi tidak berkaitan dengan kesejahteraan"
+      ]
+    }
+  ]
+}
